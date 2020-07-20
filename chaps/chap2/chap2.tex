@@ -1,0 +1,103 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb,french]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[          %
+    labelalpha=true,  % 
+    backend=biber,    %
+    bibencoding=utf8, %
+    sorting=none,     %
+    hyperref=true,    %
+    url=false,        %
+    backref=true,     %
+    backrefstyle=three]{biblatex}
+\addbibresource{biblio.bib}
+
+\usepackage{graphicx}
+%\usepackage{subfig}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{tikz}
+
+% figures pas plus loin que la fin de la section
+\usepackage[section]{placeins}
+
+%\usepackage[pdfborder={0 0 0 [3 3]},pdftex,unicode=true,pdfa=true]{hyperref}
+\usepackage[unicode=true,pdfa=true]{hyperref}
+\usepackage{bookmark}
+\usepackage[         %
+    top    = 2.75cm, %
+    bottom = 3.50cm, %
+    left   = 3.00cm, %
+    right  = 2.50cm]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathabx}
+\usepackage{mathrsfs}
+\usepackage{wasysym}
+\usepackage{textcomp}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+\usepackage{eufrak}
+
+\theoremstyle{plain}\newtheorem{theorem}{Théorème}[section]
+\theoremstyle{plain}\newtheorem{lemma}{Lemme}[section]
+\newtheorem{pro}{Proposition}
+%\theoremstyle{remark}[theorem]
+\newtheorem{remark}{Remarque}
+%\theoremstyle{plain}\newtheorem{ex}[theorem]{Example}
+%\theoremstyle{plain}\newtheorem{exper}[theorem]{Experiment}
+\newtheorem{property}{Property}
+\newtheorem{hyp}{Hypothèse}[section]
+
+\newcommand{\alertred}[1]{{\color[rgb]{0.95,0,0.05}{#1}}}
+\newcommand{\sumli}{\sum\limits}
+\newcommand{\tl}{\tilde}
+\newcommand{\vp}{\varphi}
+\newcommand{\pa}{\partial}
+
+\title{\textbf{Chapitre 2: Modèle hybride linéarisé dans le cas $1dx-1dv$}}
+\date{}
+
+\newcommand{\commentaire}[2][]{\ifthenelse{\equal{#1}{}}{\textbf{#2}}{\ifthenelse{\equal{#1}{Anais}}{\textcolor{magenta}{#2}}{\ifthenelse{\equal{#1}{Nicolas}}{\textcolor{orange}{#2}}{\textcolor{teal}{#2}\footnote{Commentaire rédigé par #1}}}}}
+
+\begin{document}
+
+\maketitle
+
+\commentaire{Ceci est un commentaire anonyme : \texttt{\textbackslash{}commentaire\{Test\}}}
+
+\commentaire[Anais]{Ceci est un commentaire rédigé par Anaïs : \texttt{\textbackslash{}commentaire[Anais]\{Test\}}}
+
+\commentaire[Nicolas]{Ceci est un commentaire rédigé par Nicolas : \texttt{\textbackslash{}commentaire[Nicolas]\{Test\}}}
+
+\commentaire[Bob]{Ceci est un commentaire rédigé par quelqu'un d'autre, son nom s'affiche alors en note en bas de page : \texttt{\textbackslash{}commentaire[Bob]\{Test\}}}
+
+% section 1
+\input{sections/intro}
+% section 2
+\input{sections/models}
+% section 3
+\input{sections/geom}
+% section 4
+\input{sections/scheme}
+% section 5
+\input{sections/dispersion}
+% section 6
+\input{sections/limit}
+% section 7
+\input{sections/compare}
+
+\section{Références bibliographiques}
+
+\printbibliography
+
+\appendix
+% annexe
+\input{sections/annexe_rel_disp.tex}
+
+\end{document}

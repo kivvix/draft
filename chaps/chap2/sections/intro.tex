@@ -1,0 +1,48 @@
+\section{Introduction}
+L'objectif de ce chapitre est d'introduire et de simuler numériquement une hiérarchie de modèles permettant de décrire des systèmes de particules chargées où une population de particules chaudes int\'eragit avec un plasma ambiant plus froid. Une telle configuration physique peut par exemple \^etre 
+\'etudi\'ee dans les plasmas de tokamak o\`u les particules alpha (g\'en\'er\'ees par les r\'eactions de 
+fusion) interagissent avec le plasma ambiant. Un autre exemple se trouve dans la haute atmosph\`ere  o\`u les \'electrons \'energ\'etiques du vent solaire interagissent avec la magn\'etosph\`ere terrestre. 
+Des modèles adapt\'es \`a ces configurations ont ainsi \'et\'e obtenus par exemple dans 
+les deux contextes (voir \cite{Holderied:2019}, \cite{Chen:2016} \cite{Katoh:2007} 
+\cite{Tao:2014} \cite{Tronci:2010} \cite{Tronci:2014}). 
+Le modèle de départ qui servira de référence repose sur une description cinétique pour l'ensemble du plasma consid\'er\'e. On introduit alors la fonction de distribution des \'electrons  $f(t,x,v)\in\mathbb{R}_+$ solution du modèle de Vlasov-Poisson (les ions sont consid\'er\'ees immobiles, 
+comme \'etant un fond neutralisant). En supposant que la population \'electronique peut \^etre 
+s\'epar\'ee entre une population "froide" $f_c$ et une population d\'electrons \'energ\'etiques $f_h$,  
+une première étape consiste à écrire $f$ comme la somme de ces deux fonctions de distribution 
+$f=f_c+f_h$. Une seconde étape consiste à supposer que les particules froides restent proches d'un équilibre thermodynamique de temp\'erature $T_c\approx 0$ et peuvent donc être réprésentées par un modèle fluide. On obtient le modèle hybride fluide/cin\'etique où la partie fluide (linéaire) décrit la dynamique des particules froides alors que les particules chaudes sont décrites à l'aide d'un modèle cinétique.
+Ce mod\`ele hybride peut encore \^etre simplifi\'e en consid\'erant des perturbations de type ondes de faible amplitude. Les termes non lin\'eaires de la partie fluide sont donc n\'eglig\'es alors que la 
+partie cin\'etique reste non lin\'eaire. Le mod\`ele ainsi obtenu (voir \cite{Holderied:2019}) est le mod\`ele hybride lin\'earis\'e VHL (Vlasov Hybrid Linearized).
+
+Du fait de la forte disparité des vitesses thermiques entre les particules froides et chaudes, le modèle cinétique est très coûteux à résoudre numériquement, notamment car le maillage en vitesse doit être choisi très fin pour capturer la vitesse thermique des particules froides. Cela implique en outre, pour les schémas numériques classiques, une condition restrictive sur le pas de temps et 
+donc des simulations co\^uteuses. La dérivation de modèles simplifi\'es moins coûteux à résoudre numériquement est donc d'un grand int\'er\^et. Parmi ces mod\`eles simplifi\'es, 
+nous consid\'ererons ici le mod\`ele hybride lin\'earis\'e VHL \'etudi\'e dans \cite{Holderied:2019}.  
+Afin d'effectuer une \'etude comparative entre le mod\`ele VHL et le mod\`ele cin\'etique original 
+et de tester les sch\'emas num\'eriques, nous nous placerons dans le cas de la dimension $1$ 
+en espace et en vitesse. Ce cadre nous permettra aussi de poser les bases de l'\'etude 
+du cas $1d$-$3v$ pour lequel il est beaucoup plus complexe d'effectuer ces comparaisons et ces tests. Ce type d'\'etude permettra enfin de comprendre le domaine de validité du mod\`ele VHL. 
+
+Pour résoudre numériquement le modèle VHL, nous proposons deux méthodes. La première repose sur le fait que le modèle VHL possède une structure géométrique \cite{Morrison:2017}\cite{Tronci:2010}, \cite{Tronci:2014}. Plus pr\'ecis\'ement, le mod\`ele VHL poss\`de une structure Hamiltonienne non canonique, ce qui signifie que les \'equations peuvent \^etre 
+obtenunes \`a partir d'un crochet de Poisson et d'un Hamiltonien. Cette structure garantit la préservation d'invariants, comme l'énergie totale. L'objectif est d'exploiter cette structure 
+pour construire des sch\'emas num\'eriques qui poss\`edent un bon comportement en temps long. 
+Le sch\'ema utilis\'e est un sch\'ema de type splitting construit \`a partir d'un \emph{splitting} du Hamiltonien. Cette approche permet de combiner astucieusement certains termes du mod\`ele et 
+on est alors amené à résoudre trois sous-systèmes simples (comme dans \cite{Crouseilles:2015}, \cite{Casas:2017}, \cite{Li:2020}). Une propriété remarquable est que chacun des sous-systèmes peut être résolu exactement en temps, l'erreur en temps de la méthode provient donc uniquement de la méthode de \emph{splitting} utilisée. Des méthodes d'ordre arbitraire en temps peuvent être obtenues par composition \cite{Hairer:2006}. 
+La deuxième méthode est basée sur un schéma exponentiel \cite{Hochbruck:2010}, \cite{Hochbruck:2005}, \cite{Lawson:1967a}, \cite{Isherwood:2018}, \cite{Lawson:1967}, \cite{Crouseilles:2019b}. En exploitant le fait que la partie linéaire du modèle VHL peut être résolue exactement et efficacement, on construit alors des schémas de type Lawson d'ordre élevé. Les r\'esultats du chapitre pr\'ec\'edent et de \cite{Crouseilles:2019b} sont donc repris et \'etendus au cas du syst\`eme VHL. 
+
+Pour les deux méthodes en temps (splitting et Lawson), nous avons introduit une technique 
+de pas de temps adaptatif. Pour les m\'ethodes de type Lawson, le cadre des m\'ethode 
+{\it embedded} \cite{Dormand:1980}\cite{Dormand:1978}  \cite{Balac:2013b}\cite{Balac:2013a} 
+permet de calculer l'erreur locale facilement. Dans le cas des m\'ethodes de splitting, 
+nous utiliserons le travail r\'ecent \cite{Blanes:2019} qui propose des m\'ethodes 
+de splitting {\it embedded}. Des m\'ethodes d'ordre $4(3)$ seront utilis\'ees dans le cadre de la 
+comparaison (ordre $3$ et ordre $4$ pour estimer l'erreur locale). Pour l'approximation de l'espace des phases, nous avons choisi une méthode spectrale en espace et une approximation type différences finies d'ordre élevé (ordre 5 en pratique) pour la direction en vitesse. 
+
+La premi\`ere approche (splitting Hamiltonien) comporte des similarit\'es avec les approches propos\'ees dans \cite{Kraus:2017} et \cite{Holderied:2019} ; n\'eanmoins, ces m\'ethodes reposent sur une approximation de type Particle-In-Cell de l'espace des phases alors que nous utilisons des m\'ethodes eul\'eriennes. Ainsi, 
+on est plus dans l'esprit de \cite{Crouseilles:2015}, \cite{Li:2020} o\`u on effectue un splitting 
+puis on discr\'etise alors que dans  \cite{Kraus:2017} et \cite{Holderied:2019}, on discr\'etise l'espace des phases puis on discr\'etise en temps.  
+
+
+Afin de valider les résultats numériques, une étude approfondie des relations de dispersion est effectuée. Ces relations de dispersion sont obtenues par la résolution du modèle VHL lin\'earis\'e.  À l'aide de transformée de Fourier en espace, de transformée de Laplace en temps, il est en effet possible de déterminer très précisément la phase linéaire des simulations de modèle non linéaire ; on peut calculer le taux d'amortissement ou d'instabilité d'un équilibre perturbé \cite{Sonnendrucker:2015}, \cite{Fried:1961}, mais aussi reconstruire le mode fondamental du champ électrique. En plus de fournir des informations pour valider de manière quantitative les codes développés, cette analyse nous permet de faire le lien entre les modèles. En effet, 
+en faisant tendre $T_c$ vers z\'ero dans la relation de dispersion du mod\`ele de Vlasov original, 
+il est possible de retrouver la relation de dispersion du mod\`ele VHL. 
+
+Le chapitre est organisé comme suit : nous présentons tout d'abord la hiérarchie de modèles que nous souhaitons étudier, depuis le modèle cinétique jusqu'au modèle hybride linéarisé. La structure géométrique de ce modèle est exhibée en section \ref{s:geom}. La section \ref{s:scheme} est dédiée à la présentation des méthodes numériques construites pour la résolution du modèle hybride linéarisé. Dans la section \ref{s:dispersion}, les relations de dispersion sont introduites et étudiées. Les sections \ref{s:limit} et \ref{s:compare} contiennent de nombreuses illustrations numériques. La section \ref{s:limit} se concentre sur la comparaison du modèle cinétique avec le modèle hybride linéarisé, alors que dans la section \ref{s:compare}, nous étudions les avantages et les inconvénients des deux méthodes numériques pour le modèle hybride linéarisé.
