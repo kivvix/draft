@@ -3,7 +3,7 @@
   src: url("Georgia_Pro-Regular.woff2") format("woff2");
 }
 body {
-  --grid-color: #3191ae20;
+  --grid-color: #3191ae42;
 
   --local-grid-color: var(--grid-color,rgba(0, 0, 0, .1));
   background-image:
@@ -23,6 +23,16 @@ body {
 main {
   font-size: 14px;
   line-height: 1.7;
+  background: #fff;
+  padding: 1em;
+  padding-bottom: 4.5cm;
+  box-shadow: 1px 1px 1px rgba(0,0,0,0.25);
+  border: 1px solid #bbb;
+  background-image: url("coffee-stain.svg");
+  background-size: 7.75cm 7.75cm;
+  background-position: bottom -1cm right 2.5cm;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
 @font-face {
@@ -37,18 +47,59 @@ main {
 h1, h2, h3, h4, h5, h6 {
   margin-top: initial;
   font-family: 'Reenie Beanie', cursive;
+  background: rgb(255,255,178);
+  transform: rotate(-1deg);
+}
+h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
+  background: inherit;
 }
 
 h1 { font-size: 3em;   }
-h2 { font-size: 2.5em; }
+h2 { font-size: 2.5em; transform: rotate(1deg); }
 h3 { font-size: 2em;   }
 h4 { font-size: 1.7em; }
 h5 { font-size: 1.5em; }
 h6 { font-size: 1.4em; }
 
+h1:target, h2:target, h3:target,h4:target, h5:target, h6:target {
+  animation: none;
+}
+.anchor::before { margin-right: 0.25em; }
+
 h1.title {
   font-size: 5em;
   margin: 0.25em 0;
   line-height: 1;
+  transform: rotate(0);
+  background: transparent;
+}
+
+div.sourceCode {
+  padding: 0.5em;
+}
+
+footer {
+  position: fixed;
+  bottom: 0.1em; right: 0.25em;
+}
+
+div.sourceCode {
+  border-radius: 0.25em;
+}
+pre.sourceCode { position: relative; }
+pre::before {
+  display:inline-block;
+  background:inherit;
+  position: fixed;
+  background: rgb(255,255,178);
+  padding: 0.1em 0.5em;
+  min-width: 3em;
+  color: #242424;
+  /*margin-top: -1em; margin-left: calc(100% - 3em);*/
+  /*transform: rotate(30deg);*/
+  text-align: center;
+}
+pre.cpp::before {
+  content: "C++";
 }
 

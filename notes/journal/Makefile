@@ -5,6 +5,8 @@ PWD_file ?= $(shell pwd $(BUILD_dir)/$(JOURNAL_file))
 
 SRC_CSS = $(wildcard template/style/*.css)
 DES_CSS = $(SRC_CSS:template/style/%.css=$(BUILD_dir)/style/%.css)
+SRC_STYLE_MISC = $(wildcard template/style/*.svg)
+DES_STYLE_MISC = $(SRC_STYLE_MISC:template/style/%=$(BUILD_dir)/style/%)
 SRC_JS = $(wildcard template/js/*.js)
 DES_JS = $(SRC_JS:template/js/%.js=$(BUILD_dir)/js/%.js)
 
@@ -34,7 +36,7 @@ $(BUILD_dir)/img:
 	mkdir -p $@
 
 # build rules ===============
-html: $(BUILD_dir) $(DES_CSS) $(DES_JS) $(SRC_MD) $(DES_IMG) $(BUILD_dir)/$(JOURNAL_file)
+html: $(BUILD_dir) $(DES_CSS) $(DES_STYLE_MISC) $(DES_JS) $(SRC_MD) $(DES_IMG) $(BUILD_dir)/$(JOURNAL_file)
 	@echo "\033[36m> Convert mardown files into a HTML file\033[0m"
 
 #--css=style/boucdoc.css --css=style/pandoc.css
@@ -58,6 +60,10 @@ $(BUILD_dir)/style/%.css: template/style/%.css $(BUILD_dir)/style
 	#cp $< $@
 	@ echo "\033[36mtransform copy $< to $@\033[0m"
 	gsed -r ':a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba' $< | sed '/^\s*$$/d' | gsed -r 's/^[[:blank:]]+//' | tr -d '\n' > $@
+
+$(BUILD_dir)/style/%.svg: template/style/%.svg $(BUILD_dir)/style
+	@echo "\033[35m+ $@\033[0m"
+	cp $< $@
 
 # copy js files from template directory
 $(BUILD_dir)/js/%.js: template/js/%.js $(BUILD_dir)/js
