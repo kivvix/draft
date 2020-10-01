@@ -209,10 +209,11 @@ pre.numberSource a.sourceLine:target { min-width: 100%; }
   right: 0.4rem;
   text-decoration: none;
 }
-.sourceCode a.code-anchor::befor {
-  content: "\260D";
+.sourceCode a.code-anchor::before {
   visibility:hidden;
-  padding: 0 2rem;
+  content: "\260D";
+  color: #eee;
+  padding: 0 1rem;
   font-size: 2rem;
   text-decoration: none;
   font-weight: lighter;

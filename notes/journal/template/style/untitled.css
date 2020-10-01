@@ -103,3 +103,27 @@ pre.cpp::before {
   content: "C++";
 }
 
+blockquote {
+  /*padding: 2em; padding-top: 6px; padding-left: 4em;*/
+  padding: 7px 2em 1em 4em;
+  border: none;
+  font-size: 14px;
+  line-height: 24px;
+  background: #ffffff;
+  background-image: linear-gradient(to right, transparent 0, transparent 3.5em, rgba(255,0,0,0.4) calc(3.5em + 1px) , transparent calc(3.5em + 4px) ), repeating-linear-gradient(to bottom, transparent 0px, transparent 24px, steelblue 25px);
+  box-shadow: 0 0 5px #424242;
+  margin: 1em auto;
+  width: 80%;
+  font-weight: 300;
+}
+blockquote p { margin: 0; }
+
+.content-lightbox img {
+  box-shadow: 0px 0px 11px #424242;
+}
+
+blockquote strong {
+  color: rgba(255,0,0,0.6);
+  font-weight: bold;
+}
+
