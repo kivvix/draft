@@ -45,7 +45,7 @@
 - [[Jiang:1996](+../../miMaS/bibliography/pdf/1996-Jiang.pdf)] **Efficient Implementation of Weighted ENO Schemes** (*1996*)
 	G. Jiang, C. Shu
 	*Journal of Computational Physics*
-- [[Shu:1997]()../../miMaS/bibliography/pdf/1997-Shu.pdf)] **Essentially Non-Oscillatory and Weighted Essentially Non-Oscillatory Schemes for Hyperbolic Conservation Laws** (*1997*)
+- [[Shu:1997](pdf/1997-Shu.pdf)] **Essentially Non-Oscillatory and Weighted Essentially Non-Oscillatory Schemes for Hyperbolic Conservation Laws** (*1997*)
 	C. Shu
 	 
 - [[Xiao:1998](*../../miMaS/bibliography/pdf/1998-Xiao.pdf)] **Instability of electromagnetic R-mode waves in a relativistic plasma** (*1998*)
@@ -60,13 +60,13 @@
 - [[Villani:2001](-../../miMaS/bibliography/pdf/2001-Villani.pdf)] **A review of mathematical topics in collisional kinetic theory** (*2001*)
 	C. Villani
 	 
-- [[Shu:2001]()../../miMaS/bibliography/pdf/2001-Shu.pdf)] **A Survey of Strong Stability Preserving High Order Time Discretizations** (*2001*)
+- [[Shu:2001](pdf/2001-Shu.pdf)] **A Survey of Strong Stability Preserving High Order Time Discretizations** (*2001*)
 	C. Shu
 	 
 - [[Spiteri:2002](-../../miMaS/bibliography/pdf/2002-Spiteri.pdf)] **A New Class of Optimal High-Order Strong-Stability-Preserving Time Discretization Methods** (*2002*)
 	R. J. Spiteri, S. J. Ruuth
 	*Journal on Numerical Analysis*
-- [[Shu:2003]()../../miMaS/bibliography/pdf/2003-Shu.pdf)] **High Order Finite Difference and Finite Volume WENO Schemes and Discontinuous Galerkin Methods for CFD** (*2003*)
+- [[Shu:2003](pdf/2003-Shu.pdf)] **High Order Finite Difference and Finite Volume WENO Schemes and Discontinuous Galerkin Methods for CFD** (*2003*)
 	C. Shu
 	*International Journal of Computational Fluid Dynamics*
 - [[Eberly:2003](,../../miMaS/bibliography/pdf/2003-Eberly.pdf)] **Stability Analysis for Systems of Differential Equations** (*2003*)
@@ -114,7 +114,7 @@
 - [[Bennoune:2008](.../../miMaS/bibliography/pdf/2008-Bennoune.pdf)] **Uniformly stable numerical schemes for the Boltzmann equation preserving the compressible Navier-Stokes asymptotics** (*2008*)
 	M. Bennoune, M. Lemou, L. Mieussens
 	*Journal of Computational Physics*
-- [[Qiu:2008]()../../miMaS/bibliography/pdf/2008-Qiu.pdf)] **A WENO algorithm for the growth of ionized regions at the reionization epoch** (*2008*)
+- [[Qiu:2008](pdf/2008-Qiu.pdf)] **A WENO algorithm for the growth of ionized regions at the reionization epoch** (*2008*)
 	J. Qiu, C. Shu, J. Liu, L. Fang
 	*New Astronomy*
 - [[Despres:2009](-../../miMaS/bibliography/pdf/2009-Despres.pdf)] **Uniform asymptotic stability of Strang's explicit compact schemes for linear advection** (*2009*)
@@ -123,7 +123,7 @@
 - [[Tronci:2010](https://doi.org/10.1088%2F1751-8113%2F43%2F37%2F375501)] **Hamiltonian approach to hybrid plasma models** (*2010*)
 	C. Tronci
 	*Journal of Physics A: Mathematical and Theoretical*
-- [[Qiu:2010]()../../miMaS/bibliography/pdf/2010-Qiu.pdf)] **A conservative high order semi-Lagrangian WENO method for the Vlasov equation** (*2010*)
+- [[Qiu:2010](pdf/2010-Qiu.pdf)] **A conservative high order semi-Lagrangian WENO method for the Vlasov equation** (*2010*)
 	J. Qiu, A. Christlieb
 	*Journal of Computational Physics*
 - [[Hochbruck:2010](/../../miMaS/bibliography/pdf/2010-Hochbruck.pdf)] **Exponential integrators** (*2010*)
@@ -141,10 +141,10 @@
 - [[Gottlieb:2011](pdf/2011-Gottlieb.pdf)] **Strong stability preserving Runge-Kutta and multistep time discretizations** (*2011*)
 	S. Gottlieb, D. Ketcheson, C. Shu
 	 
-- [[Qiu:2011]()../../miMaS/bibliography/pdf/2011-Qiu.pdf)] **Conservative high order semi-Lagrangian finite difference WENO methods for advection in incompressible flow** (*2011*)
+- [[Qiu:2011](pdf/2011-Qiu.pdf)] **Conservative high order semi-Lagrangian finite difference WENO methods for advection in incompressible flow** (*2011*)
 	J. Qiu, C. Shu
 	*Journal of Computational Physics*
-- [[Wu:2011]((../../miMaS/bibliography/pdf/2011-Wu.pdf)] **An Implicit 2-D Shallow Water Flow Model on Unstructured Quadtree Rectangular Mesh** (*2011*)
+- [[Wu:2011](pdf/2011-Wu.pdf)] **An Implicit 2-D Shallow Water Flow Model on Unstructured Quadtree Rectangular Mesh** (*2011*)
 	W. Wu, A. Sánchez, M. Zhang
 	*Journal of Coastral Research*
 - [[Dimarco:2011](-../../miMaS/bibliography/pdf/2011-Dimarco.pdf)] **Exponential Runge-Kutta methods for stiff kinetic equations** (*2011*)
@@ -192,7 +192,7 @@
 - [[Yang:2014](*../../miMaS/bibliography/pdf/2014-Yang.pdf)] **Conservative and non-conservative methods based on Hermite weighted essentially-non-oscillatory reconstruction for Vlasov equations** (*2014*)
 	C. Yang, F. Filbet
 	*Journal of Computational Physics*
-- [[Tao:2014]()../../miMaS/bibliography/pdf/2014-Tao.pdf)] **A numerical study of chorus generation and the related variation of wave intensity using the DAWN code** (*2014*)
+- [[Tao:2014](pdf/2014-Tao.pdf)] **A numerical study of chorus generation and the related variation of wave intensity using the DAWN code** (*2014*)
 	X. Tao
 	*Journal of Geophysical Research: Space Physics*
 - [[Filbet:2014](/../../miMaS/bibliography/pdf/2014-Filbet(1).pdf)] **A hierachy of hybrid numerical methods for multi-scale kinetic equations** (*2014*)
@@ -213,7 +213,7 @@
 - [[Chen:2016](https://doi.org/10.1103/RevModPhys.88.015008)] **Physics of Alfvén waves and energetic particles in burning plasmas** (*2016*)
 	L. Chen, F. Zonca
 	*Rev. Mod. Phys.*
-- [[Li:2016]((../../miMaS/bibliography/pdf/2016-Li.pdf)] **High order finite volume WENO schemes for Euler equations under gravitational fields** (*2016*)
+- [[Li:2016](pdf/2016-Li.pdf)] **High order finite volume WENO schemes for Euler equations under gravitational fields** (*2016*)
 	G. Li, Y. Xing
 	*Journal of Computational Physics*
 - [[Morrison:2017](https://doi.org/10.1063/1.4982054)] **Structure and structure-preserving algorithms for plasma physics** (*2017*)
@@ -243,7 +243,7 @@
 - [[Crouseilles:2018](1../../miMaS/bibliography/pdf/2018-Crouseilles.pdf)] **An exponential integrator for the drift-kinetic model** (*2018*)
 	N. Crouseilles, L. Einkemmer, M. Prugger
 	*Computer Physics Communications*
-- [[Ali:2018]()../../miMaS/bibliography/pdf/2018-Ali.pdf)] **Hybrid algorithm for the Vlasov-Poisson system** (*2018*)
+- [[Ali:2018](pdf/2018-Ali.pdf)] **Hybrid algorithm for the Vlasov-Poisson system** (*2018*)
 	A. Ali
 	 
 - [[Filbet:2018](/../../miMaS/bibliography/pdf/2018-Filbet(1).pdf)] **A hybrid discontinuous Galrkin scheme for mulit-scale kinetic equations** (*2018*)
