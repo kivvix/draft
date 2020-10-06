@@ -138,6 +138,9 @@
 - [[Banks:2010](+../../miMaS/bibliography/pdf/2010-Banks.pdf)] **A New Class of Non-Linear, Finite-Volume Methods for Vlasov Simulation** (*2010*)
 	J. W. Banks, J. A. F. Hittinger
 	*IEEE Transactions on Plasma Science*
+- [[Gottlieb:2011](pdf/2011-Gottlieb.pdf)] **Strong stability preserving Runge-Kutta and multistep time discretizations** (*2011*)
+	S. Gottlieb, D. Ketcheson, C. Shu
+	 
 - [[Qiu:2011]()../../miMaS/bibliography/pdf/2011-Qiu.pdf)] **Conservative high order semi-Lagrangian finite difference WENO methods for advection in incompressible flow** (*2011*)
 	J. Qiu, C. Shu
 	*Journal of Computational Physics*
