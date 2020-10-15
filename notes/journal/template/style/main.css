@@ -24,13 +24,19 @@ body {
 }
 
 main {
-  width: 95%;
+  width: 85%;
   max-width: 800px;
   margin: 0 auto;
 
   /* counter */
   counter-reset: section;
+
 }
+@media only screen and (max-width: 599px) {
+  body { background: none !important; }
+  main { width: 100%; max-width:100%; margin: 0; }
+}
+
 footer {
   text-align: right;
 }

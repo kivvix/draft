@@ -80,12 +80,12 @@ $(BUILD_dir)/img/%.png: sources/img/%.png $(BUILD_dir)/img
 template/after.html: $(DES_JS)
 	@echo "\033[35m+ $@\033[0m"
 	touch $@
-	echo "</main>\n<footer>🥝</footer>\n$(foreach js,$(DES_JS),<script type='text/javascript' src='js/$(notdir js/$(js))' ></script>\n)" > $@
+	echo "</main>\n<footer><a href='#top' >🥝</a></footer>\n$(foreach js,$(DES_JS),<script type='text/javascript' src='js/$(notdir js/$(js))' ></script>\n)" > $@
 
 template/before.html:
 	@echo "\033[35m+ $@\033[0m"
 	touch $@
-	echo "<main>\n" > $@
+	echo "<a id='top' ></a>\n<main>\n" > $@
 
 
 # misc rules ================
@@ -105,7 +105,7 @@ edit:
 # remove all $(BUILD_dir)
 clear:
 	@echo "\033[31m- $@\033[0m"
-	rm -Rf $(BUILD_dir) template/after.html
+	rm -Rf $(BUILD_dir) template/after.html template/before.html
 
 # a test to send automatically to ftp server
 USER = josmassot@perso.univ-rennes1.fr/josselin.massot
