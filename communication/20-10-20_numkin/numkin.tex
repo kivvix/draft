@@ -1,0 +1,450 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{PLB}{rgb}{0.06,0.42,0.60}
+\definecolor{PLBfonce}{rgb}{0.06,0.42,0.60}
+\definecolor{PLBmoyen}{RGB}{176, 216, 232}
+\definecolor{PLBpale}{rgb}{0.94,0.965,0.965}
+
+%\usetheme{PaloAlto}
+\usetheme{Madrid}
+\setbeamercolor{frametitle}{bg=PLB}     %controls the color of the headline
+\setbeamercolor{sidebar}{bg=PLB}        %controls the color of the sidebar
+\setbeamercolor{logo}{bg=PLB!70!black}
+\setbeamercolor{structure}{fg=PLB, bg=PLB!40}
+%\setbeamertemplate{footline}[default]
+
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{bigints}
+\usepackage{mathrsfs}
+
+\definecolor{mblue}{rgb}{0.18,0.21,0.67}
+\definecolor{mgree}{rgb}{0.,0.6,0.}
+\definecolor{dgreen}{rgb}{0.,0.6,0.}
+\definecolor{gris}{rgb}{0.5,0.5,0.5}
+\newcommand{\cmark}{\color{dgreen}\ding{52}}
+\newcommand{\xmark}{\color{red}\ding{55}}
+\newcommand{\bmark}{\color{orange}$\sim$}
+\newcommand{\arrow}{{\color{PLB}\ding{220}}}
+\newcommand{\mbold}[1]{{\textbf{\color{PLB}#1}}}
+
+\usepackage{soul}
+\usepackage{multicol}
+
+\usepackage{amsmath}
+\usepackage{cancel}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\usepackage[backend=bibtex, style=authoryear-comp]{biblatex}
+\usepackage{filecontents}
+\newcommand{\customcite}[1]{\citeauthor{#1} (\citeyear{#1})}
+
+\bibliography{biblio}
+
+\beamertemplatenavigationsymbolsempty
+
+%for backup slides
+\newcommand{\backupbegin}{
+  \newcounter{finalframe}
+  \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+  \setcounter{framenumber}{\value{finalframe}}
+}
+
+
+\AtBeginSection[
+  {\frame<beamer>{\frametitle{Outline}   
+    \tableofcontents[currentsection,currentsection]}}%
+]%
+{
+  \frame<beamer>{ 
+    \frametitle{Outline}   
+    \tableofcontents[currentsection,currentsection]}
+}
+
+\title[NumKin 2020]{Hybrid model of Vlasov-Poisson equations\\ and\\ comparison of Hamiltonian method and Lawson method}
+\author[J. Massot]{A. Crestetto \inst{1} \and N. Crouseilles \inst{2,3} \and \underline{J. Massot} \inst{3,2}}
+%\instute[IRMAR]{\inst{1} LMJL, Université de Nantes \and \inst{2} Inria Rennes -- Bretagne Atlantique \and \inst{3} IRMAR, Université de Rennes}
+\institute[IRMAR]{\inst{1} LMJL, Université de Nantes \and \inst{2} Inria Rennes -- Bretagne Atlantique \and \inst{3} IRMAR, Université de Rennes}
+\date{October 20, 2020}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Modelization}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Vlasov-Poisson-Ampère equations 1D$x$ $\times$ 1D$v$}
+  Our model: non-linear transport in $(x,v)\in \Omega\times\mathbb{R}$ of electron density distribution $f = f(t,x,v)$:
+  $$
+    \begin{cases}
+      \partial_t f + v\partial_x f + E\partial_v f = 0 \\
+      \partial_x E = \int_\mathbb{R} f\,\mathrm{d}v - 1 \\
+      \partial_t E = -\int_{\mathbb{R}}vf\,\mathrm{d}v + \frac{1}{|\Omega|}\int_\Omega\int_\mathbb{R}vf\,\mathrm{d}v\mathrm{d}x
+    \end{cases}
+  $$
+  \mbold{Motivations:}
+  \begin{itemize}
+    \item We want a stiff initial condition : $f = f_c + f_h$ with: $f_c(t=0,x,v) = \delta_0(v)\rho_c(t,x)$
+    \item We want hight order methods in $(x,v)$ \begin{itemize}\item FFT in $x$ + WENO in $v$\end{itemize}
+    \item We want hight order methods in time $t$ \begin{itemize}\item splitting method \emph{vs} exponential integrator\end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The idea}
+  \begin{itemize}
+    \item Grid methods can't have an initial condition like : $f_0(x,v) = \rho_{c,0}(x){\color{red}\delta_0(v)} + f_{h,0}(x,v)$
+    \item Idea is to derive an hybrid model : \begin{itemize}
+      \item Cold plasma approximation: $T_c\approx 0$\ \arrow\ $f_c(x,v) = \rho_c(x)\delta_0(v)$: fluid dynamic for cold particles (no velocity grid)
+      \item Hypothesis on hot particles: $\int_\mathbb{R} f_h(x,v)\,\mathrm{d}v \ll \rho_c(x)$: kinetic dynamic for hot particles (still velocity grid without constrains on cold particles)
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Derivation of hybrid model}
+  $$
+    \begin{cases}
+      \int_\mathbb{R} \begin{pmatrix}1\\v\end{pmatrix} \Big( \partial_t f_c + v\partial_xf_c + E\partial_v f_c = 0 \Big)\,\mathrm{d}v \\
+      \partial_t f_h + v\partial_xf_h + E\partial_vf_h = 0 \\
+      \partial_x E = \int_\mathbb{R}f_c\,\mathrm{d}v + \int_\mathbb{R}f_h\,\mathrm{d}v - 1 \\
+      \partial_t E = - \int_\mathbb{R}vf_c\,\mathrm{d}v - \int_\mathbb{R}vf_h\,\mathrm{d}v + \frac{1}{|\Omega|}\int_\Omega\int_\mathbb{R} v(f_c+f_h)\,\mathrm{d}v\mathrm{d}x
+    \end{cases}
+  $$
+  we note: $$
+    \begin{pmatrix}
+      \rho_c(t,x)\\ \rho_c(t,x)u_c(t,x)
+    \end{pmatrix} = \int_\mathbb{R}\begin{pmatrix}1\\v\end{pmatrix}f_c(t,x,v)\,\mathrm{d}v
+  $$
+  and \emph{cold plasma approximation}: $f_c(t,x,v) = \rho_c(t,x)\delta_{v=u_c(t,x)}(v)$
+\end{frame}
+\begin{frame}{Non-linear hybrid fluid-kinetic model}
+  $$
+    \begin{cases}
+      \partial_t \rho_c + \partial_x(\rho_cu_c) = 0\\
+      \partial_t(\rho_cu_c) + \partial_x(\rho_cu_c^2)-\rho_cE = 0\\
+      \partial_tf_h + v\partial_xf_h + E\partial_vf_h = 0\\
+      \partial_tE = -\rho_cu_c - \int_\mathbb{R}vf_h\,\mathrm{d}v + \frac{1}{|\Omega|}\left(\int_\Omega\int_\mathbb{R}vf_h\,\mathrm{d}v\mathrm{d}x + \int_\Omega\rho_cu_c\,\mathrm{d}x \right)\\
+      \partial_xE = \rho_c + \int_\mathbb{R}f_h\,\mathrm{d}v - 1
+    \end{cases}
+  $$
+  \begin{itemize}
+    \item If initial condition $(u_c^0,f_h^0,E^0,\rho_c^0)$ satisfies Poisson equation \begin{itemize}
+      \item $\partial_x E_0(x) = \rho_c^0(x) + \int_\mathbb{R}f_h^0(x,v)\,\mathrm{d}v$
+    \end{itemize}
+    \item We can compute cold density $\rho_c$: $\forall t\geq0$ with Poisson equation
+    \item In other words, we don't need to compute $\rho_c$ at each time
+  \end{itemize}
+  Now we want an \emph{easy to compute} model, we linearize this non-linear model
+\end{frame}
+
+\begin{frame}{Linearization of hybrid fluid-kinetic model}
+  Linearization near equilibrium :
+  $$
+    \begin{aligned}
+      \rho_c(t,x) =& \rho_c^{(0)}(x) + &\varepsilon\rho_c^{(1)} \\
+         u_c(t,x) =&                   &\varepsilon u_c^{(1)} \\
+           E(t,x) =&                   &\varepsilon E^{(1)} \\
+         f_h(t,x) =& f_h^{(0)}(x)    + &\varepsilon f_h^{(1)} \\
+    \end{aligned}
+  $$
+  We obtain \mbold{Linear hybrid model} (LHM):
+  $$
+    \begin{cases}
+      \partial_tu_c{\color{gris}^{(1)}}  = E{\color{gris}^{(1)}}  {\color{gris}+ \mathcal{O}(\varepsilon)} \\
+      \partial_tE{\color{gris}^{(1)}}    = -\rho_c^{(0)}u_c{\color{gris}^{(1)}} - \int_\mathbb{R}vf_h{\color{gris}^{(1)}}\,\mathrm{d}v {\color{gris}+ \mathcal{O}(\varepsilon)}\\
+      \partial_tf_h{\color{gris}^{(1)}}  + v\partial_xf_h{\color{gris}^{(1)}} + E\partial_vf_h{\color{gris}^{(1)}} = 0 {\color{gris}+ \mathcal{O}(\varepsilon)}
+    \end{cases}
+  $$
+  \mbold{Properties:} conservation of mass and total energy \cmark
+\end{frame}
+
+\section{Hamiltonian structure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Poisson bracket}
+  The bracket define by LHM is:
+  $$
+    \begin{aligned}
+      \{ {\cal F}, {\cal G} \}( u, E, f) &= \int_{\mathbb{R}}\int_{\mathbb{R}} f \left( \partial_x \frac{\delta {\cal F}}{\delta f}\partial_{v} \frac{\delta {\cal G}}{\delta f} - \partial_{v} \frac{\delta {\cal F}}{\delta f}\partial_{x} \frac{\delta {\cal G}}{\delta f}\right)\mathrm{d}v \mathrm{d}x \\
+                           & + \int_{\mathbb{R}}  \left(  \frac{\delta {\cal F}}{\delta{ u}}  \frac{\delta {\cal G}}{\delta{ E}} - \frac{\delta {\cal F}}{\delta{ E}}  \frac{\delta {\cal G}}{\delta{u}} \right) \mathrm{d}x \\
+                           & + \int_{\mathbb{R}}\int_{\mathbb{R}}  \left(  \frac{\delta {\cal F}}{\delta{ E}}  \partial_v f\frac{\delta {\cal G}}{\delta{ f}} - \frac{\delta {\cal G}}{\delta{ E}} \partial_v f \frac{\delta {\cal F}}{\delta{f}} \right) \mathrm{d}{ v}\mathrm{d}x \\
+    \end{aligned}
+  $$
+  and Hamiltonian is define by:
+  $$
+    \mathcal{H} = \underbrace{\frac{1}{2}\int_\mathbb{R}E^2\,\mathrm{d}x}_{\mathcal{H}_{E}}
+                + \underbrace{\frac{1}{2}\int_\mathbb{R}\rho_c^{(0)}u_c^2\,\mathrm{d}x}_{\mathcal{H}_{u_c}}
+                + \underbrace{\frac{1}{2}\int_\Omega\int_\mathbb{R}v^2f_h\,\mathrm{d}v\mathrm{d}x}_{\mathcal{H}_{f_h}}
+  $$
+\end{frame}
+\begin{frame}{Hamiltonian splitting}
+  With $U=\begin{pmatrix}u_c\\E\\f_h\end{pmatrix}$ problem can be write as:
+  $$
+    \begin{aligned}
+      \dot{U} &= \{U,\mathcal{H}\} \\
+              &= \{U,\mathcal{H}_{E}\} + \{U,\mathcal{H}_{u_c}\} + \{U,\mathcal{H}_{f_h}\}
+    \end{aligned}
+  $$
+  We obtain the splitting:
+  \begin{itemize}
+    \item $\dot{U} = \{U,\mathcal{H}_{E}\}$   \hfill \arrow \hfill solution is $\varphi^{[E]}_t(U^0)$
+    \item $\dot{U} = \{U,\mathcal{H}_{u_c}\}$ \hfill \arrow \hfill solution is $\varphi^{[u_c]}_t(U^0)$
+    \item $\dot{U} = \{U,\mathcal{H}_{f_h}\}$ \hfill \arrow \hfill solution is $\varphi^{[f_h]}_t(U^0)$
+  \end{itemize}
+\end{frame}
+
+\section{Numerical scheme}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Splitting method}
+\begin{frame}{Splitting method}
+  \begin{itemize}
+    \item \mbold{Lie:} order 1 method, to compute an approximation at time $t^n$ from initial condition $U^0$: $$U(t^n)\approx U^{n+1} = \varphi^{[E]}_{t^n} \circ \varphi^{[u]}_{t^n} \circ \varphi^{[f]}_{t^n}(U^0)$$
+    \item \mbold{Strang:} order 2 method, for a 3 steps formulation: $$U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} \circ \varphi^{[f]}_{\Delta t} \circ \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} (U^n) $$ \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Strang:1968}
+  \end{thebibliography}
+    \item \mbold{Suzuki:} order 4 method, composition of 5 Strang methods: $$
+      U^{n+1} = \mathcal{S}_{\Delta t}(U^n) = S_{\alpha_1\Delta t} \circ S_{\alpha_2\Delta t} \circ S_{\alpha_3\Delta t} \circ S_{\alpha_2\Delta t} \circ S_{\alpha_1\Delta t} (U^n)
+    $$with: $$ \alpha_1 = \alpha_2 = \frac{1}{4 - \sqrt[3]{4}} \qquad \alpha_3 = \frac{1}{1- 4^{\frac{2}{3}}}$$ \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Suzuki:1990}
+  \end{thebibliography}
+  \end{itemize}
+\end{frame}
+\begin{frame}{Numerical resolution of each step}
+  \only<1>{
+    $$
+      \varphi^{[E]}(U) = \begin{cases}
+        \partial_t u_c = E \\ \partial_t E = 0 \\ \partial_t f_h = -E\partial_vf_h
+      \end{cases}
+       \rightarrow 
+      U^{[E]}_{\Delta t} = \varphi^{[E]}_{\Delta t}(U^n) = \begin{pmatrix}u_c^n + \Delta t E^n \\ E^n \\ f_h(x,v-\Delta t E^n)\end{pmatrix}
+    $$
+    \mbold{Numerical tools:}
+    \begin{itemize}
+      \item Lagrange 5 interpolation to approximate $f_h(x,v-\Delta t E^n)$
+      \item Longest step, so we keep it in the middle of Strang method
+    \end{itemize}
+  }\only<2>{
+    $$
+      \varphi^{[u_c]}(U) = \begin{cases}
+        \partial_t u_c = 0 \\ \partial_t E = -\rho_c^{(0)}u_c \\ \partial_t f_h = 0
+      \end{cases}
+       \rightarrow 
+      U^{[u_c]}_{\Delta t} = \varphi^{[u_c]}_{\Delta t}(U^n) = \begin{pmatrix}u_c^n \\ E^n-\Delta t\rho_c^{(0)}u_c \\ f_h\end{pmatrix}
+    $$
+    \mbold{Numerical tools:}
+    \begin{itemize}
+      \item Fastest step
+    \end{itemize}
+  }\only<3>{
+    $$
+      \begin{aligned}
+      \varphi^{[f_h]}(U) = \begin{cases}
+        \partial_t u_c = 0 \\ \partial_t E = -\int_\mathbb{R}vf_h\,\mathrm{d}v \\ \partial_t f_h = -v\partial_xf_h
+      \end{cases}
+      \rightarrow \\
+      U^{[f_h]}_{\Delta t} = \varphi^{[f_h]}_{\Delta t}(U^n)\!\!=\!\!\begin{pmatrix}u_c^n \\ \hat{E}^n - \frac{i}{k}\int_\mathbb{R}(e^{-ikv\Delta t}-1)\hat{f}_h\,\mathrm{d}v \\ e^{-ikv\Delta t}\hat{f}_h^n\end{pmatrix}
+      \end{aligned}
+    $$
+    \mbold{Numerical tools:}
+    \begin{itemize}
+      \item FFT and iFFT during this step
+      \item Fast with \texttt{fftw} if you reuse allocated memory
+    \end{itemize}
+  }
+\end{frame}
+
+\subsection{Lawson method}
+\begin{frame}{Lawson method}
+  $$
+    \partial_t \underbrace{\begin{pmatrix}
+      u_c\\E\\\hat{f}_h
+    \end{pmatrix}}_{U} + \underbrace{\begin{pmatrix}
+      0 & -1 & 0 \\ \rho_c^{(0)} & 0 & 0 \\ 0 & 0 & ikv
+    \end{pmatrix}}_{A} \begin{pmatrix}
+      u_c\\E\\\hat{f}_h
+    \end{pmatrix} + \underbrace{\begin{pmatrix}
+      0\\\int_\mathbb{R}vf_h\,\mathrm{d}v \\\widehat{E\partial_vf_h}
+    \end{pmatrix}}_{F(U)} = 0
+  $$
+  We rewrite as:
+  $$
+    \partial_t\underbrace{\left(e^{tA}U\right)}_{V} + e^{tA}N(\underbrace{U}_{e^{-tA}V}) = 0
+  $$
+  and now we solve with a RK method: $\partial_tV = -e^{tA}N(e^{-tA}V)$ and next rewrite with the $U$ variable. For example with Lawson Euler method:
+  $$
+    V(t^n+\Delta t) \approx V^{n+1} = V^n - \Delta t e^{-t^nA}F(e^{t^nA}V^n)
+  $$
+  or as an expression of $U$:
+  $$
+    U^{n+1} = e^{\Delta t A}U^n - \Delta te^{-\Delta t A}F(U^n)
+  $$
+  \arrow\ $e^{tA}$ has an explicit form \cmark
+\end{frame}
+
+\begin{frame}{Space integrators with Lawson method}
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item FFT in $x$ direction
+    \item WENO5 in $v$ direction to approximate $\widehat{E\partial_vf_h}$
+  \end{itemize}
+
+  \mbold{CFL:} Lawson(DP4(3))--WENO5 : $\Delta t\leq\frac{\sigma}{\|E^n\|_\infty}$, with $\sigma=1.433$
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Crouseilles:2019b}
+  \end{thebibliography}
+\end{frame}
+
+\section{Adaptive time step methods}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Main idea of adaptive time step methods (error estimate)}
+  For a generic PDE $\partial_t u = f(t,u(t))$, adaptive time step method needs 2 numerical estimations of solution $u(t^{n+1})$ of different order, $p$ and $p+1$:
+  $$
+    u^{n_1}_{[p]} = u(t^{n_1}) + \mathcal{O}\left(\Delta t^{p+1}\right) \qquad u^{n_1}_{[p+1]} = u(t^{n_1}) + \mathcal{O}\left(\Delta t^{p+2}\right)
+  $$
+  Estimate of the local error:
+  $$
+    L^{n+1}_{[p]} = \left| u^{n+1}_{[p+1]} - u^{n+1}_{[p]} \right|
+  $$
+  If $L^{n+1}_{[p]} > \text{tol}$: we reject the step and  start again from time $t^n$. Else we accept the step. In two cases, the optimal new time step size is:
+  $$
+    \Delta t_\text{opt} = \sqrt[p]{\frac{\text{tol}}{ L^{n+1}_{[p]}}}\Delta t^n
+  $$
+  In practice we don't want volatile time step: $\Delta t^{n+1} = \max\left(0.5\Delta t^n,\min\left(2\Delta t^n,\Delta t_\text{opt}\right)\right)$
+\end{frame}
+
+\subsection{Splitting method}
+\begin{frame}{Adaptive time step method for splitting method}
+  For the Suzuki splitting method:
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Blanes:2019}
+  \end{thebibliography}
+  $$
+    U^{n+1}_{[4]} = \mathcal{S}_{\Delta t}(U^n)
+      = S_{\alpha_1\Delta t}
+        \circ \underbrace{ S_{\alpha_2\Delta t}
+        \circ \underbrace{ S_{\alpha_3\Delta t}
+        \circ \underbrace{ S_{\alpha_2\Delta t}
+        \circ \underbrace{ S_{\alpha_1\Delta t} (U^n). }_{U^{(1)}}
+                                                      }_{U^{(2)}}
+                                                      }_{U^{(3)}}
+                                                      }_{U^{(4)}}
+  $$
+  We compute an order 3 approximation from $U^n$ and $U^{(s)}$, $s=1,2,3,4$ :
+  $$
+    U^{n+1}_{[3]} = -U^n + w_1(U^{(1)}+U^{(4)}) + w_2(U^{(2)}+U^{(3)})
+  $$
+  with:
+  $$
+    w_1 = \frac{g_2(1-g_2)}{g_1(g_1-1)-g_2(g_2-1)},\quad w_2 = 1-w_1, \quad \begin{aligned}g_1 &= \alpha_1\\ g_2&=\alpha_1+\alpha_2\end{aligned}
+  $$
+  and $L^{n}_{[3]} = \left\| U^{n+1}_{[4]} - U^{n+1}_{[3]} \right\|_2$
+\end{frame}
+
+
+\subsection{Lawson method}
+\begin{frame}{Adaptive time step method for Lawson method}
+  Lawson methods are built on Runge-Kutta method, embedded Lawson method are write with an underlying embedded Runge-Kutta method.
+
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Dormand:1978}
+  \end{thebibliography}
+  With DP4(3) (Dormand-Prince method of order 4, with embedded 3 method):
+  $$
+    \begin{array}{c|ccccc}
+      0           & \\
+      \frac{1}{2} & \frac{1}{2} \\
+      \frac{1}{2} & 0           & \frac{1}{2} \\
+      1           & 0           & 0           & 1           \\
+    \hline
+      1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} \\
+    \hline
+                  & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{2}{30} & \frac{1}{10}
+    \end{array}
+  $$
+  We compute on order 3 approximation from $U^n$, $U^{(s)}$, $s=1,2,3,4$ done by the last line of Butcher tableau.
+
+  and $L^{n}_{[3]} = \left\| U^{n+1}_{[4]} - U^{n+1}_{[3]} \right\|_2$
+\end{frame}
+
+\section{Relation of dispersion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Sketch of computing}
+  We linearize around equilibrium state:
+  \begin{itemize}
+    \item for kinetic model $$U_\text{eq} = f_\text{eq} = \mathcal{M}_{\rho_c,0,T_c}(v) + \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v)$$
+    \item for LHM $$
+      \begin{aligned}
+        U^\text{eq} &= \left(u_{c,\text{eq}},E_\text{eq},f_{h,\text{eq}}\right)^T \\
+                    &= \left(0,0, \mathcal{M}_{^\alpha/_2,v_0,1} + \mathcal{M}_{^\alpha/_2,-v_0,1}\right)^T
+      \end{aligned}
+    $$
+  \end{itemize}
+  with:
+  $$
+    U = U_\text{eq} + \epsilon U_1
+  $$
+
+  We obtain 2 relations of dispersion:
+  \begin{itemize}
+    \item One for kinetic model, depends on $T_c$: $D^K_{[T_c]}(k,\omega)$
+    \item One for linear hybrid model (LHM): $D^{LHM}(k,\omega)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Relations of dispersion}
+  \begin{itemize}
+    \item \mbold{Kinetic model:}$$\begin{aligned}
+    \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!D^K_{[T_c]}(k,\omega) = 1 - \frac{1}{k^2}\left[\vphantom{\frac{}{\sqrt{}}}\right. & -\frac{1-\alpha}{T_c}\left( 1 + \frac{1}{\sqrt{2T_c}}\frac{\omega}{k}Z\left( \frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right) \right) \\
+                                          & -\frac{\alpha}{2}\left( 1 + \frac{1}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)Z\left(\!\!\frac{1}{\sqrt{2}}\!\!\left(\frac{\omega}{k}-v_0\right)\right) \right) \\
+                                          & \left. -\frac{\alpha}{2}\left( 1 + \frac{1}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)Z\left(\!\!\frac{1}{\sqrt{2}}\!\!\left(\frac{\omega}{k}+v_0\right)\right) \right)  \right]
+  \end{aligned}$$
+  \item \mbold{LHM:}$$
+  \begin{aligned}
+      \!\!\!\!\!\!\!\!\!\!\!\!\!\!\!D^{LHM}(k,\omega)
+    &=1-\frac{1}{k^2}\left[\left(1-\alpha\right)\frac{k^2}{\omega^2}-\frac{\alpha}{2}\left(1+\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)Z\left(\!\!\frac{1}{\sqrt{2}}\!\!\left(\frac{\omega}{k}-v_0\right)\right)\right)\right.\nonumber\\
+    &~~~~~~~~~~~~~~~\left.-\frac{\alpha}{2}\left(1+\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)Z\left(\!\!\frac{1}{\sqrt{2}}\!\!\left(\frac{\omega}{k}+v_0\right)\right)\right)\right]
+  \end{aligned}
+  $$
+
+  We have: $$\lim_{T_c\to 0}D^K_{[T_c]}(k,\omega) = D^{LHM}(k,\omega)\quad\text{\cmark}$$
+  \end{itemize}
+\end{frame}
+\begin{frame}{Slope of two relations of dispersion}
+  \begin{figure}\centering
+    \includegraphics[height=0.8\textheight]{img/limit_slope_alpha.png}
+  \end{figure}
+\end{frame}
+
+\section{Numerical results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{}
+  
+\end{frame}
+
+
+\begin{frame}[t]
+  \vfill
+  {\usebeamerfont{title} Thank you for your attention}
+  \vfill
+\end{frame}
+
+\end{document}
+
