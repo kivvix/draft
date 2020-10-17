@@ -82,6 +82,15 @@
   \titlepage
 \end{frame}
 
+%\begin{frame}{Introduction}
+%  
+%  \mbold{Goal:}
+%  \begin{itemize}
+%    \item Check numerically the validity of the hybrid model vesrus the fill kinetic model of Vlasov-Poisson equations
+%
+%  \end{itemize}
+%\end{frame}
+
 \begin{frame}{Outline}
   \tableofcontents
 \end{frame}
@@ -110,8 +119,12 @@
   \begin{itemize}
     \item Grid methods can't have an initial condition like : $f_0(x,v) = \rho_{c,0}(x){\color{red}\delta_{v-u_c}(v)} + f_{h,0}(x,v)$
     \item Idea is to derive an hybrid model : \begin{itemize}
-      \item Cold plasma approximation: $T_c\approx 0$\ \arrow\ $f_c(t,x,v) = \rho_c(t,x)\delta_{v-u_c(t,x)}(v)$: fluid dynamic for cold particles (no velocity grid)
-      \item Hypothesis on hot particles: $\int_\mathbb{R} f_h(t,x,v)\,\mathrm{d}v \ll \rho_c(t,x)$: kinetic dynamic for hot particles (still velocity grid without constraints on cold particles)
+      \item Cold plasma approximation: $\!\!\frac{T_c}{T_h}\! \ll\! 1$\ \arrow\ $f_c(t,x,v)\! =\! \rho_c(t,x)\delta_{v-u_c(t,x)}(\!v\!)$: \begin{itemize}
+        \item Fluid dynamic for cold particles (no velocity grid)
+      \end{itemize}
+      \item Hypothesis on hot particles: $\int_\mathbb{R} f_h(t,x,v)\,\mathrm{d}v \ll \rho_c(t,x)$: \begin{itemize}
+        \item Kinetic dynamic for hot particles
+      \end{itemize}
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -143,10 +156,11 @@
     \end{cases}
   $$
   \begin{itemize}
-    \item The initial condition $(u_c^0,f_h^0,E^0,\rho_c^0)$ satisfies Poisson equation \begin{itemize}
-      \item $\partial_x E_0(x) = \rho_c^0(x) + \int_\mathbb{R}f_h^0(x,v)\,\mathrm{d}v$
-    \end{itemize}
-    \item We can compute cold density $\rho_c$: $\forall t\geq0$ with Poisson equation
+    \item If Poisson equation satisfied initially, the equation is propagated with time.
+    %\item The initial condition $(u_c^0,f_h^0,E^0,\rho_c^0)$ satisfies Poisson equation \begin{itemize}
+    %  \item $\partial_x E_0(x) = \rho_c^0(x) + \int_\mathbb{R}f_h^0(x,v)\,\mathrm{d}v$
+    %\end{itemize}
+    \item We can compute cold density $\rho_c$ $\forall t\geq0$ with Poisson equation
     \item In other words, we don't need to compute $\rho_c$ at each time
   \end{itemize}
   %Now we want an \emph{easy to compute} model, we linearize this non-linear model
@@ -157,10 +171,10 @@
   Linearization near equilibrium :
   $$
     \begin{aligned}
-      \rho_c(t,x)   =& \rho_c^{(0)}(x) + &\varepsilon\rho_c^{(1)}(t,x) \\
-         u_c(t,x)   =&                   &\varepsilon u_c^{(1)}(t,x) \\
-           E(t,x)   =&                   &\varepsilon E^{(1)}(t,x) \\
-         f_h(t,x,v) =& f_h^{(0)}(v)    + &\varepsilon f_h^{(1)}(t,x,v) \\
+      \rho_c(t,x)   =& \rho_c^{(0)}(x) & + & \varepsilon \rho_c^{(1)}(t,x) \\
+         u_c(t,x)   =&                 &   & \varepsilon  u_c^{(1)}(t,x) \\
+           E(t,x)   =&                 &   & \varepsilon  E^{(1)}(t,x) \\
+         f_h(t,x,v) =& f_h^{(0)}(v)    & + & \varepsilon  f_h^{(1)}(t,x,v) \\
     \end{aligned}
   $$
   We obtain \mbold{Linear hybrid model} (LHM):
@@ -180,7 +194,7 @@
 \end{frame}
 
 \begin{frame}{Poisson bracket}
-  LHM have an hamiltonian structure. The Poisson bracket is define by:
+  LHM has an hamiltonian structure. The Poisson bracket is define by:
   $$
     \begin{aligned}
       \{ {\cal F}, {\cal G} \}( u, E, f) &= \int_{\mathbb{R}}\int_{\mathbb{R}} f \left( \partial_x \frac{\delta {\cal F}}{\delta f}\partial_{v} \frac{\delta {\cal G}}{\delta f} - \partial_{v} \frac{\delta {\cal F}}{\delta f}\partial_{x} \frac{\delta {\cal G}}{\delta f}\right)\mathrm{d}v \mathrm{d}x \\
@@ -200,9 +214,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Hamiltonian splitting}
-  To preserve the hamiltonian structure, we would like implement a splitting method inspired a hamiltonian splitting.
+  To preserve the hamiltonian structure, we would like to implement a splitting method inspired by a hamiltonian splitting.
 
-  With $U=\begin{pmatrix}u_c\\E\\f_h\end{pmatrix}$ problem can be write as:
+  With $U=\begin{pmatrix}u_c\\E\\f_h\end{pmatrix}$ problem can be written as:
   $$
     \begin{aligned}
       \dot{U} &= \{U,\mathcal{H}\} \\
@@ -215,13 +229,14 @@
     \item $\dot{U} = \{U,\mathcal{H}_{u_c}\}$ \hfill \arrow \hfill solution is $\varphi^{[u_c]}_t(U^0)$
     \item $\dot{U} = \{U,\mathcal{H}_{f_h}\}$ \hfill \arrow \hfill solution is $\varphi^{[f_h]}_t(U^0)$
   \end{itemize}
+  Hamiltonian structure paves the way of a splitting method.
 \end{frame}
 
 
 \subsection{Splitting method}
 \begin{frame}{Splitting method}
   \begin{itemize}
-    \item \mbold{Lie:} order 1 method, to compute an approximation at time $t^n$: $$U(t^{n+1})\approx U^{n+1} = \varphi^{[E]}_{\Delta t} \circ \varphi^{[u_c]}_{\Delta t} \circ \varphi^{[f_h]}_{\Delta t}(U^n)$$
+    \item \mbold{Lie:} order 1 method, composition of substeps: $$U(t^{n+1})\approx U^{n+1} = \varphi^{[E]}_{\Delta t} \circ \varphi^{[u_c]}_{\Delta t} \circ \varphi^{[f_h]}_{\Delta t}(U^n)$$
     \item \mbold{Strang:} order 2 method, for a 3 steps formulation: $$U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u_c]}_{\Delta t/2} \circ \varphi^{[f_h]}_{\Delta t} \circ \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u_c]}_{\Delta t/2} (U^n) $$ \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
     \bibitem{a} \customcite{Strang:1968}
@@ -243,12 +258,12 @@
         \partial_t u_c = E \\ \partial_t E = 0 \\ \partial_t f_h = -E\partial_vf_h
       \end{cases}
        \rightarrow 
-      \varphi^{[E]}_{\Delta t}(U^n) = \begin{pmatrix}u_c^n + \Delta t E^n \\ E^n \\ f_h(x,v-\Delta t E^n)\end{pmatrix}
+      \varphi^{[E]}_{\Delta t}(U^n) = \begin{pmatrix}u_c^n + \Delta t E^n \\ E^n \\ f_h^n(x,v-\Delta t E^n)\end{pmatrix}
     $$
     \mbold{Numerical tools:}
     \begin{itemize}
       \item Lagrange 5 interpolation to approximate $f_h(x,v-\Delta t E^n)$
-      \item Longest step, so we keep it in the middle of Strang method
+      \item More costly step, so we keep it in the middle of Strang method
     \end{itemize}
   }\only<2>{
     $$
@@ -294,15 +309,15 @@
   $$
   We rewrite as:
   $$
-    \partial_t\underbrace{\left(e^{tA}U\right)}_{V} + e^{tA}N(\underbrace{U}_{e^{-tA}V}) = 0
+    \partial_t\underbrace{\left(e^{tA}U\right)}_{V} + e^{tA}F(\underbrace{U}_{e^{-tA}V}) = 0
   $$
-  and now we solve with a RK method: $\partial_tV = -e^{tA}N(e^{-tA}V)$ and next rewrite with the $U$ variable. For example with Lawson Euler method:
+  and now we solve with a RK method: $\partial_tV = -e^{tA}F(e^{-tA}V)$ and next rewrite with the $U$ variable. For example with Lawson Euler method:
   $$
-    V(t^n+\Delta t) \approx V^{n+1} = V^n - \Delta t e^{-t^nA}F(e^{t^nA}V^n)
+    V(t^n+\Delta t) \approx V^{n+1} = V^n - \Delta t e^{t^nA}F(e^{-t^nA}V^n)
   $$
   or as an expression of $U$:
   $$
-    U^{n+1} = e^{\Delta t A}U^n - \Delta te^{-\Delta t A}F(U^n)
+    U^{n+1} = e^{-\Delta t A}U^n - \Delta te^{-\Delta t A}F(U^n)
   $$
   %\arrow\ $e^{tA}$ has an explicit form \cmark
 \end{frame}
@@ -334,7 +349,7 @@
   $$
     L^{n+1}_{[p]} = \left| u^{n+1}_{[p+1]} - u^{n+1}_{[p]} \right|
   $$
-  If $L^{n+1}_{[p]} > \text{tol}$: we reject the step and  start again from time $t^n$. Else we accept the step. In two cases, the optimal new time step size is:
+  If $L^{n+1}_{[p]} > \text{tol}$: we reject the step and  start again from time $t^n$. Else we accept the step. In both cases, the optimal new time step is:
   $$
     \Delta t_\text{opt} = \sqrt[p]{\frac{\text{tol}}{ L^{n+1}_{[p]}}}\Delta t^n
   $$
@@ -373,7 +388,7 @@
 
 \subsection{Lawson method}
 \begin{frame}{Adaptive time step method for Lawson method}
-  Lawson methods are built on Runge-Kutta method, embedded Lawson method are write with an underlying embedded Runge-Kutta method.
+  Lawson methods are built on Runge-Kutta method, embedded Lawson method are written with an underlying embedded Runge-Kutta method.
 
   \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
@@ -394,7 +409,7 @@
   $$
   We compute a 3\textsuperscript{rd} order approximation from $U^n$, $U^{(s)}$, $s=1,2,3,4$ done by the last line of Butcher tableau.
 
-  and $L^{n}_{[3]} = \left\| U^{n+1}_{[4]} - U^{n+1}_{[3]} \right\|_2$
+  And $L^{n}_{[3]} = \left\| U^{n+1}_{[4]} - U^{n+1}_{[3]} \right\|_2$
 \end{frame}
 
 \section{Relation of dispersion}
@@ -416,6 +431,7 @@
     \item One for kinetic model, depends on $T_c$: $D^K_{[T_c]}(k,\omega)$
     \item One for linear hybrid model (LHM): $D^{LHM}(k,\omega)$
   \end{itemize}
+  $D^{LHM}(k,\omega)$ is compatible with $D^K_{[T_c]}(k,\omega)$ \cmark
 \end{frame}
 
 \begin{frame}{Relations of dispersion}
@@ -453,7 +469,7 @@
   We have: $$\lim_{T_c\to 0}D^K_{[T_c]}(k,\omega) = D^{LHM}(k,\omega)\quad\text{\cmark}$$
 \end{frame}
 
-\begin{frame}{Slope of two relations of dispersion}
+\begin{frame}{Slope of both relations of dispersion}
   \begin{figure}\centering
     \includegraphics[height=0.8\textheight]{img/limit_slope_alpha.png}
   \end{figure}
@@ -477,7 +493,7 @@
 \end{frame}
 
 \begin{frame}{Validation with relations of dispersion}
-  Relations of dispersion get the electric energy approximation in the linear phase
+  Relations of dispersion give the electric energy approximation in the linear phase
 
   Perturbation $\epsilon=10^{-4}$, $\alpha=0.1$, $N_x = 135$, $N_v = 1200$, $\Delta t = 0.5\Delta v$
   \only<1>{
@@ -538,11 +554,20 @@
 
   \mbold{Future works}
   \begin{itemize}
-    \item Extension to 1D$x$ -- 3D$v$ \begin{itemize}
+    \item Extension to 1D$x$ -- 3D$v$, same framework of {\color{PLB}\customcite{Holderied:2020}}\begin{itemize}
       \item Splitting into 6 sub-steps \arrow Strang in 11 steps
       \item Lawson methods should be more efficient
+      \item Compare with PIC method
     \end{itemize}
   \end{itemize}
+\end{frame}
+
+\begin{frame}[t]
+  First results with splitting method for 1D$x$ -- 3D$v$
+  \begin{figure}\centering
+    \includegraphics[height=0.8\textheight]{img/energy3dv.png}
+  \end{figure}
+  For Lawson method, I work on code generator from \texttt{sympy} expressions
 \end{frame}
 
 \begin{frame}[t]
