@@ -35,6 +35,7 @@
 
 \usepackage{soul}
 \usepackage{multicol}
+\usepackage{multirow}
 
 \usepackage{amsmath}
 \usepackage{cancel}
@@ -160,8 +161,8 @@
     %\item The initial condition $(u_c^0,f_h^0,E^0,\rho_c^0)$ satisfies Poisson equation \begin{itemize}
     %  \item $\partial_x E_0(x) = \rho_c^0(x) + \int_\mathbb{R}f_h^0(x,v)\,\mathrm{d}v$
     %\end{itemize}
-    \item We can compute cold density $\rho_c$ $\forall t\geq0$ with Poisson equation
-    \item In other words, we don't need to compute $\rho_c$ at each time
+    %\item We can compute cold density $\rho_c$ $\forall t\geq0$ with Poisson equation
+    %\item In other words, we don't need to compute $\rho_c$ at each time
   \end{itemize}
   %Now we want an \emph{easy to compute} model, we linearize this non-linear model
   Following physicists framework, we linearize this non-linear model
@@ -214,7 +215,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Hamiltonian splitting}
-  To preserve the hamiltonian structure, we would like to implement a splitting method inspired by a hamiltonian splitting.
+  We would like to implement a splitting method inspired by a hamiltonian splitting.
 
   With $U=\begin{pmatrix}u_c\\E\\f_h\end{pmatrix}$ problem can be written as:
   $$
@@ -237,7 +238,7 @@
 \begin{frame}{Splitting method}
   \begin{itemize}
     \item \mbold{Lie:} order 1 method, composition of substeps: $$U(t^{n+1})\approx U^{n+1} = \varphi^{[E]}_{\Delta t} \circ \varphi^{[u_c]}_{\Delta t} \circ \varphi^{[f_h]}_{\Delta t}(U^n)$$
-    \item \mbold{Strang:} order 2 method, for a 3 steps formulation: $$U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u_c]}_{\Delta t/2} \circ \varphi^{[f_h]}_{\Delta t} \circ \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u_c]}_{\Delta t/2} (U^n) $$ \begin{thebibliography}{9}
+    \item \mbold{Strang:} order 2 method, for a 3 steps formulation: $$U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[f_h]}_{\Delta t/2} \circ \varphi^{[u_c]}_{\Delta t/2} \circ \varphi^{[E]}_{\Delta t} \circ \varphi^{[u_c]}_{\Delta t/2} \circ \varphi^{[f_h]}_{\Delta t/2} (U^n) $$ \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
     \bibitem{a} \customcite{Strang:1968}
   \end{thebibliography}
@@ -329,7 +330,7 @@
     \item WENO5 in $v$ direction to approximate $\widehat{E\partial_vf_h}$
   \end{itemize}
 
-  \mbold{CFL:} Lawson(DP4(3))--WENO5 : $\Delta t\leq\frac{\sigma}{\|E^n\|_\infty}$, with $\sigma=1.433$
+  \mbold{CFL:} Lawson(RK(4,4))--WENO5 : $\Delta t\leq\frac{\sigma}{\|E^n\|_\infty}$, with $\sigma=1.433$
   \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
     \bibitem{a} \customcite{Crouseilles:2019b}
@@ -395,18 +396,19 @@
     \bibitem{a} \customcite{Dormand:1978}
   \end{thebibliography}
   With DP4(3) (Dormand-Prince method of order 4, with embedded 3 method):
-  $$
-    \begin{array}{c|ccccc}
-      0           & \\
-      \frac{1}{2} & \frac{1}{2} \\
-      \frac{1}{2} & 0           & \frac{1}{2} \\
-      1           & 0           & 0           & 1           \\
-    \hline
-      1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} \\
-    \hline
-                  & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{2}{30} & \frac{1}{10}
+  \[
+    \begin{array}{c|cccccc}
+      0           &             &             &             &             &                & \multirow{5}{*}{\left.\phantom{\begin{matrix}0\\1\\2\\3\\4\end{matrix}}\right\}\text{Classical RK(4,4)}} \\
+      \frac{1}{2} & \frac{1}{2} &             &             &             &                & \\
+      \frac{1}{2} & 0           & \frac{1}{2} &             &             &                & \\
+      1           & 0           & 0           & 1           &             &                & \\
+    \cline{1-6}
+      1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} &                &\\
+    \cline{1-6}
+                  & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{2}{30} & \frac{1}{10}  & 
     \end{array}
-  $$
+  \]
+            %\left.\phantom{ \begin{pmatrix}1\\2\\3\\4\\5 \end{pmatrix}}\right\)
   We compute a 3\textsuperscript{rd} order approximation from $U^n$, $U^{(s)}$, $s=1,2,3,4$ done by the last line of Butcher tableau.
 
   And $L^{n}_{[3]} = \left\| U^{n+1}_{[4]} - U^{n+1}_{[3]} \right\|_2$
@@ -431,7 +433,6 @@
     \item One for kinetic model, depends on $T_c$: $D^K_{[T_c]}(k,\omega)$
     \item One for linear hybrid model (LHM): $D^{LHM}(k,\omega)$
   \end{itemize}
-  $D^{LHM}(k,\omega)$ is compatible with $D^K_{[T_c]}(k,\omega)$ \cmark
 \end{frame}
 
 \begin{frame}{Relations of dispersion}
@@ -479,8 +480,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}{Validation of hybrid model}
-  $k=0.5$, $x\in[0,\frac{2\pi}{k}]$, $v\in[-8,8]$, $v_0 = 4$ \\
-  $N_x = 135$, $N_v = 1200$, $\Delta t = 0.5\Delta v$ for LHM and kinetic
+  $\alpha = 0.2$,$\epsilon=10^{-2}$, $k=0.5$, $x\in[0,\frac{2\pi}{k}]$, $v\in[-12,12]$, $v_0 = 4$ \\
+  $N_x = 135$, $N_v = 1200, $, $\Delta t = 0.5\Delta v$ for kinetic and LHM
   \only<1>{
     \begin{figure}\centering
       \includegraphics[width=0.8\textwidth]{img/limit_ee_Tf300.png}
@@ -495,7 +496,7 @@
 \begin{frame}{Validation with relations of dispersion}
   Relations of dispersion give the electric energy approximation in the linear phase
 
-  Perturbation $\epsilon=10^{-4}$, $\alpha=0.1$, $N_x = 135$, $N_v = 1200$, $\Delta t = 0.5\Delta v$
+  Perturbation $\epsilon=10^{-4}$, $\alpha=0.1$, $N_x = 135$, $N_v = 512$, $\Delta t = 0.5\Delta v$
   \only<1>{
     \begin{figure}\centering
       \includegraphics[width=0.8\textwidth]{img/limit_ee_Tf200_eps10m4.png}
@@ -508,8 +509,10 @@
 \end{frame}
 
 \begin{frame}{Convergence of kinetic model to linear hybrid model}
-  $\alpha = 0.1$ \\
-  $N_x = 135$, $N_v = 1200$, $\Delta t = 0.5\Delta v$ for LHM and kinetic
+  $\alpha = 0.1$, $v\in[-12,12]$ \\
+  $N_x = 135$, $N_v = 715, 764, 826, 1131$, $\Delta t = 0.5\Delta v$ for kinetic with $T_c = 0.2, 0.175, 0.15, 0.08$
+
+  $N_v = 256$ for LHM
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{figure}\centering
@@ -525,6 +528,8 @@
 \end{frame}
 
 \begin{frame}{Test adaptive time step method}
+  $N_x = 81$, $N_v = 128$
+
   $\text{tol}=2\cdot10^{-4}$, $L = \| U^{n+1}_{[4]} - U^{n+1}_{[3]} \|_2$ is the local error
   \only<1>{
     \begin{figure}\centering
@@ -575,6 +580,24 @@
   {\usebeamerfont{title} Thank you for your attention}
   \vfill
 \end{frame}
+
+\appendix
+\backupbegin
+
+\begin{frame}[plain]
+  \vspace{0.65\textwidth}
+  \hfill\footnotesize{Backup}
+\end{frame}
+%-------%
+\begin{frame}{CPU time comparaison}
+  \begin{figure}\centering
+    \includegraphics[height=0.8\textheight]{img/cputime.png}
+  \end{figure}
+\end{frame}
+
+
+%-------%
+\backupend
 
 \end{document}
 
