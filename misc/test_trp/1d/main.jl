@@ -249,15 +249,15 @@ end
 function launcher(label::String,func,X::Vector{T},Tf::T,p::Params{T}) where{T}
   print("\033[94m>\033[0m $label\n")
   u0 = func(X)
-  export_data("init_$label.dat",X,u0)
+  export_data("results/init_$label.dat",X,u0)
 
   print("  \033[95m+\033[0m cd2\n")
   un = @reliable_digits simu(rk33,cd2,Tf,Float64.(u0),p)
-  export_data_tuple("end_cd2_$label.dat",X,un)
+  export_data_tuple("results/end_cd2_$label.dat",X,un)
 
   print("  \033[95m+\033[0m weno\n")
   un = @reliable_digits simu(rk33,weno,Tf,Float64.(u0),p)
-  export_data_tuple("end_weno_$label.dat",X,un)
+  export_data_tuple("results/end_weno_$label.dat",X,un)
 end
 
 function gate(X::Vector{T}) where{T}
@@ -308,7 +308,7 @@ function main()
   dx = Float64(1.0/N)
   v = Vector{Float64}(fill(1.0,N))
   p = Params{Float64}(0.1*dx,dx,v)
-  Tf = .1
+  Tf = 1.0
 
   #--- cos -------------------------------
   launcher("cos",cosinus,X,Tf,p)
