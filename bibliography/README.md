@@ -273,7 +273,7 @@
 - [[Banks:2019](pdf/2019-Banks(1).pdf)] **High order accurate conservative finite difference methods for Vlasov equations in 2D+2V** (*2019*)
 	J. W. Banks, A. Gianesini. Odu, R. Berger, T. Chapman, W. Arrighi, S. Brunner
 	*SIAM Journal on Scientific Computing*
-- [[Casas:2020](https://www.mdpi.com/2227-7390/8/4/533)] **Composition Methods for Dynamical Systems Separable into Three Parts** (*2020*)
+- [[Casas:2020](pdf/2020-Casas.pdf)] **Composition Methods for Dynamical Systems Separable into Three Parts** (*2020*)
 	F. Casas, A. Escorihuela-Tomàs
 	*Mathematics*
 - [[Holderied:2020](pdf/2020-Holderied(1).pdf)] **Structure-preserving vs. standard particle-in-cell methods: The case of an electron hybrid model** (*2020*)
