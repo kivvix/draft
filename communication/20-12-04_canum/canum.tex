@@ -45,7 +45,18 @@
 
 \usepackage[backend=bibtex, style=authoryear-comp]{biblatex}
 \usepackage{filecontents}
-\newcommand{\customcite}[1]{\citeauthor{#1} (\citeyear{#1})}
+\renewbibmacro*{cite}{%
+  \iffieldundef{shorthand}
+    {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
+       {\usebibmacro{cite:label}%
+        \setunit{\printdelim{nonameyeardelim}}}
+       {\printnames{labelname}%
+        \setunit{\printdelim{nameyeardelim}}}%
+     \usebibmacro{cite:labeldate+extradate}%
+     \setunit{\addcomma\space}%
+     \usebibmacro{journal}}
+    {\usebibmacro{cite:shorthand}}}
+\newcommand{\customcite}[1]{\cite{#1}}
 
 \bibliography{biblio}
 
@@ -144,6 +155,7 @@
         u(t_n+\Delta t) \approx u^{n+1} = e^{-ia\Delta t}u^n + \Delta t\varphi_1(ia\Delta t)F(u^n)
       $$
       where $\varphi_1(z) = \dfrac{e^z - 1}{z}$
+      \vspace{-0.1cm}
       \begin{thebibliography}{9}
         \setbeamertemplate{bibliography item}[article]
         \bibitem{a} \customcite{Hochbruck:2010}
@@ -158,9 +170,11 @@
       $$
         u^{n+1} = e^{-ia\Delta t}u^n + \Delta te^{ia\Delta t}F(u^n)
       $$
+      \vspace{-0.75cm}
       \begin{thebibliography}{9}
         \setbeamertemplate{bibliography item}[article]
         \bibitem{a} \customcite{Isherwood:2018}
+        %\bibitem{a} \cite{Isherwood:2018}
       \end{thebibliography}
   \end{description}
 \end{frame}
@@ -264,21 +278,6 @@
   $$
     |p(iy)| = 1,\quad y\in\mathbb{R}
   $$
-  \begin{table}
-    \centering
-    \begin{tabular}{|c|c|c|c|}
-      \hline
-      Methods & Lawson($RK(3,2) \; best$) & Lawson($RK(3,3)$) & Lawson($RK(4,4)$) \\
-      \hline
-      $y_{\max}$ & $2$ & $\sqrt{3}$ & $2\sqrt{2}$\\
-      \hline  
-    \end{tabular}
-    \caption{CFL number for some Lawson schemes}
-  \end{table}
-\begin{thebibliography}{9}
-  \setbeamertemplate{bibliography item}[article]
-  \bibitem{} \customcite{Baldauf:2008}
-\end{thebibliography}
 \end{frame}
 %-------%
 \begin{frame}{Lawson methods -- LW5}
@@ -292,18 +291,26 @@
   \end{columns}
 \end{frame}
 %-------%
-\begin{frame}{Lawson methods -- LW5: CFL estimates}
+\begin{frame}{Lawson methods -- CD2/LW5: CFL estimates}
   \begin{table}
     \centering
     \begin{tabular}{|c|c|c|c|}
       \hline
-      Methods & Lawson($RK(3,2) \; best$) & Lawson($RK(3,3)$) & Lawson($RK(4,4)$) \\
+      - & Lawson($RK(3,3)$) & Lawson($RK(4,4)$) \\
       \hline
-      $\sigma $ & $1.344$ & $1.433$   & $1.73$   \\
+      CD2 ($y_{\max}$) & $\sqrt{3}$ & $2\sqrt{2}$\\
+      \hline
+      LW5 ($\sigma$) & $1.433$   & $1.73$   \\
       \hline  
     \end{tabular}
     \caption{CFL number for some Lawson schemes.}
   \end{table}
+  Other RK--CD2 CFL estimates:
+\begin{thebibliography}{9}
+  \setbeamertemplate{bibliography item}[article]
+  \bibitem{} \customcite{Baldauf:2008}
+\end{thebibliography}
+  Same estimation of RK--WENO CFL estimates:
 \begin{thebibliography}{9}
   \setbeamertemplate{bibliography item}[article]
   \bibitem{} \customcite{Motamed:2010}
@@ -325,12 +332,6 @@
       u^{n+1} &= e^{-ia\Delta t}u^n - \Delta t\left[ (\varphi_1-\varphi_2)F(u^n) + \varphi_2F(u^{(1)}) \right] 
     \end{aligned}
   $$
-  % $$
-  %   \begin{aligned}
-  %     u^{(1)} &= u^n(1+ia\varphi_{1,2}) + ia\Delta t\varphi_{1,2}F(u^n) \\
-  %     u^{n+1} &= u^n(1+ia\Delta t\varphi_1) + \frac{\Delta t}{2}\varphi_1F(u^n)+\frac{\Delta t}{2}\varphi_1F(u^{(1)})
-  %   \end{aligned}
-  % $$
 
   Stability function becomes:
   $$
@@ -369,8 +370,8 @@
   \mbold{Numerical tools:}
   \begin{itemize}
     \item FFT in $x$ direction
-    \item CD2 or WENO5 in $v$ direction
-    \item $Lawson(RK(s,p))$ or ExpRK method in time $t$
+    \item WENO5 in $v$ direction
+    \item $Lawson(RK(s,p))$ method in time $t$
   \end{itemize}
 
   \mbold{CFL:} $\Delta t_n \leq \dfrac{C\Delta v}{||E^n||_{\infty}} \leq \dfrac{C\Delta v}{\max_n||E^n||_{\infty}}$ where $C = y_\text{max}$ or $\sigma$ from the linear theory.
@@ -399,16 +400,17 @@
   \only<1>{
     \begin{figure}
       \centering
-      \resizebox{!}{.7\paperheight}{\input{img/hn}}
-      \caption{Landau damping test: time history of the CFL condition (semi-log scale).}
-      \label{ld}
-    \end{figure}
-  }\only<2>{
-    \begin{figure}
-      \centering
       \resizebox{!}{.7\paperheight}{\input{img/Emax}}
       \caption{Landau damping test: time history of $\|E(t)\|_{L^2}$ (semi-log scale) obtained with Lawson($RK(4, 4)$) and WENO5 
       with $\Delta t=1/8$ and $\Delta t=1$.}
+      \label{ld}
+    \end{figure}
+  }
+  \only<2>{
+    \begin{figure}
+      \centering
+      \resizebox{!}{.7\paperheight}{\input{img/hn}}
+      \caption{Landau damping test: time history of the CFL condition (semi-log scale).}
       \label{ld}
     \end{figure}
   }
@@ -451,10 +453,6 @@
         \ 
       \end{column}
     \end{columns}
-  } \only<3> {
-    \begin{figure}
-      \includegraphics[width=0.9\textwidth]{img/H.png}
-    \end{figure}
   }
 \end{frame}
 
@@ -465,14 +463,14 @@
   \mbold{Summary}
   \begin{itemize}
     \item Better understanding on stability of Lawson or ExpRK methods in transport equations
-    \item Python script with \texttt{sympy} to compute estimates of CFL of Lawson -- CD2, Lawson -- WENO (5 or 3) or ExpRK -- CD2 (with relaxing CFL)
-    \item An adaptive time step size which works with any time integrators
+    \item Python script with \texttt{sympy} to compute estimates of CFL of Lawson -- CD2, Lawson -- WENO (5 or 3)
+    %\item An adaptive time step size which works with any time integrators
   \end{itemize}
 
   \mbold{Future works}
   \begin{itemize}
     \item We can improve method with an embedded Runge-Kutta method (Dormand-Prince method, used in \texttt{ode45} of Matlab)
-    \item Compare performance between exponential integrators and splitting methods (same stages/step, same order?)
+    \item Compare performance between exponential integrators and splitting methods (same order)
     \item Use semi-Lagrangian method to remove dependency on periodic space (Fourier transform)
   \end{itemize}
 \end{frame}
