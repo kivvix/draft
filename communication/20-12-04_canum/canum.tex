@@ -253,7 +253,7 @@
 \begin{frame}{Lawson methods stability domain}
   For our toy model:
   $$
-    \dot{u} = iau + \lambda(u)
+    \dot{u} = iau + \lambda u
   $$
   Change of variable: $v(t) = e^{-iat}u(t)$
   $$
@@ -441,7 +441,7 @@
     \begin{figure}
     \centering
         \includegraphics[width=\textwidth]{img/vp_cfl.png}
-        \caption{Distribution function at time $t=40$ as a function of $x$ and $v$ for Lawson($RK(4, 4)$) + WENO5 (left), Lawson($RK(4, 4)$) + centered scheme (center), Hochbruck--Ostermann + centered scheme (right).}  
+        \caption{Distribution function at time $t=0$ as a function of $x$ and $v$ (left), at time $t=40$ for Lawson($RK(4, 4)$) + WENO5 (center) and Lawson($RK(4, 4)$) + centered scheme (right).}  
     \label{space}      
     \end{figure}
   } \only<2> {
