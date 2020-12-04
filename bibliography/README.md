@@ -254,7 +254,7 @@
 	 
 - [[Isherwood:2018](pdf/2018-Isherwood(1).pdf)] **Strong Stability Preserving Integrating Factor Runge-Kutta Methods** (*2018*)
 	L. Isherwood, Z. J. Grant, S. Gottlieb
-	*SIAM Journal on Numerical Analysis*
+	*Journal on Numerical Analysis*
 - [[Crestetto:2018](pdf/2018-Crestetto.pdf)] **A particle micro-macro decomposition based numercial scheme for collisional kinetic equations in the diffusion scaling** (*2018*)
 	A. Crestetto, N. Crouseilles, M. Lemou
 	*Communications in Mathematical Sciences*
