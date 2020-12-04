@@ -44,13 +44,14 @@ $(BUILD_dir)/$(JOURNAL_file): $(SRC_MD) template/before.html template/after.html
 	@echo "\033[35m+ $@\033[0m"
 	pandoc --wrap=preserve \
 		--metadata-file=metadata.yaml \
-		--css=style/main.css --css=style/untitled.css \
+		--css=style/main.css \
 		-f $(subst $(eval) ,+,$(PANDOC_format)) \
 		--standalone -t html5 \
 		--include-before-body=template/before.html \
 		--include-after-body=template/after.html \
 		--katex=https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/ \
 		--highlight-style=breezeDark \
+		--table-of-contents --toc-depth=2 \
 		$(filter %.md,$^) \
 		-o $@
 
