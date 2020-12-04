@@ -16,6 +16,8 @@
 \setbeamercolor{structure}{fg=PLB, bg=PLB!40}
 %\setbeamertemplate{footline}[default]
 
+\usepackage{hyperref}
+
 \usepackage{amssymb}
 \usepackage{pifont}
 \usepackage{bigints}
@@ -158,17 +160,17 @@
       $$
         u(t_n+\Delta t) \approx u^{n+1} = e^{-ia\Delta t}u^n + \Delta t\varphi_1(ia\Delta t)F(u^n)
       $$
-      where $\varphi_1(z) = \dfrac{e^z - 1}{z}$
+      where $\varphi_1(z) = \frac{1}{z}\int_0^z e^{z-\tau}\,\mathrm{d}\tau = \dfrac{e^z - 1}{z}$
       \vspace{-0.1cm}
       \begin{thebibliography}{9}
         \setbeamertemplate{bibliography item}[article]
         \bibitem{a} \customcite{Hochbruck:2010}
       \end{thebibliography}
-    \item[\mbold{Lawson:}] Change of variable: $v(t)=e^{-iat}u(t)$, we solve with a RK method: $\dot{v} = \tilde{F}(t,v) = e^{-iat}F(e^{iat}v(t))$
+    \item[\mbold{Lawson:}] Change of variable: $\tilde{u}(t)=e^{-iat}u(t)$, we solve with a RK method: $\dot{\tilde{u}} = \tilde{F}(t,\tilde{u}) = e^{-iat}F(e^{iat}\tilde{u}(t))$
 
       For example, Lawson Euler method:
       $$
-        v(t_n+\Delta t)\approx v^{n+1} = v^n + \Delta t e^{-iat_n}F(e^{iat_n}v^n)
+        \tilde{u}(t_n+\Delta t)\approx \tilde{u}^{n+1} = \tilde{u}^n + \Delta t e^{-iat_n}F(e^{iat_n}\tilde{u}^n)
       $$
       or as an expression of $u$:
       $$
@@ -197,8 +199,12 @@
     Explicit Euler method in time: we have to stretch \mbold{eigenvalues} (or \mbold{Fourier symbol}) of CD2 into explicit Euler \mbold{stability domain}.
   } \only<2>{
     \begin{figure}\centering
-      \includegraphics[height=0.8\textheight]{img/cfl_example.png}
+      \includegraphics[height=0.7\textheight]{img/cfl_example.png}
     \end{figure}
+    \begin{itemize}
+      \item Stability function $p(z)$: $u^{n+1} = p(\Delta t\lambda)u^n$ to solve $\dot{u} = \lambda u$
+      \item Stability domain: $\mathcal{D}=\left\{z\in\mathbb{C},|p(z)|\leq 1\right\}$
+    \end{itemize} 
   }
 \end{frame}
 %-------%
@@ -255,13 +261,13 @@
   $$
     \dot{u} = iau + \lambda u
   $$
-  Change of variable: $v(t) = e^{-iat}u(t)$
+  Change of variable: $\tilde{u}(t) = e^{-iat}u(t)$
   $$
-    \dot{v} = e^{-iat}\lambda e^{iat}v
+    \dot{\tilde{u}} = e^{-iat}\lambda e^{iat}\tilde{u}
   $$
   Apply a Runge-Kutta method to compute stability function of Lawson method:
   $$
-    v^{n+1} = \underbrace{p(\lambda\Delta t)}_{\text{stability function of RK}}v^n
+    \tilde{u}^{n+1} = \underbrace{p(\lambda\Delta t)}_{\text{stability function of RK}}\tilde{u}^n
   $$
   \emph{i.e.}:
   $$
@@ -323,6 +329,8 @@
   \bibitem{} \customcite{Motamed:2010}
   \bibitem{} \customcite{Lunet:2017}
 \end{thebibliography}
+  More results of CFL estimates:
+  \url{http://jmassot.perso.math.cnrs.fr/ponio.html}
 \end{frame}
 
 \subsection{Exponential Runge-Kutta methods}
