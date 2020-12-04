@@ -21,6 +21,6 @@ document.querySelectorAll('img').forEach( (el) => {
   span.appendChild(lab);
 
   parent.replaceChild(span,el);
-  console.log(el);
+  //console.log(el);
 })
 
