@@ -287,3 +287,32 @@ h4:target .anchor::before, h5:target .anchor::before, h6:target .anchor::before
   display: block;
 }
 
+/* TOC */
+#TOC {
+  position: fixed;
+  top: 1em; right: 0;
+  max-width: calc( ( 100% - 800px ) / 2 - 1em ); max-height: 50%;
+  border: 1px solid #424242; border-radius: 3px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  font-size: 0.66em;
+  padding: 1em;
+  box-sizing: border-box;
+}
+#TOC ul {
+  padding-left: 1em;
+  list-style-type: "· ";
+}
+#TOC::before {
+  content: "Table des matières : ";
+  font-weight: bold;
+  display: block;
+  position: fixed;
+  padding: 0.5em 0;
+  margin-top: -1em;
+  margin-left: -0.5em;
+  background: #ffffffda;
+  min-width: calc( ( 100% - 85% ) / 2 - 1em - 6px );
+  width: calc( ( 100% - 800px ) / 2 - 1em - 6px );
+  box-sizing: border-box;
+}
