@@ -36,6 +36,9 @@
 - [[Goldberg:1991](pdf/1991-Goldberg.pdf)] **What Every Computer Scientist Should Know About Floating-Point Arithmetic** (*1991*)
 	D. Goldberg
 	*ACM Computing Surveys*
+- [[Isaacson:1994](pdf/1994-Isaacson.pdf)] **Analysis of Numerical Methods** (*1994*)
+	E. Isaacson, H. Bishop Keller
+	 
 - [[Liu:1994](pdf/1994-Liu.pdf)] **Weighted Essentially Non-oscillatory Schemes** (*1994*)
 	X. Liu, S. Osher, T. Chan
 	*Journal of Computational Physics*
