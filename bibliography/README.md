@@ -36,6 +36,9 @@
 - [[Goldberg:1991](pdf/1991-Goldberg.pdf)] **What Every Computer Scientist Should Know About Floating-Point Arithmetic** (*1991*)
 	D. Goldberg
 	*ACM Computing Surveys*
+- [[Hairer:1993](pdf/1993-Hairer.pdf)] **Solving Ordinary Differential Equations I: Nonstiff Problems** (*1993*)
+	E. Hairer, G. Wanner, S. P. Nørsett
+	 
 - [[Isaacson:1994](pdf/1994-Isaacson.pdf)] **Analysis of Numerical Methods** (*1994*)
 	E. Isaacson, H. Bishop Keller
 	 
