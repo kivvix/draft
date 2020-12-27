@@ -1,6 +1,7 @@
 SRC_MD = $(wildcard sources/*.md)
 BUILD_dir = journal
 JOURNAL_file = index.html
+JOURNAL_tmp  = index.tmp.html
 PWD_file ?= $(shell pwd $(BUILD_dir)/$(JOURNAL_file))
 
 SRC_CSS = $(wildcard template/style/*.css)
@@ -40,7 +41,7 @@ html: $(BUILD_dir) $(DES_CSS) $(DES_STYLE_MISC) $(DES_JS) $(SRC_MD) $(DES_IMG) $
 	@echo "\033[36m> Convert mardown files into a HTML file\033[0m"
 
 #--css=style/boucdoc.css --css=style/pandoc.css
-$(BUILD_dir)/$(JOURNAL_file): $(SRC_MD) template/before.html template/after.html
+$(BUILD_dir)/$(JOURNAL_tmp): $(SRC_MD) template/before.html template/after.html
 	@echo "\033[35m+ $@\033[0m"
 	pandoc --wrap=preserve \
 		--metadata-file=metadata.yaml \
@@ -54,6 +55,10 @@ $(BUILD_dir)/$(JOURNAL_file): $(SRC_MD) template/before.html template/after.html
 		--table-of-contents --toc-depth=2 \
 		$(filter %.md,$^) \
 		-o $@
+
+$(BUILD_dir)/$(JOURNAL_file): $(BUILD_dir)/$(JOURNAL_tmp)
+	@echo "\033[35m+ $@\033[0m"
+	./template/katex_serial.js --input $< --output $@
 
 # copy css files from template directory
 $(BUILD_dir)/style/%.css: template/style/%.css $(BUILD_dir)/style
@@ -106,7 +111,12 @@ edit:
 # remove all $(BUILD_dir)
 clear:
 	@echo "\033[31m- $@\033[0m"
-	rm -Rf $(BUILD_dir) template/after.html template/before.html
+	rm $(BUILD_dir)/$(JOURNAL_tmp)
+	rm template/after.html template/before.html
+
+mrproper: clear
+	@echo "\033[31m- $@\033[0m"
+	rm -Rf $(BUILD_dir)
 
 # a test to send automatically to ftp server
 USER = josmassot@perso.univ-rennes1.fr/josselin.massot

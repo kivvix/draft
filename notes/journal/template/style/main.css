@@ -316,3 +316,8 @@ h4:target .anchor::before, h5:target .anchor::before, h6:target .anchor::before
   width: calc( ( 100% - 800px ) / 2 - 1em - 6px );
   box-sizing: border-box;
 }
+
+
+.mord.mathnormal {
+  font-style: italic;
+}
