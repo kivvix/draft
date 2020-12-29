@@ -22,21 +22,29 @@ const argv = require('yargs')
   .argv
 
 JSDOM.fromFile( argv['input'] ,{}).then(dom => {
+  // render all KaTeX elements
   var mathElements = dom.window.document.getElementsByClassName("math");
   var macros = [];
-  for (var i = 0; i < mathElements.length; i++) {
-    var texText = mathElements[i].firstChild;
-    if (mathElements[i].tagName == "SPAN") {
-      mathElements[i].innerHTML = katex.renderToString(texText.data, {
-        displayMode: mathElements[i].classList.contains('display'),
+  for (let mathItem of mathElements) {
+    var texText = mathItem.firstChild;
+    if (mathItem.tagName == "SPAN") {
+      mathItem.innerHTML = katex.renderToString(texText.data, {
+        displayMode: mathItem.classList.contains('display'),
         throwOnError: false,
         macros: macros,
         fleqn: false
       });
     }
-    
   }
 
+  // remove KaTeX includes
+  for ( s of dom.window.document.querySelectorAll('script') ) {
+    if (s.outerHTML.includes("katex")) {
+      s.remove();
+    }
+  }
+
+  // write file
   fs.writeFile(argv['output'], dom.serialize(), (err) => {
     if (err) console.log(err);
     console.log("Successfully KaTeX rended!");

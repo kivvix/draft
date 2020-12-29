@@ -21,15 +21,15 @@ all:
 
 # make directories ==========
 $(BUILD_dir):
-	@echo "\033[95m+ $@/\033[0m"
+	@echo "\033[32m+ $@/\033[0m"
 	mkdir -p $@
 
 $(BUILD_dir)/style:
-	@echo "\033[95m+ $@/\033[0m"
+	@echo "\033[96m+ $@/\033[0m"
 	mkdir -p $@
 
 $(BUILD_dir)/js:
-	@echo "\033[95m+ $@/\033[0m"
+	@echo "\033[33m+ $@/\033[0m"
 	mkdir -p $@
 
 $(BUILD_dir)/img:
@@ -42,7 +42,7 @@ html: $(BUILD_dir) $(DES_CSS) $(DES_STYLE_MISC) $(DES_JS) $(SRC_MD) $(DES_IMG) $
 
 #--css=style/boucdoc.css --css=style/pandoc.css
 $(BUILD_dir)/$(JOURNAL_tmp): $(SRC_MD) template/before.html template/after.html
-	@echo "\033[35m+ $@\033[0m"
+	@echo "\033[34m+ $@\033[0m"
 	pandoc --wrap=preserve \
 		--metadata-file=metadata.yaml \
 		--css=style/main.css \
@@ -57,13 +57,11 @@ $(BUILD_dir)/$(JOURNAL_tmp): $(SRC_MD) template/before.html template/after.html
 		-o $@
 
 $(BUILD_dir)/$(JOURNAL_file): $(BUILD_dir)/$(JOURNAL_tmp)
-	@echo "\033[35m+ $@\033[0m"
+	@echo "\033[92m+ $@\033[0m"
 	./template/katex_serial.js --input $< --output $@
 
 # copy css files from template directory
 $(BUILD_dir)/style/%.css: template/style/%.css $(BUILD_dir)/style
-	#@echo "\033[35m+ $@\033[0m"
-	#cp $< $@
 	@ echo "\033[36mtransform copy $< to $@\033[0m"
 	gsed -r ':a; s%(.*)/\*.*\*/%\1%; ta; /\/\*/ !b; N; ba' $< | sed '/^\s*$$/d' | gsed -r 's/^[[:blank:]]+//' | tr -d '\n' > $@
 
@@ -73,7 +71,7 @@ $(BUILD_dir)/style/%.svg: template/style/%.svg $(BUILD_dir)/style
 
 # copy js files from template directory
 $(BUILD_dir)/js/%.js: template/js/%.js $(BUILD_dir)/js
-	@echo "\033[35m+ $@\033[0m"
+	@echo "\033[93m+ $@\033[0m"
 	cp $< $@
 
 # copy png images from source/img directory
@@ -84,12 +82,12 @@ $(BUILD_dir)/img/%.png: sources/img/%.png $(BUILD_dir)/img
 
 # make file which contains inclusion of all js files
 template/after.html: $(DES_JS)
-	@echo "\033[35m+ $@\033[0m"
+	@echo "\033[94m+ $@\033[0m"
 	touch $@
 	echo "</main>\n<footer><a href='#top' >🥝</a></footer>\n$(foreach js,$(DES_JS),<script type='text/javascript' src='js/$(notdir js/$(js))' ></script>\n)" > $@
 
 template/before.html:
-	@echo "\033[35m+ $@\033[0m"
+	@echo "\033[94m+ $@\033[0m"
 	touch $@
 	echo "<a id='top' ></a>\n<main>\n" > $@
 
@@ -115,7 +113,7 @@ clear:
 	rm template/after.html template/before.html
 
 mrproper: clear
-	@echo "\033[31m- $@\033[0m"
+	@echo "\033[91m- $@\033[0m"
 	rm -Rf $(BUILD_dir)
 
 # a test to send automatically to ftp server
