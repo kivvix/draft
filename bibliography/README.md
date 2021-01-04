@@ -15,6 +15,9 @@
 - [[Luther:1968](pdf/1968-Luther.pdf)] **An Explicit Sixth-Order Runge-Kutta Formula** (*1968*)
 	H. A. Luther
 	*Mathematics of Computation*
+- [[Baker:1975](pdf/1975-Baker.pdf)] **Essentials of Padé approximants** (*1975*)
+	G. A Baker
+	 
 - [[Alexander:1976](pdf/1976-Alexander.pdf)] **Diagonally Implicit Runge–Kutta Methods for Stiff O.D.E.'s** (*1976*)
 	R. Alexander
 	*Journal on Numerical Analysis*
