@@ -126,6 +126,9 @@
 - [[Qiu:2008](pdf/2008-Qiu.pdf)] **A WENO algorithm for the growth of ionized regions at the reionization epoch** (*2008*)
 	J. Qiu, C. Shu, J. Liu, L. Fang
 	*New Astronomy*
+- [[Belaouar:2009](pdf/2009-Belaouar.pdf)] **An asymptotically stable semi-Lagrangian scheme in the quasi-neutral limit** (*2009*)
+	R. Belaouar, N. Crouseilles, P. Degond, E. Sonnendrücker
+	*Journal of Scientific Computing*
 - [[Despres:2009](pdf/2009-Despres.pdf)] **Uniform asymptotic stability of Strang's explicit compact schemes for linear advection** (*2009*)
 	B. Després
 	*Journal on Numerical Analysis*
@@ -210,7 +213,7 @@
 - [[Boyer:2014](pdf/2014-Boyer.pdf)] **Aspects théoriques et numériques de l'équation de transport** (*2014*)
 	F. Boyer
 	 
-- [[Crouseilles:2015](https://doi.org/10.1016/j.jcp.2014.11.029)] **Hamiltonian splitting for the Vlasov-Maxwell equations** (*2015*)
+- [[Crouseilles:2015](pdf/2015-Crouseilles.pdf)] **Hamiltonian splitting for the Vlasov-Maxwell equations** (*2015*)
 	N. Crouseilles, L. Einkemmer, E. Faou
 	*Journal of Computational Physics*
 - [[Ketcheson:2015](https://nodepy.readthedocs.io/en/latest/)] **NodePy (Numerical ODEs in Python) softwate version 0.6** (*2015*)
