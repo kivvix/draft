@@ -297,6 +297,9 @@
 - [[Crouseilles:2020](pdf/2020-Crouseilles.pdf)] **Poisson bracket for one electron hybrid model** (*2020*)
 	N. Crouseilles
 	 
+- [[Wu:2021](pdf/2021-Wu.pdf)] **Very high order WENO schemes using efficient smoothness indicators** (*2021*)
+	C. Wu, L. Wu, H. Li, S. Zhang
+	*Journal of Computational Physics*
 
 # Links
 
