@@ -252,6 +252,9 @@
 - [[Kzasnicki:2017](pdf/2017-Kzasnicki.pdf)] **Ten equivalent definitions of the fractional Laplace operator** (*2017*)
 	M. Kzasnicki
 	*Fractional Calculus & Applied Analysis*
+- [[Barucq:2018](pdf/2018-Barucq.pdf)] **High-order Padé and Singly Diagonally Runge-Kutta schemes for linear ODEs, application to wave propagation problems** (*2018*)
+	H. Barucq, M. Duruflé, M. N'diaye
+	*{Numerical Methods for Partial Differential Equations}*
 - [[Crouseilles:2018](pdf/2018-Crouseilles.pdf)] **An exponential integrator for the drift-kinetic model** (*2018*)
 	N. Crouseilles, L. Einkemmer, M. Prugger
 	*Computer Physics Communications*
