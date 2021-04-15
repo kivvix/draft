@@ -9,10 +9,66 @@ html {
 }
 body {
   margin: 0; padding: 0;
+  /*
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-wrap: wrap;
+  */
+  max-width: 100vw;
 }
+#top { width: 0px; height: 0px; display: inline-block; margin: 0; padding: 0; }
+main, footer, #TOC {
+  /*
+  flex-grow: 1;
+  flex-shrink: 1;
+  */
+  display: inline-block;
+}
+
+#TOC {
+  /*
+  flex-basis: 100px;
+  flex-shrink: 0;
+  */
+  position: fixed;
+  float: left;
+  left: 0; top: 0;
+  width: 25%;
+  height: 100vh;
+  overflow-y: scroll;
+  max-width: 400px;
+  box-sizing: border-box;
+
+  padding: 0.5em;
+
+  border-right: 1px solid #a2a2a2;
+  font-size: 0.75em;
+}
+main {
+  /*
+  flex-basis: 800px;
+  flex-shrink: 3;
+  */
+
+  float: right;
+  width: 75%;
+  box-sizing: border-box;
+
+  padding: 45px;
+  /* counter */
+  counter-reset: section;
+}
+
+footer {
+  /*
+  flex-basis: 100%;
+  */
+
+  position: fixed;
+  bottom: 0; right: 0;
+
+  text-align: right;
+}
+
 
 *::-moz-selection {
   background: rgba(255, 255, 0, 0.3);
@@ -23,31 +79,19 @@ body {
   color: #000;
 }
 
-main {
-  width: 85%;
-  max-width: 800px;
-  margin: 0 auto;
-
-  /* counter */
-  counter-reset: section;
-
-}
 @media only screen and (max-width: 599px) {
   body { background: none !important; }
   main { width: 100%; max-width:100%; margin: 0; }
 }
 
-footer {
-  text-align: right;
-}
-
+/*
 h1, h2, h3, h4, h5, h6 {
   color: #111;
   line-height: 125%;
   margin-top: 2em;
   font-weight: normal;
 
-  display: inline-block; width: 100%; /* for anchors */
+  display: inline-block; width: 100%;
 }
 h4, h5, h6 {
   font-weight: bold;
@@ -59,7 +103,7 @@ h3 { font-size: 1.5em; }
 h4 { font-size: 1.2em; }
 h5 { font-size: 1em;   }
 h6 { font-size: 0.9em; }
-
+*/
 /* rest all counter for each subsection */
 h1 { counter-reset: subsection fig equation tab; }
 h2 { counter-reset: subsubsection; }
@@ -70,8 +114,8 @@ h5 { counter-reset: subsubparagraph; }
 h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
   display: inline-block;
   text-align: right;
-  width: 3.4em;
-  margin-left: -3.4em;
+  /*width: 3.4em;*/
+  margin-left: 0em;
   margin-right: 1rem;
 }
 @media print, (max-width: 750px) {
@@ -89,7 +133,7 @@ h5::before { counter-increment: subparagraph;    content: counter(paragraph)"."c
 h6::before { counter-increment: subsubparagraph; content: counter(paragraph)"."counter(subparagraph)"."counter(subsubparagraph) " ⇝ "; }
 
 /* main title */
-h1.title { text-align: center; }
+h1.title { text-align: left; }
 h1.title::before { counter-increment: none; content: ""; }
 .author::before { content: ""; }
 .author { display: inline-block; }
@@ -119,6 +163,7 @@ p {
   margin: 1em 0;
 }
 
+/*
 blockquote {
   color: #666666;
   margin: 0;
@@ -147,6 +192,7 @@ table td {
   vertical-align: top;
 }
 table td:first-child { border-left: none; }
+*/
 
 img { max-width: 100%; }
 /* in pandoc, div are only use for subfigures */
@@ -170,6 +216,15 @@ div figure {
   transition: all 1.0s ease-in-out;
   transition-delay: 0.5s;
 }
+
+main>div, main>img, main>table, main>figure , .math.display {
+  width: 75%;
+  max-width: 75vw !important;
+  margin: auto auto;
+  display: block;
+}
+
+
 /*
 div figure:hover {
   transform: scale(1.75);
@@ -200,7 +255,7 @@ ol,ul {
 
 /* code */
 code { font-size: 110%; }
-code.sourceCode { white-space: pre; font-size: 95%; }
+code.sourceCode { white-space: pre; font-size: 95%; overflow-x: scroll;}
 div.sourceCode { padding: 5mm 0; }
 .term code::before { content: "$ "; }
 pre.numberSource a.sourceLine::before {  }
@@ -288,17 +343,6 @@ h4:target .anchor::before, h5:target .anchor::before, h6:target .anchor::before
 }
 
 /* TOC */
-#TOC {
-  position: fixed;
-  top: 1em; right: 0;
-  max-width: calc( ( 100% - 800px ) / 2 - 1em ); max-height: 50%;
-  border: 1px solid #424242; border-radius: 3px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  font-size: 0.66em;
-  padding: 1em;
-  box-sizing: border-box;
-}
 #TOC ul {
   padding-left: 1em;
   list-style-type: "· ";
@@ -307,14 +351,13 @@ h4:target .anchor::before, h5:target .anchor::before, h6:target .anchor::before
   content: "Table des matières : ";
   font-weight: bold;
   display: block;
-  position: fixed;
+  /*position: fixed;
   padding: 0.5em 0;
   margin-top: -1em;
-  margin-left: -0.5em;
+  margin-left: -0.5em;*/
   background: #ffffffda;
   min-width: calc( ( 100% - 85% ) / 2 - 1em - 6px );
   width: calc( ( 100% - 800px ) / 2 - 1em - 6px );
-  box-sizing: border-box;
 }
 
 

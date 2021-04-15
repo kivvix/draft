@@ -1,11 +1,13 @@
 SRC_MD = $(wildcard sources/*.md)
 BUILD_dir = journal
 JOURNAL_file = index.html
-JOURNAL_tmp  = index.tmp.html
+JOURNAL_raw  = index.raw.html
 PWD_file ?= $(shell pwd $(BUILD_dir)/$(JOURNAL_file))
 
-SRC_CSS = $(wildcard template/style/*.css)
+#SRC_CSS = $(wildcard template/style/*.css)
+SRC_CSS = template/style/main.css template/style/github-markdown.css
 DES_CSS = $(SRC_CSS:template/style/%.css=$(BUILD_dir)/style/%.css)
+BUILD_CSS = $(SRC_CSS:template/style/%.css=style/%.css)
 SRC_STYLE_MISC = $(wildcard template/style/*.svg)
 DES_STYLE_MISC = $(SRC_STYLE_MISC:template/style/%=$(BUILD_dir)/style/%)
 SRC_JS = $(wildcard template/js/*.js)
@@ -41,11 +43,11 @@ html: $(BUILD_dir) $(DES_CSS) $(DES_STYLE_MISC) $(DES_JS) $(SRC_MD) $(DES_IMG) $
 	@echo "\033[36m> Convert mardown files into a HTML file\033[0m"
 
 #--css=style/boucdoc.css --css=style/pandoc.css
-$(BUILD_dir)/$(JOURNAL_tmp): $(SRC_MD) template/before.html template/after.html
+$(BUILD_dir)/$(JOURNAL_raw): $(SRC_MD) template/before.html template/after.html
 	@echo "\033[34m+ $@\033[0m"
 	pandoc --wrap=preserve \
 		--metadata-file=metadata.yaml \
-		--css=style/main.css \
+		$(foreach css,$(BUILD_CSS),--css=$(css) ) \
 		-f $(subst $(eval) ,+,$(PANDOC_format)) \
 		--standalone -t html5 \
 		--include-before-body=template/before.html \
@@ -56,9 +58,23 @@ $(BUILD_dir)/$(JOURNAL_tmp): $(SRC_MD) template/before.html template/after.html
 		$(filter %.md,$^) \
 		-o $@
 
-$(BUILD_dir)/$(JOURNAL_file): $(BUILD_dir)/$(JOURNAL_tmp)
+tmp:
+	@echo "\033[32m+ $@/\033[0m"
+	mkdir -p $@
+
+tmp/%.katex.html : $(BUILD_dir)/%.raw.html
 	@echo "\033[92m+ $@\033[0m"
 	./template/katex_serial.js --input $< --output $@
+
+$(BUILD_dir)/%.html : tmp/%.katex.html
+	@echo "\033[92m+ $@\033[0m"
+	./template/toc_shift.js --input $< --output $@
+
+
+
+#$(BUILD_dir)/$(JOURNAL_file): $(BUILD_dir)/$(JOURNAL_tmp)
+#	@echo "\033[92m+ $@\033[0m"
+#	./template/katex_serial.js --input $< --output $@
 
 # copy css files from template directory
 $(BUILD_dir)/style/%.css: template/style/%.css $(BUILD_dir)/style
@@ -109,7 +125,7 @@ edit:
 # remove all $(BUILD_dir)
 clear:
 	@echo "\033[31m- $@\033[0m"
-	rm $(BUILD_dir)/$(JOURNAL_tmp)
+	rm $(BUILD_dir)/$(JOURNAL_raw)
 	rm template/after.html template/before.html
 
 mrproper: clear
