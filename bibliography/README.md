@@ -183,10 +183,7 @@
 - [[Charles:2013](https://doi.org/10.1137/110851511)] **Enhanced Convergence Estimates for Semi-Lagrangian Schemes Application to the Vlasov–Poisson Equation** (*2013*)
 	F. Charles, B. Després, M. Mehrenberger
 	*SIAM Journal on Numerical Analysis*
-- [[Balac:2013b](pdf/2013-Balac(b).pdf)] **Mathematical analysis of adaptive step-size techniques when solving the nonlinear Schrödinger equation for simulating light-wave propagation in optical fibers** (*2013*)
-	S. Balac, A. Fernandez
-	 
-- [[Balac:2013a](pdf/2013-Balac(a).pdf)] **Embedded Runge-Kutta scheme for step-size control in the interaction picture method** (*2013*)
+- [[Balac:2013](pdf/2013-Balac.pdf)] **Embedded Runge-Kutta scheme for step-size control in the interaction picture method** (*2013*)
 	S. Balac, F. Mahé
 	*Computer Physics Communications*
 - [[Ketcheson:2013](pdf/2013-Ketcheson.pdf)] **Spatially partitioned embedded Runge-Kutta methods** (*2013*)
@@ -204,6 +201,9 @@
 - [[Yang:2014](pdf/2014-Yang.pdf)] **Conservative and non-conservative methods based on Hermite weighted essentially-non-oscillatory reconstruction for Vlasov equations** (*2014*)
 	C. Yang, F. Filbet
 	*Journal of Computational Physics*
+- [[Balac:2014](pdf/2014-Balac(1).pdf)] **Mathematical analysis of adaptive step-size techniques when solving the nonlinear Schrödinger equation for simulating light-wave propagation in optical fibers** (*2014*)
+	S. Balac, A. Fernandez
+	*Optics Communications*
 - [[Tao:2014](pdf/2014-Tao.pdf)] **A numerical study of chorus generation and the related variation of wave intensity using the DAWN code** (*2014*)
 	X. Tao
 	*Journal of Geophysical Research: Space Physics*
