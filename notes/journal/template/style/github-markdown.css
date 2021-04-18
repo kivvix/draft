@@ -786,6 +786,7 @@
   padding-right: 20px;
 }
 
+/*
 .markdown-body code {
   padding: .2em .4em;
   margin: 0;
@@ -793,7 +794,6 @@
   background-color: rgba(27,31,35,.05);
   border-radius: 3px;
 }
-
 .markdown-body pre {
   word-wrap: normal;
 }
@@ -838,6 +838,7 @@
   background-color: initial;
   border: 0;
 }
+*/
 
 .markdown-body .commit-tease-sha {
   display: inline-block;

@@ -6,6 +6,8 @@ html {
   -moz-font-variant-ligatures: historical-ligatures;
   -webkit-font-variant-ligatures: historical-ligatures;
   color: var(--html-fg-color,#242424);
+
+  scroll-behavior: smooth;
 }
 body {
   margin: 0; padding: 0;
@@ -218,9 +220,9 @@ div figure {
 }
 
 main>div, main>img, main>table, main>figure , .math.display {
-  width: 75%;
-  max-width: 75vw !important;
-  margin: auto auto;
+  width: 90%;
+  max-width: 90vw !important;
+  margin-left: auto !important; margin-right: auto !important;
   display: block;
 }
 
@@ -270,8 +272,10 @@ pre.numberSource a.sourceLine:target { min-width: 100%; }
   right: 0.4rem;
   text-decoration: none;
 }
+.sourceCode a.code-anchor { position: sticky; top: 1px; right: 1px; }
 .sourceCode a.code-anchor::before {
   visibility:hidden;
+  position: sticky; top: 1px; right: 1px;
   content: "\260D";
   color: #eee;
   padding: 0 1rem;
