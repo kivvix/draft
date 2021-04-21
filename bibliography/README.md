@@ -111,6 +111,9 @@
 - [[LeVeque:2007](pdf/2007-LeVeque.pdf)] **Finite Difference Methods for Ordinary and Partial Differential Equations** (*2007*)
 	R. J. LeVeque
 	 
+- [[Higham:2008](pdf/2008-Higham.pdf)] **Functions of Matrices: Theory and Computation** (*2008*)
+	N. J. Higham
+	 
 - [[Baldauf:2008](pdf/2008-Baldauf.pdf)] **Stability Analysis for linear discretisations of the advection equation with Runge-Kutta time integration** (*2008*)
 	M. Baldauf
 	*Journal of Computational Physics*
