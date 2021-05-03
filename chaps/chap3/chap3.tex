@@ -1,0 +1,149 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage{mmap}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb,french]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage[          %
+    labelalpha=true,  % 
+    backend=biber,    %
+    bibencoding=utf8, %
+    sorting=none,     %
+    hyperref=true,    %
+    url=false,        %
+    backref=true,     %
+    backrefstyle=three]{biblatex}
+\addbibresource{biblio.bib}
+
+\usepackage{graphicx}
+%\usepackage{subfig}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{tikz}
+
+% figures pas plus loin que la fin de la section
+\usepackage[section]{placeins}
+
+%\usepackage[pdfborder={0 0 0 [3 3]},pdftex,unicode=true,pdfa=true]{hyperref}
+\usepackage[unicode=true,pdfa=true]{hyperref}
+\usepackage{bookmark}
+\usepackage[         %
+    top    = 2.75cm, %
+    bottom = 3.50cm, %
+    left   = 3.00cm, %
+    right  = 2.50cm]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathabx}
+\usepackage{mathrsfs}
+\usepackage{wasysym}
+\usepackage{textcomp}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+\usepackage{eufrak}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algorithme}
+\renewcommand{\algorithmicprocedure} {\textbf{Proc\'edure} }
+\renewcommand{\algorithmicwhile}     {\textbf{tant que}    }
+\renewcommand{\algorithmicdo}        {\textbf{faire :}     }
+\renewcommand{\algorithmicend}       {\textbf{fin}         }
+\renewcommand{\algorithmicif}        {\textbf{si}          }
+\renewcommand{\algorithmicelse}      {\textbf{sinon}       }
+\renewcommand{\algorithmicthen}      {\textbf{alors}       }
+\renewcommand{\algorithmicfor}       {\textbf{pour}        }
+\renewcommand{\algorithmicforall}    {\textbf{pour tout}   }
+\renewcommand{\algorithmicrepeat}    {\textbf{répéter}     }
+\renewcommand{\algorithmicuntil}     {\textbf{jusqu'à}     }
+\renewcommand{\algorithmicfunction}  {\textbf{Fonction}    }
+\renewcommand{\algorithmicreturn}    {\textbf{retourner}   }
+
+\theoremstyle{plain}\newtheorem{theorem}{Théorème}[section]
+\theoremstyle{plain}\newtheorem{lemma}{Lemme}[section]
+\newtheorem{pro}{Proposition}
+%\theoremstyle{remark}[theorem]
+\newtheorem{remark}{Remarque}
+%\theoremstyle{plain}\newtheorem{ex}[theorem]{Example}
+%\theoremstyle{plain}\newtheorem{exper}[theorem]{Experiment}
+\newtheorem{property}{Property}
+\newtheorem{hyp}{Hypothèse}[section]
+
+\newcommand{\alertred}[1]{{\color[rgb]{0.95,0,0.05}{#1}}}
+\newcommand{\sumli}{\sum\limits}
+\newcommand{\tl}{\tilde}
+\newcommand{\vp}{\varphi}
+\newcommand{\pa}{\partial}
+
+% source: https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
+\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+\newcommand{\Python}{Python}
+\newcommand{\sympy}{SymPy}
+
+\title{\textbf{Chapitre 3 : Modèle hybride linéarisé dans le cas $1dz-3dv$}}
+\date{}
+
+\newcommand{\commentaire}[2][]{%
+  \ifthenelse{\equal{#1}{}}%
+    {\textbf{#2}}%
+  {%
+  \ifthenelse{\equal{#1}{Anais}}%
+    {\textcolor{blue}{#2}}%
+  {\ifthenelse{\equal{#1}{Nicolas}}%
+    {\textcolor{orange}{#2}}%
+  {\ifthenelse{\equal{#1}{Josselin}}%
+  {\textcolor{purple}{#2}}%
+  {\textcolor{teal}{#2}\footnote{Commentaire rédigé par #1}%
+  }}}}%
+}
+\newcommand{\Anais}[1]{\commentaire[Anais]{#1}}
+\newcommand{\Nicolas}[1]{\commentaire[Nicolas]{#1}}
+\newcommand{\Josselin}[1]{\commentaire[Josselin]{#1}}
+
+\begin{document}
+
+\maketitle
+
+J'ai ajouter une commande pour des commentaires, qui sera simple à modifier pour que tout le texte apparaisse normalement (ou le supprimer complètement) au lieu d'enlever tous les \texttt{\textbackslash{}textcolor\{color\}\{text\}} :
+\begin{itemize}
+  \item \commentaire{Ceci est un commentaire anonyme : \texttt{\textbackslash{}commentaire\{Test\}}}
+  \item \Anais{Ceci est un commentaire rédigé par Anaïs : \texttt{\textbackslash{}Anais\{Test\}}.\\C'est un alias de \texttt{\textbackslash{}commentaire[Anais]\{Test\}}}
+  \item \Nicolas{Ceci est un commentaire rédigé par Nicolas : \texttt{\textbackslash{}Nicolas\{Test\}}.\\C'est un alias de \texttt{\textbackslash{}commentaire[Nicolas]\{Test\}}}
+  \item \Josselin{Ceci est un commentaire rédigé par Josselin : \texttt{\textbackslash{}Josselin\{Test\}}.\\C'est un alias de \texttt{\textbackslash{}commentaire[Josselin]\{Test\}}}
+  \item \commentaire[Bob]{Ceci est un commentaire rédigé par quelqu'un d'autre, son nom s'affiche alors en note en bas de page : \texttt{\textbackslash{}commentaire[Bob]\{Test\}}}
+\end{itemize}
+
+
+\Josselin{Dans ce chapitre, l'introduction, la présentation du modèle, la section sur les schémas numériques ainsi que les premiers résultats numériques seront une reprise (plus ou moins étoffée) de l'article. Dans l'immédiat j'avais envie d'écrire des trucs un peu plus neufs, et savoir comment l'étoffer.}
+
+\input{sections/intro}
+
+\input{sections/models}
+
+\input{sections/scheme}
+
+\input{sections/codegen}
+
+\input{sections/numeric}
+
+\input{sections/approx}
+
+\section{Les sections manquantes sur de l'optimisation de code}
+\Josselin{Je n'ai toujours pas touché à l'optimisation avec OpenMP. J'ai trouvé des références pour faire en sorte que ça se passe bien avec FFTW, donc ça ne devrait pas prendre trop de temps (je l'espère).}
+
+\Josselin{On avait aussi évoqué avec Nicolas de tester de la \emph{mixed precision} c'est-à-dire de ne travailler qu'avec des \texttt{float} sur $f_h$ et des \texttt{double} sur les autres variables, le problème (pour que ce soit performant) est d'avoir des algorithmes efficaces pour faire en sorte qu'une somme de \texttt{float} donne un \texttt{double}, j'ai cru voir des choses dans ce sens là dans la bibliothèque \CC{} que j'utilise : Boost.}
+
+\Josselin{N'est pas du tout évoqué une utilisation de MPI, les multiples FFT (algorithme non local) ne sont pas favorables à une telle mise en place. Pas de portage sur GPU n'est pas évoqué non plus. On remarque que dans l'algorithme~\ref{alg:squeltte} sur un étage que la partie sur $f_h$ peut être traitée indépendamment des champs spatiaux, donc potentiellement sur GPU (qui gèrent par défaut des \texttt{float} et non des \texttt{double}) pendant que les champs sont calculés sur CPU, permettant des sorties de monitoring plus faciles des grandeurs intégrales. Bref c'est une ouverture possible.}
+
+\section{Références bibliographiques}
+
+\printbibliography
+
+\appendix
+% annexe
+%\input{sections/annexe_rel_disp.tex}
+
+\end{document}
