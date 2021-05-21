@@ -1,0 +1,81 @@
+\documentclass{these-dbl}
+
+\hypersetup{
+    pdfauthor   = {Josselin Massot},
+    pdftitle    = {Modélisation hybride fluide-cinétique pour les plasmas},
+    pdfsubject  = {Cette thèse parle de modélisation hybride fluide-cinétique pour les plasmas},
+    pdfkeywords = {plamsa, intégrateur exponentiel, WENO, Runge-Kutta, Lawson},
+}
+
+\input{./_misc/preambule}
+
+
+% Spécifier vos fichiers de bibliographie
+% Specify you bibliography files here
+\addbibresource{./biblio.bib}
+
+\begin{document}
+
+% Page de garde avec commande \maketitle
+% Front cover calling \maketitle
+\input{./_couv/pagedegarde}
+
+% Sélectionner la langue du contenu suivant cette ligne
+% Select the content language following this line
+\selectlanguage{french}
+
+% Inclusion du chapitre remerciement
+% Input acknowledgement chapter
+\clearemptydoublepage
+\input{./ack/acknowledgement}
+
+% Ne pas oublier cette commande qui g\'{e}n\`{e}re la page de couverture avant
+% This command will generate the front cover
+\frontmatter
+\clearemptydoublepage
+\renewcommand{\contentsname}{Table des matières}
+\tableofcontents %sommaire %table of content
+%\shorttableofcontents{Sommaire}{0}
+
+\clearemptydoublepage
+\input{./intro/introduction}
+
+\clearemptydoublepage
+\mainmatter
+\input{./chap1/chapitre1}
+
+\clearemptydoublepage
+\input{./chap2/chapitre2}
+
+\clearemptydoublepage
+\mainmatter
+\input{./chap3/chapitre3}
+
+\clearemptydoublepage
+\backmatter
+\input{./conclu/conclusion}
+
+% Chapitre pour la bibliographie
+% Bibliography chapter
+\clearemptydoublepage
+\phantomsection % To have a correct link in the table of contents
+\addcontentsline{toc}{chapter}{Bibliographie}
+
+% nocite: Pour citer la totalit\'{e} des r\'{e}f\'{e}rences contenues dans le fichier biblio
+% nocite: In order to cite all the references included biblio
+%\nocite{*}
+%\printbibliography[heading=primary,keyword=primary]
+%\newpage
+%\nocite{*}
+%\printbibliography[heading=secondary,keyword=secondary]
+
+\nocite{*}
+\printbibliography
+
+\clearemptydoublepage
+% Pour avoir la quatrième de couverture sur une page paire
+% To have the back cover on an even page
+\cleartoevenpage[\thispagestyle{empty}]
+\input{./_couv/resume}
+
+\end{document}
