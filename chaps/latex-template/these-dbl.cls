@@ -85,10 +85,20 @@
 % il y a un bug avec href qui fait que les liens ne fonctionnent pas
 \usepackage{etoolbox}
 \pretocmd{\chapter}{\renewcommand\thesection{\thechapter.\arabic{section}}}{}{}
-\newcommand\appsection{%
-  \setcounter{section}{0}%
-  \renewcommand\thesection{\thechapter.\Alph{section}}}
+%\newcommand\appsection{%
+%  \setcounter{section}{0}%
+%  \renewcommand\thesection{\thechapter.\Alph{section}}}
 
+\newcounter{appendixShift}
+\newcommand\appsection{%
+  \setcounter{appendixShift}{\value{section}}%
+  \renewcommand\thesection{%
+    \thechapter.\symbol{\numexpr`A\value{section}-\value{appendixShift}\relax}%
+  }%
+}
+
+%  \renewcommand\thesection{\thechapter.\Alph{section}-\the\value{appendixShift}}}
+%   \thechapter.\symbol{\numexpr64+\c@section-\value{appendixShift}\relax}-\the\value{appendixShift}%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
@@ -504,7 +514,8 @@
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername~\thechapter~--\ \textit{#1}}{}}
 \fancyhead[LE,RO]{\small\thepage}
     \fancyhead[RO]{\small\rightmark}   % \rightmark = section courante
-    \fancyhead[LE]{\small Partie~\thepart, \leftmark} % \leftmark = chapitre courant
+    %\fancyhead[LE]{\small Partie~\thepart, \leftmark} % \leftmark = chapitre courant
+    \fancyhead[LE]{\leftmark} % \leftmark = chapitre courant
     \fancyfoot[C]{\thepage}               % marque la page au centre
 }     
 
