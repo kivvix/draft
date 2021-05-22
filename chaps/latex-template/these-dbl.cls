@@ -81,6 +81,14 @@
 % petite astuce pour conserver la valeur du titre
 \def\title#1{\gdef\@title{#1}\gdef\thetitleFR{#1}}
 
+% pour avoir des appencides à la fin de chaque chapitre
+% il y a un bug avec href qui fait que les liens ne fonctionnent pas
+\usepackage{etoolbox}
+\pretocmd{\chapter}{\renewcommand\thesection{\thechapter.\arabic{section}}}{}{}
+\newcommand\appsection{%
+  \setcounter{section}{0}%
+  \renewcommand\thesection{\thechapter.\Alph{section}}}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%

@@ -1,0 +1,15 @@
+% !TEX root = ../chap3.tex
+
+\section{Présentation du modèle}
+
+$$
+  \begin{cases}
+    \partial_t j_{c,x} &= \Omega_{pe}^2E_x - j_{c,y}B_0 \\
+    \partial_t j_{c,y} &= \Omega_{pe}^2E_y + j_{c,x}B_0 \\
+    \partial_t B_{x}   &=  \partial_zE_y \\
+    \partial_t B_{y}   &= -\partial_zE_x \\
+    \partial_t E_{x}   &= -\partial_zB_y - j_{c,x} + \int v_xf_h\,\mathrm{d}v \\
+    \partial_t E_{y}   &=  \partial_zB_x - j_{c,y} + \int v_yf_h\,\mathrm{d}v \\
+    \partial_t f_h     &= -v_z\partial_zf_h + (E_x+v_yB_0-v_zB_y)\partial_{v_x}f_h + (E_y-v_xB_0+v_zB_x)\partial_{v_y}f_h + (v_xB_y - v_yB_x)\partial_{v_z}f_h
+  \end{cases}
+$$

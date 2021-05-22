@@ -1,7 +1,7 @@
 .PHONY: all viewpdf pdf clean
 
 TARGET       = main
-SOURCE_FILES = $(TARGET).tex $(wildcard */*.tex)
+SOURCE_FILES = $(TARGET).tex $(wildcard */*.tex) $(wildcard */sections/*.tex)
 BIB_FILES    = $(wildcard biblio/*.bib)
 FIGURES      = $(wildcard */figures/*)
 
@@ -22,7 +22,8 @@ viewpdf: pdf
 pdf: $(TARGET).pdf
 
 $(TARGET).pdf: $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
-	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
+	#pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
+	pdflatex -jobname=$(TARGET) $(SOURCE_FILES)
 	biber $(TARGET)
 	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES) # For biber
 

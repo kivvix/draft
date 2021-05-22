@@ -19,6 +19,7 @@
 %\usepackage[pdfborder={0 0 0 [3 3]},pdftex,unicode=true,pdfa=true]{hyperref}
 %\usepackage[unicode=true,pdfa=true]{hyperref}
 \usepackage{bookmark}
+\usepackage{appendix}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -39,4 +40,47 @@
 %\theoremstyle{plain}\newtheorem{exper}[theorem]{Experiment}
 \newtheorem{property}{Property}
 \newtheorem{hyp}{Hypothèse}[section]
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algorithme}
+\renewcommand{\algorithmicprocedure} {\textbf{Proc\'edure} }
+\renewcommand{\algorithmicwhile}     {\textbf{tant que}    }
+\renewcommand{\algorithmicdo}        {\textbf{faire :}     }
+\renewcommand{\algorithmicend}       {\textbf{fin}         }
+\renewcommand{\algorithmicif}        {\textbf{si}          }
+\renewcommand{\algorithmicelse}      {\textbf{sinon}       }
+\renewcommand{\algorithmicthen}      {\textbf{alors}       }
+\renewcommand{\algorithmicfor}       {\textbf{pour}        }
+\renewcommand{\algorithmicforall}    {\textbf{pour tout}   }
+\renewcommand{\algorithmicrepeat}    {\textbf{répéter}     }
+\renewcommand{\algorithmicuntil}     {\textbf{jusqu'à}     }
+\renewcommand{\algorithmicfunction}  {\textbf{Fonction}    }
+\renewcommand{\algorithmicreturn}    {\textbf{retourner}   }
+
+% source: https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
+\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+\newcommand{\Python}{Python}
+\newcommand{\sympy}{SymPy}
+
+%%%%%%%%%%%% COMMENTAIRES ! À essayer de virer au fur et à mesure
+\newcommand{\commentaire}[2][]{%
+  \ifthenelse{\equal{#1}{}}%
+    {\textbf{#2}}%
+  {%
+  \ifthenelse{\equal{#1}{Anais}}%
+    {\textcolor{blue}{#2}}%
+  {\ifthenelse{\equal{#1}{Nicolas}}%
+    {\textcolor{orange}{#2}}%
+  {\ifthenelse{\equal{#1}{Josselin}}%
+  {\textcolor{purple}{#2}}%
+  {\textcolor{teal}{#2}\footnote{Commentaire rédigé par #1}%
+  }}}}%
+}
+\newcommand{\Anais}[1]{\commentaire[Anais]{#1}}
+\newcommand{\Nicolas}[1]{\commentaire[Nicolas]{#1}}
+\newcommand{\Josselin}[1]{\commentaire[Josselin]{#1}}
+
+
 

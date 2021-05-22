@@ -1,0 +1,135 @@
+% !TEX root = ../chap3.tex
+
+\section{Schémas numériques}
+
+\subsection{Méthode de \emph{splitting} haniltonien}
+
+Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle $1dz -- 3dv$ celui-ci se décompose en 4 étapes, et il s'écrit sous la forme :
+\begin{equation}
+  \begin{aligned}
+    & \partial_t U = \{ U,\mathcal{H}_{j_c}\} + \{ U,\mathcal{H}_B\} + \{ U,\mathcal{H}_E\} + \{ U,\mathcal{H}_{f_h}\} \\
+    & U(t=0) = U_0
+  \end{aligned}
+  \label{eq:hamsplitting}
+\end{equation}
+
+Nous allons nous intéresser au calcul de $\varphi_t^{[j_c]}$, $\varphi_t^{[B]}$, $\varphi_t^{[E]}$ et $\varphi_t^{[f_h]}$ les solutions correspondant à chaque étape de sorte que $\varphi(U_0)$ de~\eqref{eq:hamsplitting} peut être approximé au temps $t$ avec une composition des sous-flux $\varphi_t^{[j_c,B,E,f_h]}$.
+
+\paragraph{Étape $\mathcal{H}_{j_c}$ :\\}
+
+Pour obtenir $\varphi_t^{[j_c]}$, solution du sous-flux $\mathcal{H}_{j_c}$ :
+$$
+  \begin{cases}
+    \partial_t j_{c,\perp} &= -Jj_{c,\perp}B_0 \\
+    \partial_t B_\perp     &= 0 \\
+    \partial_t E_\perp     &= -j_{c,\perp} \\
+    \partial_t f_h         &= 0
+  \end{cases}
+$$
+nous calculons :
+$$
+  \varphi_t^{[j_c]}(U_0) = \begin{pmatrix}
+    e^{-tJ}j_{c,\perp}(0)B_0 \\
+    E_\perp(0) - J\left(e^{-tJ}-I\right)j_{c,\perp}(0) \\
+    B_\perp(0) \\
+    f_h(0)
+  \end{pmatrix}
+$$
+Cela s'obtient car $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$.
+
+
+\paragraph{Étape $\mathcal{H}_B$ :\\}
+Nous souhaitons calculer $\varphi_t^{[B]}$, correspondant à la solution du système :
+$$
+  \begin{cases}
+    \partial_t j_{c,\perp} &= 0 \\
+    \partial_t B_\perp     &= 0 \\
+    \partial_t E_\perp     &= -J\partial_zB_\perp \\
+    \partial_t f_h         &= 0
+  \end{cases}
+$$
+qui s'obtient de la manière suivante :
+$$
+  \varphi_t^{[B]}(U_0) = \begin{pmatrix}
+    j_{c,\perp}(0) \\
+    E_\perp(0) - tJ\partial_zB_\perp(0) \\
+    B_\perp(0) \\
+    f_h(0)
+  \end{pmatrix}
+$$
+
+
+\paragraph{Étape $\mathcal{H}_E$ :\\}
+Pour calculer la solution du sous-flux correspondant à $\mathcal{H}_E$, nous devons résoudre le système suivant :
+$$
+  \begin{cases}
+    \partial_t j_{c,\perp} &= \Omega_{pe}^2E_{perp} \\
+    \partial_t B_\perp     &= J\partial_zE_\perp \\
+    \partial_t E_\perp     &= (0,0)^\mathsf{T} \\
+    \partial_t f_h         &= E_\perp\cdot\nabla_{v_\perp}f_h
+  \end{cases}
+$$
+
+Avec la conition initiale donnée par $U(t=0)=U_0=(j_{c,\perp},B_\perp,E_\perp,f_h)(t=0)$, la solution au temps $t$ est obtenue par :
+$$
+  \varphi_t^{[E]}(U_0) = \begin{pmatrix}
+    j_{c,\perp} + t\Omega_{pe}^2E_\perp(0)\\
+    B_\perp(0)+tJ\partial_zE_\perp(0) \\
+    E_\perp(0) \\
+    f_h(0,z,v_\perp+tE_\perp(0),v_z)
+  \end{pmatrix}
+$$
+Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$).
+
+\paragraph{Étape $\mathcal{H}_{f_h}$ :\\}
+
+Pour la dernière étape, nous devons calculer une solution du sous-système :
+$$
+  \begin{cases}
+    \partial_t  j_{c,\perp} &= 0 \\
+    \partial_t B_\perp      &= 0 \\
+    \partial_t E_\perp      &= \int v_\perp f_h\,\mathrm{d}v\\
+    \partial_t f_h          &= -v_z\partial_zf_h + (v_yB_0-v_zB_y)\partial_{v_x}f_h + (-v_xB_0+v_zB_x)\partial_{v_y}f_h + (v_xB_y - v_yB_x)\partial_{v_z}f_h
+  \end{cases}
+$$
+Comme pour la résolution de l'équation de Vlasov-Maxwell (\ref{Li:2019}), ce système ne peut être résolu exactement en temps. Mais en suivant \ref{Li:2019}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela condtuit à résoudre des sous-système suivant :
+\begin{itemize}
+  \item $\mathcal{H}_{f_{h,x}}$ :
+  \item $\mathcal{H}_{f_{h,y}}$ :
+  \item $\mathcal{H}_{f_{h,z}}$ :
+\end{itemize}
+ 
+\subsection{Méthode de Lawson sur le modèle hybride}
+
+Dans cette section nous allons présenter la méthode d'intégration exponentielle pour discrétiser le modèle $1dz-3dv$.
+
+Il est naturel de réécrire le système sous la forme :
+$$
+  \partial_t U = LU + N(t,U)
+$$
+
+avec :
+$$
+  L = \begin{pmatrix}
+    0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\
+    B_0 &  0   & 0          &  0          &  0             & \Omega_{pe}^2 & 0 \\
+    0   &  0   & 0          &  0          &  0             & \partial_z    & 0 \\
+    0   &  0   & 0          &  0          & -\partial_z    & 0             & 0 \\
+   -1   &  0   & 0          & -\partial_z &  0             & 0             & 0 \\
+    0   & -1   & \partial_z &  0          &  0             & 0             & 0 \\
+    0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\
+  \end{pmatrix},
+  \quad
+  N:t,U\mapsto \begin{pmatrix}
+    0 \\
+    0 \\
+    0 \\
+    0 \\
+    \int v_x f \,\mathrm{d}v \\
+    \int v_y f \,\mathrm{d}v \\
+    E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\nabla_v f
+  \end{pmatrix}
+$$
+Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\partial_z \equiv ik$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$.
+
+
