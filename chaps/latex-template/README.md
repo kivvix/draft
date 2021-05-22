@@ -17,6 +17,7 @@ Les autres dossiers contiennent chacun un chapitre du document, ainsi :
 * `chap3` contient les débuts du 1dz-3dv, tout l'article n'a pas encore été repris.
 * `intro` contiendra l'introduction
 * `conclu` contiendra une possible conclusion
+* `ack` contient les remerciements
 
 ## Mes petits ajouts
 
@@ -31,4 +32,10 @@ En plus d'un simple `make min` j'ai aussi ajouté une variable `\localPath` dans
 J'ai également ajouté la possibilté d'avoir des appendices propres à un chapitre (pour regrouper dans le chapitre des annexes qui lui sont associées). Cela est utile pour l'instant que dans le chapitre 2.
 
 La bibliographie est commune à tous les chapitres, mais celle-ci indique les pages où sont référées les articles cités. J'ai mis tout mon fichier de biblio depuis le début de ma thèse, donc il y a un peu de ménage à y faire (prenons pour exemple des pdf de travail).
+
+Ajout des macros de TeXShop :
+```
+  % !TEX root = ../main.tex
+```
+pour que la compilation ne soit pas celle du fichier courrant mais celle du fichier parent
 
