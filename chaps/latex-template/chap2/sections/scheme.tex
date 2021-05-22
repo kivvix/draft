@@ -1,0 +1,439 @@
+% !TEX root = ../chap2.tex
+
+\section{Schémas numériques}
+\label{s:scheme}
+
+Nous allons maintenant présenter les schémas numériques développés pour approcher la solution du modèle hybride linéarisé (\ref{eq:vahl}). Notre but est de comparer deux approches pour la discrétisation temporelle. D'une part, pour profiter de la structure hamiltonienne présentée dans la section \ref{s:geom}, nous proposons une méthode de \emph{splitting} hamiltonien en temps, couplée à une méthode de composition d'ordre élevé, en l’occurrence la méthode de Suzuki (\cite{Suzuki:1990}, \cite{Hairer:2006}, \cite{Blanes:2019}). Concernant la discrétisation en espace, nous utilisons la transformée de Fourier discrète, alors que la discrétisation en vitesse est effectuée par une méthode semi-Lagrangienne d'ordre 5. Nous détaillons cette approche dans la sous-section \ref{ssec:splitting}. D'autre part, 
+le mod\`ele VHL (\ref{eq:vahl}) peut \^etre r\'e\'ecrit sous la forme 
+$$
+\partial_t U = AU + N(U), 
+$$
+avec $A$ une matrice $3\times 3$ et $N$ repr\'esente les termes non lin\'eaires. On reconnait une structure particuli\`ere 
+qu'un intégrateur exponentiel peut exploiter, en particulier pour \'eviter une condition CFL trop restrictive induite par le terme de transport en espace (souvent la plus restrictive \cite{Crouseilles:2019b}).  
+Nous présentons dans la sous-section \ref{ssec:lawson} la discrétisation en temps de Lawson d'ordre 4 que nous avons choisi d'implémenter. Celle-ci est couplée à une méthode de transformée de Fourier discrète en espace et à une méthode WENO d'ordre 5 en vitesse. Les deux schémas numériques obtenus sont donc d'ordre élevé dans toutes les variables. Pour optimiser le temps de calcul des deux schémas, nous proposons d'utiliser une méthode de pas de temps adaptatif, présentée dans la sous-section \ref{ssec:dtadapt}.
+Pour le cas des sch\'emas exponentiels, cette approche de pas de temps adaptatif est motiv\'ee par le fait que 
+le terme non lin\'eaire $E\partial_v f$ ne va pas induire 
+de grand d\'eplacement au moins dans la phase lin\'eaire (car $|E|<\!\!< 1$ dans ce r\'egime), ce qui permettra d'utiliser de grands pas de temps ; dans le cas o\`u $E$ 
+est plus grand, cela signifie que le syst\`eme tente de reproduire des ph\'enom\`enes complexes non lin\'eaires, ainsi un pas de temps 
+plus petit devra \^etre consid\'er\'e pour capturer ces  ph\'enom\`enes. 
+
+\subsection{Méthode de \emph{splitting} hamiltonien}\label{ssec:splitting}
+
+On construit une méthode numérique de type \emph{splitting} à partir de la décomposition 
+du Hamiltonien
+$$
+  \mathcal{H} = \mathcal{H}_E +\mathcal{H}_u + \mathcal{H}_f. 
+$$
+Ainsi, avec $U=(u, E, f)$, le \emph{splitting} en temps se déduit de 
+\begin{equation}
+\label{dtU}
+  \partial_t U = \{ U, \mathcal{H}_E +\mathcal{H}_u + \mathcal{H}_f \} = \{ U, \mathcal{H}_E  \}+\{ U, \mathcal{H}_u  \}+\{ U,  \mathcal{H}_f \}.
+\end{equation}
+Dans la suite, on nnontera les solutions correspondantes aux trois différentes parties $\varphi^{[E]}$, $\varphi^{[u]}$ et $\varphi^{[f]}$.  
+On commence par  $\varphi^{[E]}(U)$ solution de $\partial_t U = \{ U, \mathcal{H}_E  \}$,  
+\begin{equation}
+  \begin{aligned}
+    \partial_t u = \{ u, \mathcal{H}_E \} &= E \\
+    \partial_t E = \{ E, \mathcal{H}_E \} &=  0 \\
+    \partial_t f = \{ f, \mathcal{H}_E \} &=  -E\partial_v f \\
+  \end{aligned}
+  \label{eq:varphi:E}
+\end{equation}
+Puis, on considère  $\partial_t U = \{ U, \mathcal{H}_u  \}$ (dont la solution est $\varphi^{[u]}(U)$)
+\begin{equation}
+  \begin{aligned}
+    \partial_t u = \{ u, \mathcal{H}_u \} &=  0 \\
+    \partial_t E = \{ E, \mathcal{H}_u \} &=  - \rho_c u \\
+    \partial_t f = \{ f, \mathcal{H}_u \} &=  0 \\
+  \end{aligned}
+  \label{eq:varphi:u}
+\end{equation}
+Enfin, on écrit les équations associées à  $\partial_t U = \{ U, \mathcal{H}_f  \}$ (dont la solution est $\varphi^{[f]}(U)$), 
+\begin{equation}
+  \begin{aligned}
+    \partial_t u = \{ u, \mathcal{H}_f \} &=  0 \\
+    \partial_t E = \{ E, \mathcal{H}_f \} &=  - \int_{\mathbb{R}} vf\,\mathrm{d}{v} \\
+    \partial_t f = \{ f, \mathcal{H}_f \} &=  -v\partial_x f \\
+  \end{aligned}
+  \label{eq:varphi:f}
+\end{equation}
+Ainsi, la solution $\varphi(U)$ de \eqref{dtU} sera approch\'ee par la composition 
+de $\varphi^{[u]}(U)$, $\varphi^{[E]}(U)$ et $\varphi^{[f]}(U)$. Par exemple, un splitting de Lie-Trotter 
+permet d'approcher $\varphi(U)$ gr\^ace \`a $\varphi(U)\approx \varphi^{[E]}\circ  \varphi^{[u]}\circ  \varphi^{[f]}(U)$. 
+Une remarque importante est que chaque sous-système peut être résolu exactement en temps de sorte 
+que l'erreur en temps ne provient que du splitting.  
+
+\subsubsection{Résolution de chaque sous-système}
+
+Nous nous intéressons à la semi-discrétisation en temps du \emph{splitting} hamiltonien donné par les trois systèmes (\ref{eq:varphi:E})-(\ref{eq:varphi:u})-(\ref{eq:varphi:f}). Soit $\Delta t>0$ un pas de temps, on définit $t^n=n\Delta t$ pour $n\geq 0$ et on note $U^n$ l'approximation de $U(t^n)$. Connaissant $U^n$, nous souhaitons calculer $U^{n+1}$. Pour ne pas multiplier les notations, nous notons dans chaque étape du \emph{splitting} $\tilde{U}^n$ le résultat de l'étape précédente (pour la première étape $\tilde{U}^n=U^n$). Il est important dans une méthode de \emph{splitting} de résoudre exactement chaque sous-système. Nous résolvons chaque système de la manière suivante.
+
+\paragraph{$\bullet\quad U^{[E]}_{\Delta t} = \varphi^{[E]}_{\Delta t}(\tilde{U}^n)$ :} dans cette étape, $E$ est constant, par conséquent l'intégration en temps de l'équation $\partial_t u_c = E$ ne pose pas de problème :
+$$
+  {u_c}^{[E]}_{\Delta t} = \tilde{u}_c^n + \Delta t \tilde{E}^n
+$$
+La deuxième équation $\partial_t E = 0$ se résout par une simple copie des données :
+$$
+  E^{[E]}_{\Delta t} = \tilde{E}^n
+$$
+La troisième équation $\partial_t f_h+E\partial_vf_h=0$ est un transport en $v$, on pourrait souhaiter résoudre cette équation par une transformée de Fourier en $v$, mais pour effectuer une comparaison avec la méthode de Lawson que nous verrons par la suite, nous utiliserons ici une méthode semi-lagrangienne, par conséquent le problème se résout en remontant une caractéristique.
+$$
+  {f_h}^{[E]}_{\Delta t} = \tilde{f}_h^n(x,v-\Delta t\tilde{E}^n)
+$$
+On synthétise cela avec :
+$$
+  U^{[E]}_{\Delta t} = \varphi^{[E]}_{\Delta t}(\tilde{U}^n)
+  = \begin{pmatrix}
+      \tilde{u}_c^n + \Delta t \tilde{E}^n \\
+      \tilde{E}^n \\
+      \tilde{f}_h (x,v-\Delta t \tilde{E}^n)
+    \end{pmatrix}
+$$
+
+\paragraph{$\bullet\quad U^{[u]}_{\Delta t} = \varphi^{[u]}_{\Delta t}(\tilde{U}^n)$ :} dans cette étape les variables $u_c$ et $f_h$ n'évoluent pas au cours du temps, il n'y a qu'une équation différentielle sur $E$ que l'on peut résoudre de façon exacte. Pour la variable $u_c$, respectivement $f_h$, on a l'équation $\partial_tu_c = 0$, respectivement $\partial_tf_h = 0$, ce qui nous donne :
+$$
+  {u_c}^{[u]}_{\Delta t} = \tilde{u}_c^n \qquad {f_h}^{[u]}_{\Delta t} = {\tilde{f}_h}^n
+$$
+Enfin l'équation sur $E$ : $\partial_t E = -\rho_c^0u_c$ :
+$$
+  E^{[u]}_{\Delta t} = \tilde{E}^n - \Delta t \rho_c^0 \tilde{u}_c^n
+$$
+On résumera cette étape par :
+$$
+  U^{[u]}_{\Delta t} = \varphi^{[u]}_{\Delta t}(\tilde{U}^n)
+  = \begin{pmatrix}
+    \tilde{u}^n \\
+    \tilde{E}^n - \Delta t \rho_c\tilde{u}_c^n \\
+    \tilde{f}_h^n
+  \end{pmatrix}
+$$
+
+\paragraph{$\bullet\quad U^{[f]}_{\Delta t} = \varphi^{[f]}_{\Delta t}(\tilde{U}^n)$ :} pour résoudre cette étape, la première équation $\partial_t u_c = 0$ ne présente pas de difficulté :
+$$
+  {u_c}^{[f]}_{\Delta t} = \tilde{u}_c^n
+$$
+la troisième équation $\partial_t f_h + v\partial_x f_h = 0$ se résout simplement après une transformée de Fourier en $x$, et elle peut se résoudre exactement pour tout $s\in[t^n,t^{n+1}]$ :
+$$
+  {f_h}^{[f]}_{\Delta t} = {f_h}^{[f]}(\Delta t) \qquad {\hat{f}_h}^{[f]}(s) = e^{-ikv(s-t^n)}\hat{\tilde{f}}_h^n, 
+$$
+o\`u $\hat{\tilde{f}}_h^n$ d\'esigne la transform\'ee de Fourier de ${\tilde{f}}_h^n$ en $x$ et $k$ d\'esigne la variable de Fourier. 
+La deuxième équation $\partial_t E = -\int vf_h\,\mathrm{d}v$ profite de la connaissance exacte pour tout temps de $f_h$ sur l'intervalle de temps considéré, cela permet d'effectuer une intégration en temps sans difficulté, en effet on a :
+$$
+  \begin{cases}
+    \partial_t E = -\int vf_h\,\mathrm{d}v \\
+    \hat{f}_h^{[f]}(s) = e^{-ikv(s-t^n)}\hat{\tilde{f}}_h^n\ ,\quad\forall k\in\mathbb{Z}
+  \end{cases}
+$$
+On insère l'équation sur $f_h^{[f]}(s)$, pour tout $s\in[t^n,t^n+\Delta t]$, on travaille sur les modes de Fourier, une intégration en temps sur l'intervalle $[t^n,t^n+\Delta t]$ nous permet d'obtenir ($\hat{E}^{[f]}_{\Delta t}$ et  $\tilde{\hat{E}}^n$ d\'esignent les transform\'ees 
+de Fourier de ${E}^{[f]}_{\Delta t}$ et $\tilde{{E}}^n$)
+$$
+  \begin{aligned}
+    \hat{E}^{[f]}_{\Delta t} &= \tilde{\hat{E}}^n - \int_{t^n}^{t^n+\Delta t} \int_\mathbb{R} ve^{-ikv(s-t^n)}\hat{\tilde{f}}_h^n\,\mathrm{d}v\,\mathrm{d}s \\
+                             &= \tilde{\hat{E}}^n - \int_\mathbb{R} v\hat{\tilde{f}}_h^n\int_{t^n}^{t^n+\Delta t}e^{-ikv(s-t^n)}\,\mathrm{d}s\,\mathrm{d}v \\
+                             &= \tilde{\hat{E}}^n - \int_\mathbb{R} v\hat{\tilde{f}}_h^n\left[\frac{-1}{ikv}\left(e^{-ikv\Delta t}-1\right)\right]\,\mathrm{d}v\\
+                             &= \hat{\tilde{E}}^n - \frac{i}{k}\int_\mathbb{R} \left(e^{-ikv\Delta t}-1\right)\hat{\tilde{f}}_h^n\,\mathrm{d}v. 
+  \end{aligned}
+$$
+%où l'on rappelle que ${f_h}^{[f]}_{\Delta t} = \hat{\tilde{f}}_h^ne^{-ikv\Delta t}$, d'où :
+%\begin{equation}
+%  \hat{E}^{[f]}_{\Delta t} = \hat{\tilde{E}}^n - \frac{i}{k}\int \left.\hat{f}_h\right.^{[f]}_{\Delta t}\,\mathrm{d}v + \frac{i}{k}\int \hat{\tilde{f}}_h^n\,\mathrm{d}v 
+%\label{eq:remontee}
+%\end{equation}
+On synthétise cela avec :
+$$
+  U^{[f]}_{\Delta t} = \varphi^{[f]}_{\Delta t}(\tilde{U}^n)
+  = \begin{pmatrix}
+          \tilde{u}_c^n \\
+%          \hat{\tilde{E}}^n - \frac{i}{k}\int \left.\hat{f}_h\right.^{[f]}_{\Delta t}\,\mathrm{d}v + \frac{i}{k}\int \hat{\tilde{f}}_h^n\,\mathrm{d}v \\
+\hat{\tilde{E}}^n - \frac{i}{k}\int_\mathbb{R} \left(e^{-ikv\Delta t}-1\right)\hat{\tilde{f}}_h^n\,\mathrm{d}v\\ 
+          e^{-ikv\Delta t}\tilde{\hat{f}}_h^n
+        \end{pmatrix}
+$$
+
+On a ainsi chacune de nos 3 étapes qui est résolue de manière exacte. Le pas de temps d'intégration $\Delta t$ est à voir comme un paramètre de la résolution de chaque sous étape, ce qui permet en les réalisant successivement sur un pas de temps $\Delta t$, d'obtenir un \emph{splitting} de Lie. Mais nous pouvons les concaténer différemment, avec des pas d'intégration différents, pour construire la méthode de Strang ou une méthode d'ordre plus élevé que nous allons voir dans la sous-section suivante, la méthode de Suzuki.
+
+\subsubsection{Composition d'ordre élevé}
+
+On s'intéresse à une méthode en temps d'ordre élevé, la méthode de Suzuki \cite{Suzuki:1990}. Celle-ci se construit à partir de la méthode de Strang \cite{Strang:1968} dont la formulation à 3 étapes s'écrit comme suit :
+$$
+  U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} \circ \varphi^{[f]}_{\Delta t} \circ \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} (U^n) 
+$$
+La méthode de Suzuki est une composition de 5 méthodes de Strang, donc un total de 25 étapes. Celle-ci s'écrit :
+$$
+  U^{n+1} = \mathcal{S}_{\Delta t}(U^n) = S_{\alpha_1\Delta t} \circ S_{\alpha_2\Delta t} \circ S_{\alpha_3\Delta t} \circ S_{\alpha_2\Delta t} \circ S_{\alpha_1\Delta t} (U^n)
+$$
+où les constantes $\alpha_i$ sont définies par :
+$$
+  \alpha_1 = \alpha_2 = \frac{1}{4 - \sqrt[3]{4}} \qquad \alpha_3 = \frac{1}{1- 4^{\frac{2}{3}}}
+$$
+Pour rappel, la méthode de Strang est une composition d'ordre 2 en temps, la méthode de Suzuki ainsi construite est une méthode d'ordre 4. 
+On ref\`ere \`a \cite{Casas:2020} pour d'autres m\'ethodes de composition bas\'ees sur une d\'ecomposition en trois parties. 
+
+\subsubsection{Discrétisation de l'espace des phases}
+
+Avec les conditions p\'eriodiques en espace, il parait naturel d'effectuer la résolution du système~\eqref{eq:varphi:f} en espace 
+gr\^ace aux transformées de Fourier en $x$. Cette \'etape sera effectuée par l'algorithme de transformée de Fourier rapide (FFT) qui effectue une transformée de Fourier discrète. Ainsi l'équation sur $E$ et le transport en $x$ de la variable $f_h$ s'effectuent dans l'espace de Fourier discret. Pour le système~\eqref{eq:varphi:E} où nous résolvons l'équation de transport en $v$ de la quantité $f_h$ en utilisant le 
+fait que $f$ est constante le long des  caractéristiques, nous utiliserons une interpolation à l'aide d'un polynôme par morceaux de Lagrange de degré 5 (voir \cite{Charles:2013}). 
+
+
+% TODO: préciser un peu plus la méthode Lag5
+
+\subsection{Méthode de Lawson sur le modèle hybride}\label{ssec:lawson}
+
+Nous présentons une seconde approche pour la discrétisation en temps du modèle (\ref{eq:vahl}), que nous comparerons à la méthode de splitting présentée dans la sous-section \ref{ssec:splitting}. Il s'agit de la méthode de Lawson \cite{Lawson:1967}, qui fait partie de la classe des méthodes de type exponentielle.
+
+\subsubsection{Présentation de la méthode de Lawson}
+
+Le système VHL \eqref{eq:vahl} s'écrit, pour un mode $k$ après une transformée de Fourier en $x$ sur l'équation de Vlasov sur $f_h$ :
+\begin{equation}
+  \begin{cases}
+    \partial_t u_c = E \\
+    \partial_t E = -\rho_c^{(0)}u_c - \int_\mathbb{R} vf_h\,\mathrm{d}v \\
+    \partial_t \hat{f}_h + ikv \hat{f}_h + \widehat{E\partial_vf_h} = 0
+  \end{cases}
+  \label{eq:vahlfft}
+\end{equation}
+où $\hat{f}_h:= \hat{f}_h(t, k, v)$ d\'esigne la transform\'ee de Fourier de $f_h(t, x,v)$ par rapport \`a $x$, $k$ \'etant la variable de Fourier. 
+Ce modèle peut se réécrire sous la forme suivante :
+$$
+  \partial_t\begin{pmatrix} u_c \\ E \\ \hat{f}_h \end{pmatrix}
+  + \begin{pmatrix}
+    0            & -1 & 0   \\
+    \rho_c^{(0)} &  0 & 0   \\
+    0            &  0 & ikv \\
+  \end{pmatrix}\begin{pmatrix} u_c \\ E \\ \hat{f}_h \end{pmatrix}
+  + \begin{pmatrix} 0 \\ \int_\mathbb{R} vf_h\,\mathrm{d}v \\ \widehat{E\partial_vf_h} \end{pmatrix}
+  = 0. 
+$$
+On pose $U =\left(u_c , E , \hat{f}_h\right)^{\textsf{T}}$, ainsi que :
+$$
+  A = \begin{pmatrix}0 & -1 & 0 \\ \rho_c & 0 & 0 \\ 0 & 0 & ikv \\ \end{pmatrix},\qquad N(U) = \begin{pmatrix} 0 \\ \int_\mathbb{R} vf_h\,\mathrm{d}v \\ \widehat{E\partial_vf_h} \end{pmatrix}
+$$
+pour écrire \eqref{eq:vahlfft} sous une forme plus compacte suivante :
+$$
+  \partial_t U + AU + N(U) = 0. 
+$$
+Cette formulation est propice \`a l'utilisation d'int\'egrateurs exponentiels dont le point de d\'epart est la r\'e\'ecriture suivante 
+$$
+  \partial_t(e^{tA}U) + e^{tA}N(U) = 0. 
+$$
+Puis, en effectuant le changement d'inconnue $V=e^{tA}U$ et avec $\tilde{N}:(t,V)\mapsto e^{tA}N(e^{-tA}V)$, on peut écrire :
+$$
+  \partial_t V + \tilde{N}(t,V) = 0
+$$
+Cette équation peut se résoudre numériquement avec une méthode de type Runge-Kutta. Cette méthode Runge-Kutta sur $V$ peut se réécrire en méthode sur $U$, la méthode ainsi obtenue sur $U$ est appelée méthode de Lawson induite par la méthode Runge-Kutta choisie, présentée initialement dans \cite{Lawson:1967a}.
+
+Ainsi, \`a partir d'une m\'ethode de Runge-Kutta explicite\footnote{Nous ne nous intéresserons ici qu'à des méthodes Runge-Kutta explicites, ce qui explique que le tableau de Butcher est triangulaire strictement inférieur, ce choix est fait pour des raisons de résolution numérique, en effet nous souhaitons mettre en place des méthodes d'ordre élevé au plus faible coût de calcul possible.} d\'efinie par un tableau de Butcher 
+$$
+  \begin{array}{c|cccc}
+    0      &         &        &           & \\
+    c_2    & a_{2,1} &        &           & \\
+    \vdots & \vdots  & \ddots &           & \\
+    c_s    & a_{s,1} & \cdots & a_{s,s-1} & \\
+    \hline
+           & b_1     & \cdots & b_{s-1}   & b_s
+  \end{array}
+$$
+on peut \'ecrire  le sch\'ema sur $V$ 
+$$
+  \begin{aligned}
+    V^{(i)} &= v^n + \Delta t \sum_j a_{ij} \tilde{N}(t^n+c_j\Delta t , V^{(j)}) \\
+    V^{n+1} &= v^n + \Delta t \sum_i b_i \tilde{N}(t^n+c_i\Delta t , V^{(i)})
+  \end{aligned}
+$$
+avec la convention $V^{(0)} = V^n$.  Exprimé avec la variable $U$ le schéma s'écrit alors :
+$$
+  \begin{aligned}
+    U^{(s)} &= e^{c_s \Delta t A}U^n + \Delta t\sum_{j=0}^{s-1} a_{s, j} e^{-(c_j-c_s)\Delta t A} N(U^{(j)}),  \\
+    U^{n+1} &= e^{\Delta t A}U^n + \Delta t\sum_{i=0}^{s-1}    b_i e^{(1-c_i)\Delta t A} N(U^{(i)})
+  \end{aligned}
+$$
+
+Pour un comparatif d'ordre équivalent à celui de la méthode de splitting présentée dans la sous-section \ref{ssec:splitting}, la méthode de Lawson que nous choisissons est la méthode de Lawson sous-jacente à la méthode Runge-Kutta d'ordre 4 : $RK(4,4)$ :
+$$
+  \begin{array}{c|cccc}
+    0           & \\
+    \frac{1}{2} & \frac{1}{2} \\
+    \frac{1}{2} & 0           & \frac{1}{2} \\
+    1           & 0           & 0           & 1           \\
+  \hline
+    1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6}
+  \end{array}
+$$
+dont le schéma est :
+$$
+  \begin{aligned}
+    U^{(1)} &= e^{\frac{\Delta t}{2}A}U^n + \frac{\Delta t}{2}e^{\frac{\Delta t}{2}A} N(U^n)\\
+    U^{(2)} &= e^{\frac{\Delta t}{2}A}U^n + \frac{\Delta t}{2}N(U^{(1)}) \\
+    U^{(3)} &= e^{\Delta t A}U^n + \Delta t e^{\frac{\Delta t}{2}A}N(U^{(2)}) \\
+    U^{n+1} &= -\frac{1}{3}e^{\Delta tA}U^n + \frac{1}{3}e^{\frac{\Delta t}{2}A}U^{(1)} + \frac{2}{3}e^{\frac{\Delta t}{2}A}U^{(2)} + \frac{1}{3}U^{(3)} + \frac{\Delta t}{6}N(U^{(3)})
+  \end{aligned}
+$$
+
+Les méthodes de Lawson sont particuli\`erement intéressantes dans notre cadre car l'exponentielle de la matrice $A$ 
+est connue explicitement et peut donc \^etre calcul\'ee tr\`es efficacement 
+$$
+  e^{tA} = \begin{pmatrix}
+    \cos\left(\sqrt{\rho_c^{(0)}}t\right)                    & -\frac{\sin\left(\sqrt{\rho_c^{(0)}}t\right)}{\sqrt{\rho_c^{(0)}}} & 0 \\
+    \sqrt{\rho_c^{(0)}}\sin\left(\sqrt{\rho_c^{(0)}}t\right) & \cos\left(\sqrt{\rho_c^{(0)}}t\right)                              & 0 \\
+    0                                                        & 0                                                                  & e^{ikvt}
+  \end{pmatrix}. 
+$$
+
+\subsubsection{Discrétisation spatiale}
+
+Il est maintenant nécessaire de présenter les méthodes de discrétisation dans l'espace des phases. Dans le modèle~\eqref{eq:vahlfft} que nous résolvons il n'y a que l'équation de Vlasov qui présente des dérivées spatiales. La dérivée spatiale dans la direction $x$, symbolisée par le $ikv\hat{f}_h$, sera approch\'ee par une m\'ethode pseudo-spectrale faisant appel en pratique \`a 
+l'algorithme de transformée de Fourier rapide (FFT). La dérivée dans la direction $v$, $E\partial_v f_h$, 
+nécessite une méthode d'ordre élevé pour bien capturer la filamentation produite dans les solutions du modèle 
+de Vlasov-Poisson ou Vlasov-Ampère. Nous utilisons pour ce fait la méthode WENO (\emph{Weighted Essentially Non-oscillatory}) 
+d'ordre 5 \cite{Shu:2003},\cite{Liu:1994},\cite{Wang:2007}. Cette méthode se présente comme suit (voir aussi \cite{Crouseilles:2019b}):
+$$
+  \partial_t \left.\hat{f}_h\right._{k,\ell}
+  + v_\ell ik\left.\hat{f}_h\right._{k,\ell}
+  + \left(\widehat{ E_\cdot^+ \frac{\left.f^+_h\right._{\cdot,\ell+^1/_2}-\left.f^+_h\right._{\cdot,\ell-^1/_2}}{\Delta v} }\right)_k
+  + \left(\widehat{ E_\cdot^- \frac{\left.f^-_h\right._{\cdot,\ell+^1/_2}-\left.f^-_h\right._{\cdot,\ell-^1/_2}}{\Delta v} }\right)_k
+  = 0
+$$
+où $\left.\hat{f}_h\right._{k,\ell} \approx \left.\hat{f}_h\right.(k,v_\ell)$, $v_\ell = \ell\Delta v + v_{\text{min}}$, $E^+ = \max(E,0)$, $E^- = \min(E,0)$ et ${f^\pm_h}_{i,\ell\pm^1/_2}$ représente le flux numérique donné par la méthode de WENO5.
+
+La méthode WENO est une famille de schémas volumes finis non-linéaires ayant une interprétation en tant que méthode aux différences finies. La méthode consiste à utiliser 3 interpolations pondérées par des poids non-linéaires issus des approximations des dérivées successives de $f$. L'écriture des poids s'effectue comme suit :
+$$
+  \begin{aligned}
+    \beta_0^+ &= \frac{13}{12}( \underbrace{\left.f_h\right.^+_{i,j-2} - 2\left.f_h\right.^+_{i,j-1} + \left.f_h\right.^+_{i,j}  }_{\Delta x^2(\left.f_h\right.''_{i,j} + \mathcal{O}(\Delta x))}))^2   + \frac{1}{4}( \underbrace{  \left.f_h\right.^+_{i,j-2} - 4\left.f_h\right.^+_{i,j-1} + 3\left.f_h\right.^+_{i,j}  }_{ 2\Delta x ( \left.f_h\right.'_{i,j} + \mathcal{O}(\Delta x^2))})^2 \\
+    \beta_1^+ &= \frac{13}{12}( \underbrace{\left.f_h\right.^+_{i,j-1} - 2\left.f_h\right.^+_{i,j}   + \left.f_h\right.^+_{i,j+1}}_{\Delta x^2(\left.f_h\right.''_{i,j} + \mathcal{O}(\Delta x^2))} )^2 + \frac{1}{4}( \underbrace{  \left.f_h\right.^+_{i,j-1} -                                \left.f_h\right.^+_{i,j+1}}_{ 2\Delta x   \left.f_h\right.'_{i,j} + \mathcal{O}(\Delta x^2))})^2 \\
+    \beta_2^+ &= \frac{13}{12}( \underbrace{\left.f_h\right.^+_{i,j}   - 2\left.f_h\right.^+_{i,j+1} + \left.f_h\right.^+_{i,j+2}}_{\Delta x^2(\left.f_h\right.''_{i,j} + \mathcal{O}(\Delta x))} )^2   + \frac{1}{4}( \underbrace{ 3\left.f_h\right.^+_{i,j}   - 4\left.f_h\right.^+_{i,j+1} +  \left.f_h\right.^+_{i,j+2}}_{-2\Delta x ( \left.f_h\right.'_{i,j} + \mathcal{O}(\Delta x^2))})^2 \\
+  \end{aligned}
+$$
+et de manière similaire :
+$$
+  \begin{aligned}
+    \beta_0^- &= \frac{13}{12}(\left.f_h\right.^-_{i,j+1} - 2\left.f_h\right.^-_{i,j+2} + \left.f_h\right.^-_{i,j+3})^2 + \frac{1}{4}(3\left.f_h\right.^-_{i,j+1} - 4\left.f_h\right.^-_{i,j+2} +  \left.f_h\right.^-_{i,j+3})^2 \\
+    \beta_1^- &= \frac{13}{12}(\left.f_h\right.^-_{i,j}   - 2\left.f_h\right.^-_{i,j+1} + \left.f_h\right.^-_{i,j+2})^2 + \frac{1}{4}( \left.f_h\right.^-_{i,j}   -  \left.f_h\right.^-_{i,j+2})^2 \\
+    \beta_2^- &= \frac{13}{12}(\left.f_h\right.^-_{i,j-1} - 2\left.f_h\right.^-_{i,j}   + \left.f_h\right.^-_{i,j+1})^2 + \frac{1}{4}( \left.f_h\right.^-_{i,j-1} - 4\left.f_h\right.^-_{i,j}   + 3\left.f_h\right.^-_{i,j+1})^2 \\
+  \end{aligned}
+$$
+Ce qui nous permet de calculer les poids définis par :
+$$
+  \alpha_i^\pm = \frac{\gamma_i}{(\varepsilon + \beta_i^\pm)^2},\quad i=0,1,2
+$$
+où $\varepsilon$ est un paramètre numérique pour assurer la non nullité du dénominateur, il sera pris à $10^{-6}$ ; et avec $\gamma_0=\frac{1}{10}$, $\gamma_1=\frac{6}{10}$ et $\gamma_2=\frac{3}{10}$. La normalisation des poids s'effectue comme suit :
+$$
+  w_i^\pm = \frac{\alpha_i^\pm}{\sum_m \alpha_m^\pm},\quad i=0,1,2
+$$
+Nous pouvons ensuite calculer les flux numériques pour WENO5 \cite{Shu:2003}, donnés par :
+$$
+  \begin{aligned}
+    \hat{f}_{i,j+\frac{1}{2}}^+   =\ & w_0^+\left(  \frac{2}{6}\left.f_h\right.^+_{i,j-2} - \frac{7}{6}\left.f_h\right.^+_{i,j-1} + \frac{11}{6}\left.f_h\right.^+_{i,j}   \right)
+                                  +    w_1^+\left( -\frac{1}{6}\left.f_h\right.^+_{i,j-1} + \frac{5}{6}\left.f_h\right.^+_{i,j}   +  \frac{2}{6}\left.f_h\right.^+_{i,j+1} \right) \\
+                                  +  & w_2^+\left(  \frac{2}{6}\left.f_h\right.^+_{i,j}   + \frac{5}{6}\left.f_h\right.^+_{i,j+1} -  \frac{1}{6}\left.f_h\right.^+_{i,j+2} \right)
+  \end{aligned}
+$$
+et
+$$
+  \begin{aligned}
+    \hat{f}_{i,j+\frac{1}{2}}^-   =\ & w_2^-\left( -\frac{1}{6}\left.f_h\right.^-_{i,j-1} + \frac{5}{6}\left.f_h\right.^-_{i,j}   + \frac{2}{6}\left.f_h\right.^-_{i,j+1} \right)
+                                  +    w_1^-\left(  \frac{2}{6}\left.f_h\right.^-_{i,j}   + \frac{5}{6}\left.f_h\right.^-_{i,j+1} - \frac{1}{6}\left.f_h\right.^-_{i,j+2} \right) \\
+                                  +  & w_0^-\left( \frac{11}{6}\left.f_h\right.^-_{i,j+1} - \frac{7}{6}\left.f_h\right.^-_{i,j+2} + \frac{2}{6}\left.f_h\right.^-_{i,j+3} \right)
+  \end{aligned}
+$$
+La méthode WENO5 prend la forme finale :
+$$
+  \partial_vf_h(x_i,v_j) \approx \frac{1}{\Delta v}\left[ \left(\hat{f}_{i,j+\frac{1}{2}}^+ - \hat{f}_{i,j-\frac{1}{2}}^+ \right) + \left(\hat{f}_{i,j+\frac{1}{2}}^- - \hat{f}_{i,j-\frac{1}{2}}^- \right) \right]
+$$
+
+\subsection{Méthode de pas de temps adaptatif}\label{ssec:dtadapt}
+Nous terminons cette section en pr\'esentant des m\'ethodes de pas adaptatifs qui seront incorpor\'ees aux int\'egrateurs 
+en temps pr\'ec\'edents. Ce type d'approche est importante lorsqu'on souhaite effectuer des simulations d\'edi\'ees \`a la physique des plasmas.  
+En effet, lors d'instabilit\'es, une phase lin\'eaire peut \^etre d\'ecrite \`a l'aide de grands pas de temps alors que dans la phase non lin\'eaire, 
+de petits pas de temps sont n\'ecessaires pour capturer les ph\'enom\`enes physiques complexes. 
+
+Pour une \'equation diff\'erentielle scalaire donn\'ee $du(t)/dt = f(t, u(t)), u(0)=u_0\in$, une méthode à pas de temps adaptatif consiste à effectuer 2 estimations numériques de la solution $u(t^{n+1})$ au temps $t^{n+1}$. On note $\Delta t^n$ le pas de temps utilis\'e pour 
+calculer $u^{n+1}_{[p]}$ et $u^{n+1}_{[p+1]}$ telles que :
+$$
+  u^{n+1}_{[p]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+1}) \qquad u^{n+1}_{[p+1]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+2})
+$$
+c'est-à-dire que $u^{n+1}_{[p]}$ est d'ordre $p$ et $u^{n+1}_{[p+1]}$ d'ordre $p+1$. On peut alors effectuer une estimation de l'erreur locale 
+faite sur la solution d'ordre $p$ :
+$$
+%  L_{[p]}^{n+1} \approx \left( \int_{\Omega} |u^{n+1}_{[p+1]}(x) - u^{n+1}_{[p]}(x)|^2\,\mathrm{d}x \right)^{\frac{1}{2}}
+  L_{[p]}^{n+1} =  |u^{n+1}_{[p+1]} - u^{n+1}_{[p]}|. 
+$$
+Etant donn\'ee une tolérance $\text{tol}$ (fix\'ee par l'utilisateur), si l'erreur locale est supérieure à la tolérance alors l'itération est rejetée, on recommence l'itération avec $u^n$ et un nouveau pas de temps $\Delta t^n$ plus petit. 
+Sinon l'itération est acceptée et $u^{n+1} = u^{n+1}_{[p]}$, car c'est sur l'estimation d'ordre $p$ que l'on contrôle l'erreur, dans la pratique l'approximation d'ordre $p+1$ est souvent celle qui finalement est conservée.
+
+Pour l'iteration suivante, le nouveau pas de temps optimal est calculé par :
+$$
+  \Delta t_\text{opt} = \sqrt[p]{\frac{\text{tol}}{L_{[p]}^{n+1}}}\Delta t^n
+$$
+Il est possible de limiter l'évolution du pas de temps optimal en évitant une trop grande volatilité de celui-ci :
+$$
+  \Delta t^{n+1} = \max\left(\frac{1}{2},\min\left(2,\sqrt[p]{\frac{\text{tol}}{L_{[p]}^{n+1}}}\right)\right)\Delta t^n
+$$
+
+Les méthodes de pas de temps adaptatifs que nous présenterons ici sont des méthodes multi-étages. Pour limiter le coût de calcul, ces méthodes sont basées sur des intégrateurs d'ordre $p+1$, auxquels on ajoute une pondération des étages pour dégrader cette solution et construire une méthode d'ordre $p$. De plus, ayant pr\'esent\'e l'approche dans le cas d'une \'equation diff\'erentielle, 
+nous devons d\'efinir une norme en $x$ et $v$ pour donner un sens \`a l'erreur locale.  
+
+
+
+\subsubsection{Méthode de pas de temps adaptatif avec la méthode de Suzuki}
+
+Pour utiliser la méthode de \emph{splitting} de Suzuki présentée dans la sous-section \ref{ssec:splitting} avec une méthode de pas de temps adaptatif \cite{Blanes:2019}, on définit les sous-étapes $U^{(m)}$, $m=1,\dots,4$, comme ceci :
+$$
+  U^{n+1}_{[4]} = \mathcal{S}_{\Delta t}(U^n)
+    = S_{\alpha_1\Delta t}
+      \circ \underbrace{ S_{\alpha_2\Delta t}
+      \circ \underbrace{ S_{\alpha_3\Delta t}
+      \circ \underbrace{ S_{\alpha_2\Delta t}
+      \circ \underbrace{ S_{\alpha_1\Delta t} (U^n). }_{U^{(1)}}
+                                                    }_{U^{(2)}}
+                                                    }_{U^{(3)}}
+                                                    }_{U^{(4)}}
+$$
+On obtient, par pondération des $\left(U^{(s)}\right)_{s\in [\!|1,4|\!] }$ une  approximation d'ordre $3$ de $U(t^{n+1})$, donnée par :
+$$
+  U^{n+1}_{[3]} = -U^n + w_1(U^{(1)} + U^{(4)}) + w_2(U^{(2)} + U^{(3)})
+$$
+avec :
+$$
+  w_1 = \frac{g_2(1-g_2)}{g_1(g_1-1)-g_2(g_2-1)} \qquad w_2 = 1-w_1
+$$
+où $g_1 = \alpha_1$ et $g_2 = \alpha_1 + \alpha_2$.
+
+Ensuite on effectue l'estimation de l'erreur suivante : $L^{n+1}_{[3]} = \| U^{n+1}_{[4]}-U^{n+1}_{[3]} \|_2$.
+
+La norme que nous utiliserons sur $U^n = (u_c^n,E^n,\hat{f}_h^n)$ pour estimer l'erreur locale est la somme des normes $L^2$ de chaque variable :
+\begin{equation}
+  \begin{aligned}
+  L^{n+1}_{[3]} = & \left(\sum_i (\left.u_c\right.^{[4]}_i-\left.u_c\right.^{[3]}_i)^2\Delta x\right)^{\frac{1}{2}} \\
+                & + \left(\sum_i (\left.E\right.^{[4]}_i-\left.E\right.^{[3]}_i)^2\Delta x\right)^{\frac{1}{2}}     \\
+                & + \left(\sum_j \sum_i \left|\left.f_h\right.^{[4]}_{i,j}-\left.f_h\right.^{[3]}_{i,j}\right|^2\Delta x\Delta v\right)^{\frac{1}{2}}, 
+  \end{aligned}
+  \label{local_error}
+\end{equation}
+o\`u $\left.u_c\right._i, \left.E\right._i$ et $\left.f_h\right._{i,j}$ sont les inconnues discr\`etes associ\'es au point $i,j$ de grille de l'espace des phases.
+
+
+\subsubsection{Méthode de pas de temps adaptatif avec la méthode de Lawson}
+
+Nous présentons une méthode dite de Runge-Kutta \emph{embedded}, qui est une méthode de pas de temps adaptatif pour les méthodes de Runge-Kutta. La littérature sur le sujet est relativement riche, nous avons voulu ici présenter une méthode du même ordre que la méthode de Suzuki à pas de temps adaptatif pour effectuer une comparaison entre ces 2 méthodes de résolution. La méthode que nous avons retenue est aussi appelée la méthode de Dormand-Prince 4(3), abrégée en DP4(3) \cite{Dormand:1978},\cite{Dormand:1980}. Cette méthode a pour tableau de Butcher :
+$$
+  \begin{array}{c|ccccc}
+    0           & \\
+    \frac{1}{2} & \frac{1}{2} \\
+    \frac{1}{2} & 0           & \frac{1}{2} \\
+    1           & 0           & 0           & 1           \\
+  \hline
+    1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} \\
+  \hline
+                & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \left(\frac{1}{6}-\lambda\right) & \lambda
+  \end{array}
+$$
+avec $\lambda$ un paramètre fixé à $\frac{1}{10}$ et où l'estimateur d'ordre $4$, $U^{n+1}_{[4]}$, est donné par l'avant dernière ligne, et l'estimateur d'ordre $3$, $U^{n+1}_{[3]}$, est donné par la dernière ligne, l'avant dernière ligne se lisant alors comme une ligne classique du tableau de Butcher.
+
+Comme dans l'approche pr\'ec\'edente, on calcule l'estimation de l'erreur locale $L^{n+1}_{[3]} = \| U^{n+1}_{[4]}-U^{n+1}_{[3]} \|_2$ dont la d\'efinition est la m\^eme que \eqref{local_error}, et on adapte le pas de temps comme expliqu\'e plus haut.  
+
+Dans le tableau de Butcher, le param\`etre $\lambda$ peut \^etre optimis\'e selon certains crit\`eres. 
+En effet, si on note $R(\lambda)$ la fonction de stabilité de la méthode d'ordre $3$, on obtient 
+$$
+R(\lambda)=  \frac{\lambda z^{5}}{24} + z^{4} \left(\frac{1}{24} - \frac{\lambda}{12}\right) + \frac{z^{3}}{6} + \frac{z^{2}}{2} + z + 1
+$$
+Idéalement $\lambda=0$ permet d'obtenir une méthode d'ordre 4 (ce qui est déjà effectuée dans l'étage précédent du tableau de Butcher). On cherche donc à trouver le $\lambda\neq 0$ tel que le domaine de stabilité soit le plus large possible ou que ce schéma minimise l'erreur tout en restant d'ordre 3. 

@@ -1,0 +1,332 @@
+% !TEX root = ../../main.tex
+
+\section{Hiérarchie des modèles}
+\label{s:models}
+Les mod\`eles \'etudi\'es dans cette partie sont pr\'esent\'es dans le cas uni-dimensionnel en espace et en vitesse 
+mais les d\'erivations peuvent \^etre g\'en\'eralis\'ees au cas multi-dimensionnel. 
+Ainsi, notre point de départ est l'équation de Vlasov $1dx-1dv$ suivante :
+\begin{equation}
+  \begin{cases}
+    \partial_t f + v\partial_x f + E\partial_v f = 0\\
+    f(t=0, x, v)=f^0(x,v)
+  \end{cases},
+  \label{eq:vlasov}
+\end{equation}
+où $f=f(t,x,v)$ représente la densité de particules dans l'espace des phases $\{\,(x,v)\in\Omega\times\mathbb{R}\,\}$ avec $\Omega\subset\mathbb{R}$, au temps $t\geq 0$, $f^0$ est la condition initiale et $E(t, x)$ désigne le champ électrique qui est obtenu soit par l'équation de Poisson :
+\begin{equation}
+  \partial_x E = \int_{\mathbb{R}} f\,\mathrm{d}v - 1
+  \label{eq:poisson}
+\end{equation}
+ou de manière équivalente par l'équation d'Ampère :
+\begin{equation}
+  \partial_t E = -\int_{\mathbb{R}} vf\,\mathrm{d}v + \frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf\,\mathrm{d}v \,\mathrm{d}x,
+  \label{eq:ampere}
+\end{equation}
+couplée à une condition initiale $E(t=0,x)=E^0(x)$ qui vérifie l'équation de Poisson \eqref{eq:poisson} au temps initial. Ces deux dernières équations font des systèmes de Vlasov-Poisson~\eqref{eq:vlasov}-\eqref{eq:poisson} et de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere} des équations de transport non linéaire d'une quantité $f$ dans l'espace des phases $\Omega\times\mathbb{R}$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse. 
+
+%----------
+\subsection{Dérivation du modèle de Vlasov hybride linéarisé}
+%----------
+
+Partons du modèle de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere} :
+$$
+  \begin{cases}
+    \partial_t f + v\partial_x f + E\partial_v f = 0 \\
+    \partial_t E = -\int_{\mathbb{R}} vf\,\mathrm{d}v+ \frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf\,\mathrm{d}v \,\mathrm{d}x,
+  \end{cases}
+$$
+avec la condition initiale $(f^0(x, v), E^0(x))$ vérifiant $\partial_x E^{0}(x) = \int_{\mathbb{R}} f^0(x, v)\,\mathrm{d}v-1$. On souhaite distinguer la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible et un second groupe de particules dites chaudes $f_h$, dont la vitesse thermique est grande. Le modèle de Vlasov-Ampère en considérant ces deux espèces indépendamment s'écrit :
+$$
+  \begin{cases}
+    \partial_t f_c + v\partial_x f_c + E\partial_v f_c = 0,  \\
+    \partial_t f_h + v\partial_x f_h + E\partial_v f_h = 0,  \\
+    \partial_t E = -\int_{\mathbb{R}} vf_c\,\mathrm{d}v -\int_{\mathbb{R}} vf_h\,\mathrm{d}v+ \frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf\,\mathrm{d}v \,\mathrm{d}x, 
+  \end{cases}
+$$
+avec la condition initiale $(f^0_{c}(x, v), f^0_{h}(x, v), E^0(x))$ vérifiant
+$$
+\partial_x E^0(x) = \int_{\mathbb{R}} f^0_{c}(x, v)\,\mathrm{d}v+\int_{\mathbb{R}} f^0_{h}(x, v)\,\mathrm{d}v-1.
+$$ 
+La compatibilité $f^0 = f^0_{c} + f^0_{h}$ est nécessaire pour garantir l'équivalence entre les deux modèles.
+
+On souhaite essentiellement travailler sur la variable $f_c$ pour la considérer non plus comme une inconnue cinétique mais fluide (donc ne dépendant plus de la vitesse $v$ mais seulement du temps $t$ et de la position $x$). En effet, elle représente des particules froides, de faible vitesse, dont on peut supposer qu'elles restent proches d'un équilibre thermodynamique. Pour cela calculons les moments de la première équation en multipliant celle-ci par $(1,v)^{\textsf{T}}$ puis en intégrant par rapport à $v$ :
+$$
+  \int_{\mathbb{R}} \begin{pmatrix}1 \\ v\end{pmatrix} \partial_tf_c\,\mathrm{d}v
+  + \int_{\mathbb{R}} \begin{pmatrix}1 \\ v\end{pmatrix} v\partial_xf_c\,\mathrm{d}v
+  + \int_{\mathbb{R}} \begin{pmatrix}1 \\ v\end{pmatrix} E\partial_vf_c\,\mathrm{d}v = 0. 
+$$
+On introduit la densité $\rho_c(t, x)$ et la vitesse moyenne $u_c(t, x)$ des particules froides
+$$
+\begin{pmatrix}\rho_c(t, x) \\ \rho_c(t, x) u_c(t, x)\end{pmatrix}
+= 
+\int_{\mathbb{R}} \begin{pmatrix}1 \\ v\end{pmatrix}f_c(t, x, v)\,\mathrm{d}v,   
+$$
+de sorte que le système aux moments se réécrive
+\begin{equation}
+  \partial_t \begin{pmatrix}\rho_c \\ \rho_c u_c \end{pmatrix}
+  + \partial_x \begin{pmatrix} \rho_c u_c \\  \int_{\mathbb{R}} v^2 f_c \,\mathrm{d}v \end{pmatrix}
+  - \begin{pmatrix} 0 \\ \rho_c E \end{pmatrix}
+  = \begin{pmatrix} 0 \\ 0 \end{pmatrix}.
+\label{eq:moments}
+\end{equation}
+Le système \eqref{eq:moments} n'étant pas fermé, il faut faire une hypothèse sur la répartition en vitesse des particules froides. On utilisera l'approximation "\emph{plasma froid}" utilis\'e dans la litt\'erature (\cite{Tronci:2014}, \cite{Holderied:2019}) 
+qui suppose l'approximation $f_c(t,x,v) = \rho_c(t,x)\delta_{\{v=u_c(t,x)\}}(v)$, ce qui nous permet d'obtenir le système :
+$$
+  \begin{cases}
+    \partial_t \rho_c + \partial_x (\rho_cu_c) = 0 \\
+    \partial_t (\rho_cu_c) + \partial_x (\rho_cu_c^2) - \rho_cE = 0,
+  \end{cases}
+$$
+puisque $\int_{\mathbb{R}} v^2 \rho_c(t,x)\delta_{\{v=u_c(t,x)\}}(v) \,\mathrm{d}v = \rho_c(t,x) u_c^2 (t,x)$. Ce modèle est connu dans la littérature sous le nom d'équations d'Euler sans pression.
+
+En considérant le couplage avec le modèle de Vlasov pour les particules chaudes, l'équation d'Ampère et l'équation de Poisson, on obtient ainsi le modèle de Vlasov-Ampère hybride non-linéaire
+\begin{equation}
+  \begin{cases}
+    \partial_t \rho_c + \partial_x (\rho_cu_c) = 0, \\
+    \partial_t (\rho_cu_c) + \partial_x (\rho_cu_c^2) - \rho_cE = 0, \\
+    \partial_t f_h + v\partial_x f_h + E\partial_v f_h = 0, \\
+    \partial_t E = -\rho_cu_c -\int_{\mathbb{R}} vf_h\,\mathrm{d}v+ \frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf_h\,\mathrm{d}v \,\mathrm{d}x+ \frac{1}{|\Omega|}\int_\Omega \rho_cu_c \,\mathrm{d}x, \\
+    \partial_x E = \rho_c + \int_{\mathbb{R}} f_h\,\mathrm{d}v - 1, 
+  \end{cases}
+\label{eq:hyb_nonlin}
+\end{equation}
+avec les conditions initiales $(\rho^0_{c}, \rho^0_{c} u^0_{c}, f^0_{h}, E^0)$ vérifiant
+$$
+  \partial_x E^0(x) = \rho^0_{c}(x)+\int_{\mathbb{R}} f^0_{h}(x, v)\,\mathrm{d}v-1.
+$$ 
+La compatibilité $\int_{\mathbb{R}} (f^0(x, v) - f^0_h(x, v))\,\mathrm{d}v  = \rho^0_{c}(x)$ est nécessaire pour garantir le lien avec le modèle hybride non-linéaire \eqref{eq:hyb_nonlin} et le modèle cinétique de départ. 
+
+Le mod\`ele \eqref{eq:hyb_nonlin} peut \^etre r\'e\'ecrit de mani\`ere \'equivalente sous la forme d'un mod\`ele plus simple. 
+C'est l'objet de la proposition suivante.  
+\begin{pro}
+  Le modèle \eqref{eq:hyb_nonlin} se réécrit sous la forme ($x\in\Omega\subset \mathbb{R}$ and $v\in\mathbb{R}$)
+  $$
+    \begin{cases}
+      \partial_t u_c + \frac{1}{2}\partial_x u_c^2 - E = 0, \\
+      \partial_t f_h + v\partial_x f_h + E\partial_v f_h = 0, \\
+      \partial_t E = -\rho_c u_c -\int_{\mathbb{R}} vf_h\,\mathrm{d}v+ \frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf_h\,\mathrm{d}v \,\mathrm{d}x+ \frac{1}{|\Omega|}\int_\Omega \rho_cu_c \,\mathrm{d}x, \\
+      \label{eq:hyb_nonlin_red}
+    \end{cases}
+  $$
+  avec les conditions initiales $(u^0_{c}, f^0_{h}, E^0, \rho_c^0)$ vérifiant
+  $$
+    \partial_x E^0(x) = \rho^0_{c}(x)+\int_{\mathbb{R}} f^0_{h}(x, v)\,\mathrm{d}v.
+  $$
+  La densité $\rho_c$ est obtenue pour tout temps $t\geq 0$ par  
+  $$
+    \rho_c(t, x) = \partial_x E(t, x) - \int_{\mathbb{R}} f_{h}(t, x, v)\,\mathrm{d}v + 1. 
+  $$
+\end{pro}
+
+\begin{proof}
+  À partir de la deuxième équation de \eqref{eq:hyb_nonlin}, on écrit 
+  $$
+    \rho_c \partial_t u_c + u_c\partial_t \rho_c + \rho_c u_c\partial_x u_c + u_c  \partial_x (\rho_c u_c) - \rho_c E=0. 
+  $$
+  Grâce à l'équation de continuité (première équation de \eqref{eq:hyb_nonlin}), on obtient alors, après simplification par $\rho_c$  
+  $$
+    \partial_t u_c +  u_c\partial_x u_c - E=0. 
+  $$
+  Prenons l'équation d'Ampère et dérivons-la par rapport à la variable $x$ :
+  $$
+    \partial_x\partial_t E = -\partial_x(\rho_cu_c) - \int_{\mathbb{R}} v\partial_x f_h\,\mathrm{d}v.
+  $$
+  Or le modèle \eqref{eq:hyb_nonlin} nous donne  
+  $$
+    -\partial_x(\rho_cu_c) = \partial_t\rho_c \mbox{ et } v\partial_xf_h = -\partial_tf_h - E\partial_vf_h, 
+  $$ 
+  ce qui permet d'écrire :
+  $$
+    \partial_t\partial_x E = \partial_t\rho_c + \int_{\mathbb{R}} (\partial_tf_h + E\partial_vf_h) \,\mathrm{d}v = \partial_t\rho_c + \partial_t \int_{\mathbb{R}}  f_h  \,\mathrm{d}v .
+  $$
+  Après intégration en temps entre $0$ et $t$, on obtient :
+  $$
+    \partial_x E - \partial_xE^0 = \rho_c + \int_{\mathbb{R}} f_h\,\mathrm{d}v - \rho_c^0 - \int_{\mathbb{R}} f_h^0\,\mathrm{d}v.
+  $$
+  Ayant supposé que initialement on a $\partial_xE^0 = \rho_c^0 + \int_{\mathbb{R}} f_h^0\,\mathrm{d}v -1$, on obtient finalement :
+  $$
+    \partial_x E = \rho_c + \int_{\mathbb{R}} f_h\,\mathrm{d}v - 1,
+  $$
+  ce qui signifie que si l'équation de Poisson est vérifiée initialement, elle est vérifiée pour tout $t\geq 0$.
+\end{proof}
+
+Dans la littérature physique, le modèle hybride non linéaire est encore simplifié et c'est la version linéarisée de la partie fluide qui est étudiée (voir \cite{Holderied:2019}, \cite{Tronci:2014}). Ainsi, on considère maintenant la linéarisation du modèle \eqref{eq:hyb_nonlin_red} satisfait par $(\rho_c, u_c, E, f_h)$ autour de l'équilibre donné par  $(\rho_c^{(0)}(x), 0, 0, f^{(0)}_h(v))$ avec $f^{(0)}_h(v)$ une fonction paire. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire alors que l'équation cinétique non lin\'eaire  est conservée pour les particules chaudes. Remarquons que le terme $\frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf_h\,\mathrm{d}v \,\mathrm{d}x+ \frac{1}{|\Omega|}\int_\Omega \rho_cu_c \,\mathrm{d}x$ dans l'\'equation d'Amp\`ere ne sera pas pris en compte dans la suite pour all\'eger les notations. 
+On écrit alors
+\begin{equation}
+  \begin{aligned}
+    \rho_c(t,x) = & \rho_c^{(0)}(x) & + & \varepsilon\rho_c^{(1)}(t,x) \\
+    u_c(t,x)    = &                 &   & \varepsilon u_c^{(1)}(t,x) \\
+    E(t,x)      = &                 &   & \varepsilon E^{(1)}(t,x), \\
+    f_h(t,x, v)   = &  f^{(0)}_h(v)   & + & \varepsilon f_h^{(1)}(t,x,v), 
+    %\label{eq:lin_variables}
+  \end{aligned}
+  \label{eq:lin_variables}
+\end{equation}
+et on insère dans les équations fluides du modèle hybride non linéaire pour obtenir (la partie cinétique n'est pas modifiée) :
+$$
+  \begin{cases}
+    \varepsilon \partial_t u_c^{(1)}
+      + \frac{\varepsilon^2}{2}\partial_x\left(u_c^{(1)}\right)^2
+      - \varepsilon E^{(1)} = 0 \\
+    \varepsilon\partial_t E^{(1)} = -\int_{\mathbb{R}} v(f_h^{(0)} + \varepsilon f^{(1)} )\,\mathrm{d}v
+      - \varepsilon\rho_c^{(0)}u_c^{(1)} - \varepsilon^2\rho_c^{(1)}u_c^{(1)}. 
+  \end{cases}
+$$
+On néglige maintenant  les termes non lin\'eaire (en $\varepsilon^2$), ce qui nous permet, sous l'hypothèse $f_{h}^{(0)}$ paire d'écrire le système suivant :
+$$
+  \begin{cases}
+    \partial_t u_c^{(1)} -  E^{(1)} = 0 \\
+    \partial_t E^{(1)} = -\int_{\mathbb{R}} vf^{(1)}_h\,\mathrm{d}v - \rho_c^{(0)}u_c^{(1)}
+  \end{cases}
+$$
+soit encore, avec les notations \eqref{eq:lin_variables} et en utilisant que $\varepsilon \int_{\mathbb{R}} v f_h^{(1)}  \,\mathrm{d}v = \int_{\mathbb{R}} v f_h  \,\mathrm{d}v$ (puisque $f^{(0)}_h(v)$ paire implique  $\int_{\mathbb{R}} v f_h^{(0)}  \,\mathrm{d}v  =0$) %TODO: revoir cette transition, on a déjà utiliser le fait que $\int_{\mathbb{R}} vf_h^{(0)}\,\mathrm{d}v=0$
+$$
+  \begin{cases}
+    \partial_t u_c -  E = 0 \\
+    \partial_t E = -\int_{\mathbb{R}} vf_h\,\mathrm{d}v - \rho_c^{(0)}u_c. 
+  \end{cases}
+$$
+Le système d'équations de Vlasov hybride linéarisé s'écrit donc finalement :
+\begin{equation}
+  \begin{cases}
+    \partial_t u_c = E \\
+    \partial_t E = -\rho_c^{(0)}u_c -\int_{\mathbb{R}} vf_h\,\mathrm{d}v \\
+    \partial_t f_h + v\partial_x f_h + E \partial_v f_h = 0,
+  \end{cases}
+\label{eq:vahl}
+\end{equation}
+avec la condition initiale $(u_c^{0}, E^{0}, f_h^{0})$ et $\rho_c^{(0)}(x)$ tels que $\partial_x E^{0}(x) = \rho_c^{(0)}(x) + \int_{\mathbb{R}} f_h^{0}(x, v) \,\mathrm{d}v -1$. 
+
+\begin{remark}
+  Tous les calculs précédents se généralisent au cas multi-dimensionel $x, v\in\mathbb{R}^d$ et le modèle hybride non linéaire s'écrit alors 
+  \begin{equation}
+    \begin{cases}
+     \partial_t u_c  + (u_c \cdot \nabla_x ) u_c = E \\
+      \partial_t E = -\rho_cu_c -\int_{\mathbb{R}^d} vf_h\,\mathrm{d}v \\
+      \partial_t f_h + v \cdot \nabla_x f_h + E \cdot \nabla_v f_h = 0,
+    \end{cases}
+  \label{eq:vahnl_multid}
+  \end{equation}
+  et le modèle hybride linéarisé s'écrit 
+  \begin{equation}
+    \begin{cases}
+     \partial_t u_c = E \\
+     \partial_t E = -\rho_c^{(0)}u_c -\int_{\mathbb{R}^d} vf_h\,\mathrm{d}v \\
+      \partial_t f_h + v \cdot \nabla_x f_h + E \cdot \nabla_v f_h = 0,
+   \end{cases}
+  \label{eq:vahl_multid}
+  \end{equation}
+  avec les conditions initiales $(u^0_c, E^0, f^0_h)$ et $\rho_c^{(0)}(x)$ tels que $\nabla_x \cdot E^0(x) = \rho_c^{(0)}(x) + \int_{\mathbb{R^d}} f_h^0(x,v)\,\mathrm{d}v -1$. 
+\end{remark}
+
+%\begin{remark}
+%\label{r:rho_c}
+%  À partir des inconnues du système $(u_c, E, f_h)$ et $\rho^{(0)}$, on peut reconstruire la densité des particules froides $\rho_c$ grâce à 
+%  $$
+%    \rho_c = \partial_x E - \int_\mathbb{R^d} f_h\,\mathrm{d}v +1,   
+%  $$
+%  puisque l'équation de Poisson est vérifiée par le modèle hybride linéarisé. 
+%\end{remark}
+
+%----------
+\subsection{Quelques propriétés du modèle hybride linéarisé}
+%----------
+
+Dans cette partie, quelques propriétés du modèle hybride linéarisé sont exhibées. 
+\begin{pro}\label{p:vhl_conservation}
+  Le modèle hybride linéarisé VHL \eqref{eq:vahl} assure la conservation de la masse totale et de l'énergie totale, c'est-à-dire
+  $$
+    \begin{aligned}
+%      0 &= \partial_t \left[\partial_x E - \rho_c - \int_{\mathbb{R}} f_h \,\mathrm{d}v \right], \\
+      0 &= \frac{d}{dt}  \int_\Omega \int_{\mathbb{R}} f_h \mathrm{d}x\,\mathrm{d}v \; \Big( \! = \frac{d}{dt}  \int_\Omega \rho^{(0)}_c \mathrm{d}x\Big), \\
+%      0 &= \frac{d}{dt} \left[ \int_\Omega \rho^{(0)}_c u_c \mathrm{d}x + \int_\Omega \int_{\mathbb{R}} f_h v \mathrm{d}x\,\mathrm{d}v \right], \\
+      0 &= \frac{d}{dt} \left[ \int_\Omega \int_{\mathbb{R}} f_h v^2 \,\mathrm{d}x\,\mathrm{d}v+ \int_{\mathbb{R}} \rho_c u_c ^2 \,\mathrm{d}x+  \int_\Omega E^2 \,\mathrm{d}x\right].
+    \end{aligned}
+  $$
+%  La variable $\rho_c$ qui est également une inconnue du modèle, peut être reconstruite à partir des variables $(u_c,E,f_h)$, comme indiqué dans la remarque~\ref{r:rho_c}.
+\end{pro}
+
+\begin{remark}
+  À partir de la conservation de l'énergie totale pour l'équation cinétique 
+  $$
+    \frac{d}{dt} \left[ \int_\Omega \int_{\mathbb{R}} f v^2 \,\mathrm{d}x\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right] = 0, 
+  $$
+  et l'approximation de $f_c(t, x, v)$ par $\rho_c(t, x) \delta_{v=u_c(t, x)}(v) + f_h(t, x, v)$, on peut retrouver la connservation 
+  de l'\'energie totale pour le mod\`ele VHL gr\^ace au calcul suivant 
+  $$
+    \begin{aligned}
+      0 &= \frac{d}{dt} \left[ \iint_{\Omega\times\mathbb{R}} (f_c + f_h) v^2 \,\mathrm{d}x\,\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right] \\
+        &= \frac{d}{dt} \left[\iint_{\Omega\times\mathbb{R}} (\rho_c \delta_{v=u_c(t, x)}(v)  + f_h) v^2 \,\mathrm{d}x\,\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right] \\
+        &= \frac{d}{dt} \left[ \int_\Omega \rho_c u_c^2 \,\mathrm{d}x+ \iint_{\Omega\times\mathbb{R}} f_h v^2 \,\mathrm{d}x\,\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right]. 
+    \end{aligned}
+  $$
+\end{remark}
+
+\begin{proof}
+  $\,$\\
+%  \noindent  $\bullet$
+%  Commençons par la relation pour l'équation de Poisson. Prenons l'équation d'Ampère et dérivons-la par rapport à la variable $x$ :
+%  $$
+%    \partial_x\partial_t E = -\partial_x(\rho_c^{(0)}u_c) - \int_{\mathbb{R}} v\partial_x f_h\,\mathrm{d}v. 
+%  $$
+%  On réintroduit l'équation  de continuité linéarisée pour les particules froides, avec $\rho_c=\rho_c^{(0)}+\varepsilon \rho_c^{(1)}$, $\partial_t \rho_c  + \partial_x\left(\rho_c^{(0)}u_c^{(1)}\right) = 0$ (qui est toujours vérifiée mais ne sera pas résolue lors des simulations) ainsi que l'équation  de continuité  pour les particules chaudes $\partial_t \int_{\mathbb{R}} f_h \mathrm{d}v + \partial_x \int_{\mathbb{R}} v f_h \mathrm{d}v= 0$, ce qui permet de remplacer les dérivées spatiales par des dérivées temporelles
+%  $$
+%    \partial_t\partial_x E = \partial_t \rho_c + \partial_t \int_{\mathbb{R}} f_h\,\mathrm{d}v.  
+%  $$
+%  On intègre maintenant entre $0$ et $t$ pour obtenir :
+%  $$
+%    \partial_x E(t) -\partial_x E^0 = \rho_c(t) + \int f_h(t)\,\mathrm{d}v - \rho_c(t=0) - \int f_h^0\,\mathrm{d}v. 
+%  $$
+%  Au temps initial, on garantit que l'équation de Poisson  est vérifiée, de sorte que
+%  $$
+%    \partial_x E(t) = \rho_c(t) + \int f_h(t)\,\mathrm{d}v - 1. 
+%  $$
+%  Notons qu'en pratique, la densité $\rho_c$ de particules froides est calculée pour tout temps gr\^ace à cette dernière équation.
+%
+%  \medskip
+
+  \noindent $\bullet$
+  La conservation de la masse s'obtient en intégrant tout d'abord l'équation de Vlasov en espace et en vitesse: 
+  $$
+    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v + \int_\Omega \int_{\mathbb{R}} E \partial_v f_h\,\mathrm{d}v\mathrm{d}x =0. 
+  $$
+  Or, avec les conditions aux bords choisies, on a  $\frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v=0$ et comme $\rho^{(0)}_c$ ne dépend pas du temps, on déduit la conservation de la masse totale. Notons que $\int_\Omega E \mathrm{d}x = \int_\Omega u \mathrm{d}x = 0$. 
+
+  \medskip 
+
+%  \noindent $\bullet$
+%  La conservation de l'impulsion s'obtient tout d'abord  en multipliant par $v$ et intégrant l'équation de Vlasov en espace et en vitesse: 
+%  $$
+%    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v f_h \mathrm{d}x \mathrm{d}v - \int_\Omega E \left(\int_{\mathbb{R}} f_h \mathrm{d}v\right) \mathrm{d}x =0. 
+%  $$
+%  Or d'après l'équation de Poisson, on a $\int_{\mathbb{R}} f_h \mathrm{d}v = \partial_x E - \rho_c^{(0)} +1$ donc \commentaire[Anais]{(j'ai du mal à suivre le jeu entre $\rho_c$ et $\rho_c^{(0)}$)}
+%  $$
+%    \int_\Omega E \Big(\int_{\mathbb{R}} f_h \mathrm{d}v\Big)\mathrm{d}x
+%    = \int_\Omega E \Big( \partial_x E - \rho_c^{(0)} +1 \Big) \mathrm{d}x
+%    = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x, 
+%  $$
+%  car $\int_\Omega E\partial_x E \mathrm{d}x = \int_\Omega \frac{1}{2}\partial_x E^2 \mathrm{d}x = 0$ et $\int_\Omega E\mathrm{d}x = 0$. On obtient donc, en utilisant l'équation sur $u_c$  
+%  $$
+%    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} vf_h \mathrm{d}x \mathrm{d}v = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x= - \int_\Omega (\partial_t  u_c) \rho_c^{(0)} \mathrm{d}x = -\frac{d}{dt} \int_\Omega  \rho_c^{(0)} u_c \mathrm{d}x, 
+%  $$
+%  d'où la conservation de l'impulsion.
+%
+  \medskip
+
+  \noindent $\bullet$
+  Pour la conservation de l'énergie, on multiplie l'équation de Vlasov par $v^2$ et on intègre en $x,v$ pour obtenir, après intégration par partie
+  $$  
+    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v^2 f_h \mathrm{d}x \mathrm{d}v - 2 \int_\Omega E \Big(\int_{\mathbb{R}} v f_h \mathrm{d}v\Big)\mathrm{d}x = 0.
+  $$
+  
+  En utilisant l'équation d'Ampère, le deuxième terme devient 
+  $$
+    \begin{aligned}
+      2 \int_\Omega E \Big( \partial_t E + \rho^{(0)}_c u_c\Big)\mathrm{d}x
+        &=  \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  +2 \int_\Omega E \rho^{(0)}_c u_c \mathrm{d}x, \\
+        &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + 2\int_\Omega (\partial_t u_c ) \rho^{(0)}_c u_c \mathrm{d}x, \\ 
+        &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + \frac{d}{dt} \int_\Omega \rho_c^{(0)} u_c^2 \mathrm{d}x, 
+    \end{aligned}
+  $$
+  où on a utilisé l'équation sur $u_c$ et le fait que $\rho_c^{(0)}$ ne dépende pas du temps. 
+\end{proof}
