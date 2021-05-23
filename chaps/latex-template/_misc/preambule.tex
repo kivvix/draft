@@ -41,6 +41,21 @@
 \newtheorem{property}{Property}
 \newtheorem{hyp}{Hypothèse}[section]
 
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\Widehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{1.2\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}% 
+}{0.6ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+\parskip 1ex
+
+\newcommand\ie{\emph{i.e.}~}
+
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \floatname{algorithm}{Algorithme}

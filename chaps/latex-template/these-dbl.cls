@@ -89,13 +89,29 @@
 %  \setcounter{section}{0}%
 %  \renewcommand\thesection{\thechapter.\Alph{section}}}
 
-\newcounter{appendixShift}
-\newcommand\appsection{%
-  \setcounter{appendixShift}{\value{section}}%
-  \renewcommand\thesection{%
-    \thechapter.\symbol{\numexpr`A\value{section}-\value{appendixShift}\relax}%
-  }%
+\usepackage{appendix}
+\usepackage{chngcntr}
+% Start of subappendices environment
+\AtBeginEnvironment{subappendices}{%
+\chapter*{Appendices}
+\addcontentsline{toc}{chapter}{Appendices}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
 }
+
+% End of subappendices environment
+\AtEndEnvironment{subappendices}{%
+\counterwithout{figure}{section}
+\counterwithout{table}{section}
+}
+
+%\newcounter{appendixShift}
+%\newcommand\appsection{%
+%  \setcounter{appendixShift}{\value{section}}%
+%  \renewcommand\thesection{%
+%    \thechapter.\symbol{\numexpr`A+\value{section}-\value{appendixShift}-1\relax}%
+%  }%
+%}
 
 %  \renewcommand\thesection{\thechapter.\Alph{section}-\the\value{appendixShift}}}
 %   \thechapter.\symbol{\numexpr64+\c@section-\value{appendixShift}\relax}-\the\value{appendixShift}%
