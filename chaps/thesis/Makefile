@@ -30,10 +30,12 @@ $(TARGET).pdf: $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
 	#pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
 	pdflatex -jobname=$(TARGET) $(SOURCE_FILES)
 	biber $(TARGET)
-	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES) # For biber
+	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
+	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
 
 clean:
 	rm -f $(TARGET).{ps,pdf,min.pdf,bcf,run.xml}
 	for suffix in dvi aux bbl blg toc ind out brf ilg idx synctex.gz log; do \
 		find . -type d -name ".git" -prune -o -type f -name "*.$${suffix}" -print -exec rm {} \;  ; \
 	done
+
