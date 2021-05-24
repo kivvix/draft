@@ -116,6 +116,8 @@
 %  \renewcommand\thesection{\thechapter.\Alph{section}-\the\value{appendixShift}}}
 %   \thechapter.\symbol{\numexpr64+\c@section-\value{appendixShift}\relax}-\the\value{appendixShift}%
 
+\renewcommand{\theequation}{\the\value{chapter}.\arabic{equation}} 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
 
