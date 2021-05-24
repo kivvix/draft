@@ -1,3 +1,5 @@
+% !TEX root = ../main.tex
+
 \setcounter{chapter}{-1}
 \chapter{Introduction}
 %\addcontentsline{toc}{chapter}{Introduction}
@@ -22,3 +24,218 @@ Plan :
   \item[chap 1 :] schémas expo-Lawson pour le cinétique
   \item[chap 2-3 :] cadre général (6D) modèle hybride
 \end{itemize}
+
+\section{Problème général}
+
+Les modèles étudiés dans cette partie sont présentés dans un cadre général multi-dimensionnel en espace et en vitesse. Nous commençons par présenter les équations de Vlasov-Maxwell $3dx-3dv$ :
+\begin{align}
+	\label{eq:0:vlasov}
+		\pdv{f}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f = 0 \\
+	\label{eq:0:maxwellB}
+		\pdv{\vb{B}}{t} &= - \nabla_{\vb{x}}\times\vb{E} \\
+	\label{eq:0:maxwellE}
+		\frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu q_e\int \vb{v} f\dd{\vb{v}} \\
+	\label{eq:0:poisson}
+		\nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int f\dd{\vb{v}} \right)
+\end{align}
+où $f=f(t,\vb{x},\vb{v})$ représente la densité de particules dans l'espace des phases $\left\{ (\vb{x},\vb{v}) \in \Omega\times\mathbb{R}^3 \right\}$ avec $\Omega\subset\mathbb{R}^3$, au temps $t\geq0$, $\vb{E}=\vb{E}(t,\vb{x})\in\mathbb{R}^3$ représente le champ électrique, $\vb{B}=\vb{B}(t,\vb{x})\in\mathbb{R}^3$ représente le champ magnétique, et $\vb{B}_0 = \left(0,0,B_0\right)^\top$ est un champ magnétique extérieur supposé constant et d'intensité $B_0\in\mathbb{R}$. Le système~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson} forment les équations de Vlasov-Maxwell, et modélisent le transport non-linéaire d'une quantité $f$ dans l'espace des phases $\Omega\times\mathbb{R}^3$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse.
+
+\subsection{Dérivation du modèle de Vlasov-Maxwell hybride linéarisé}
+
+Partons du modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}. On souhaite distinguer la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible, et un second groupe de particules dites chaudes $f_h$ dont la vitesse thermique est grande. En considérant ces deux espèces indépendantes, l'équation de Vlasov~\eqref{eq:0:vlasov} devient :
+$$
+	\begin{aligned}
+	  \pdv{f_c}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_c + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_c = 0 \\
+	  \pdv{f_h}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0
+	\end{aligned}
+$$
+et l'équation de Maxwell-Ampère~\eqref{eq:0:maxwellE} et de Maxwell-Gauss~\eqref{eq:0:poisson} deviennent :
+$$
+	\begin{aligned}
+  	\frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu q_e\int \vb{v} f_c\dd{\vb{v}} - \mu q_e\int \vb{v} f_h\dd{\vb{v}} \\
+	  \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int f_c\dd{\vb{v}} + q_e\int f_h\dd{\vb{v}} \right)
+	\end{aligned}
+$$
+On souhaite essentiellement travailler sur la variable $f_c$ pour la considérer non plus comme une inconnue cinétique mais fluide (donc ne dépendant plus de la vitesse $\vb{v}$ mais seulement du temps $t$ et de la position $x$). En effet, elle représente une densité de particules froides, de faible vitesse thermique, dont on peut supposer qu'elles restent proches d'un équilibre thermodynamique. Pour cela calculons les moments de la première équation en multipliant celle-ci par $(1,\vb{v}^\top)^\top$ puis en intégrant par rapport à $\vb{v}$. On introduit également la densité $\rho_c=\rho_c(t,\vb{x})$ et la vitesse moyenne $\vb{u}_c=\vb{u}_c(t,\vb{x})$ des particules froides :
+$$
+  \begin{pmatrix}
+    \rho_c \\
+    \rho_c \vb{u}_c
+  \end{pmatrix}
+  =
+  \int_{\mathbb{R}^3} \begin{pmatrix}
+    1 \\
+    \vb{v}
+  \end{pmatrix} f_c\dd{\vb{v}}
+$$
+et on utilise l'approximation dite de \emph{plasma froid} utilisée dans la littérature (\cite{Tronci:2014,Holderied:2019}) qui suppose l'appxoimation $f_c(t,\vb{x},\vb{v}) = \rho_c(t,\vb{x})\delta_{\{\vb{v}=\vb{u}_c(t,\vb{x})\}}(\vb{v})$, ce qui nous permet d'écrire les moments de l'équation de Vlasov sur les particules froides comme :
+$$
+  \begin{aligned}
+  \partial_t\int_{\mathbb{R}^3} \begin{pmatrix}
+    1 \\
+    \vb{v}
+  \end{pmatrix}f_c
+  &+
+  \int_{\mathbb{R}^3}\begin{pmatrix}
+    1 \\
+    \vb{v}
+  \end{pmatrix}(\vb{v}\cdot\nabla_{\vb{x}}f_c)\dd{\vb{v}} \\
+  &+
+  \frac{q_e}{m_e}\int_{\mathbb{R}^3}\begin{pmatrix}
+    1 \\
+    \vb{v}
+  \end{pmatrix} (\vb{E}\cdot\nabla_{\vb{v}}f_c)\dd{\vb{v}}
+  +
+  \frac{q_e}{m_e}\int_{\mathbb{R}^3}\begin{pmatrix}
+    1 \\
+    \vb{v}
+  \end{pmatrix}(\vb{v}\times(\vb{B}+\vb{B}_0) \cdot\nabla_{\vb{v}}f_c)\dd{\vb{v}}
+  = 0.
+  \end{aligned}
+$$
+On réécrit cela comme deux équations, une par moment calculé :
+$$
+  \begin{aligned}
+    &\partial_t\rho_c + \nabla_{\vb{x}}\cdot(\rho_c\vb{u}_c) = 0 \\
+    &\partial_t\rho_c\vb{u}_c + \int\vb{v}(\vb{v}\cdot\nabla_{\vb{x}}f_c)\dd{\vb{v}} + \frac{q_e}{m_e}\int\vb{v}(\vb{E}\cdot\nabla_{\vb{v}}f_c)\dd{\vb{v}} \\
+    &\phantom{\partial_t\rho_c\vb{u}_c + \int\vb{v}(\vb{v}\cdot\nabla_{\vb{x}}f_c)\dd{\vb{v}}}
+      + \frac{q_e}{m_e}\int\vb{v}\left((\vb{v}\times(\vb{B}+\vb{B}_0))\cdot\nabla_{\vb{v}}f_c\right)\dd{\vb{v}} = 0
+  \end{aligned}
+$$
+Cette deuxième équation contient plusieurs termes que l'on peut traiter individuellement en les regardant par composante :
+$$
+	\begin{aligned}
+    \left( \int\vb{v}(\vb{v}\cdot\nabla_{\vb{x}}f_c)\dd{\vb{v}} \right)_i
+    		&= \int v_i \sum_{j=1}^3v_j\partial_{x_j}f_c\dd{v_i} \\
+				&= \sum_{j=1}^3\partial_{x_j}\int v_iv_jf_x\dd{v_i} \\
+				&= \sum_{j=1}^3\partial_{x_j}\int (\vb{v}\otimes\vb{v})_{ij}f_x\dd{v_i} \\
+				&= \left( \nabla_{\vb{x}}\cdot\int \vb{v}\otimes\vb{v} f_c\dd{\vb{v}} \right)_i \\
+				&= \left( \nabla_{\vb{x}}\cdot(\rho_c\vb{u}_c\otimes\vb{u}_c) \right)_i
+  \end{aligned}
+$$
+où on note $\otimes$ le produit tensoriel : $(\alpha\otimes\beta)_{i,j} = \alpha_i\beta_j$. Le terme suivant :
+$$
+	\begin{aligned}
+    \left( \frac{q_e}{m_e}\int\vb{v}(\vb{E}\cdot\nabla_{\vb{v}}f_c)\dd{\vb{v}} \right)_i
+    		&= \frac{q_e}{m_e}\int v_i\sum_{j=1}^3 E_j\partial_{v_j}f_c\dd{v_i} \\
+				&= -\frac{q_e}{m_e}\sum_{j=1}^3 e_j\int\partial_{v_j}(v_i)f_c\dd{v_i} \\
+				&= -\frac{q_e}{m_e}E_i\int f_c\dd{v_i} \\
+				&= -\frac{q_e}{m_e}(\rho_c E)_i.
+	\end{aligned}
+$$
+Et enfin le troisième terme :
+$$
+	\begin{aligned}
+    \left( \frac{q_e}{m_e}\int\vb{v}\left((\vb{v}\times(\vb{B}+\vb{B}_0))\cdot\nabla_{\vb{v}}f_c\right)\dd{\vb{v}} \right)_i
+    		&= \frac{q_e}{m_e}\int v_i\sum_{j=1}^3\left(\vb{v}\times(\vb{B}+\vb{B}_0)\right)_j\partial_{v_j}f_c\dd{v_i} \\
+				&= -\frac{q_e}{m_e}\sum_{j=1}^3\int\partial_{v_j}(v_i)\left(\vb{v}\times(\vb{B}+\vb{B}_0)\right)_jf_c\dd{v_i} \\
+				&= -\frac{q_e}{m_e}\int\left(\vb{v}\times(\vb{B}+\vb{B}_0)\right)_i f_c\dd{v_i} \\
+				&= \left[ -\frac{q_e}{m_e}\left(\int\vb{v}f_c\dd{\vb{v}}\right)\times(\vb{B}+\vb{B}_0) \right]_i \\
+				&= \left[ -\frac{q_e}{m_e}(\rho_c\vb{u}_c)\times(\vb{B}+\vb{B}_0) \right]_i.
+	\end{aligned}
+$$
+On peut ainsi réécrire les moments comme :
+$$
+  \begin{aligned}
+    \partial_t\rho_c + \nabla_{\vb{x}}\cdot(\rho_c\vb{u}_c) &= 0 \\
+    \partial_t(\rho_c\vb{u}_c) + \nabla_{\vb{x}}\cdot(\rho_c\vb{u}_c\otimes\vb{u}_c) - \frac{q}{m}\left( \rho_c\vb{E} + (\rho_c\vb{u}_c)\times(\vb{B}+\vb{B}_0) \right) &=0.
+  \end{aligned}
+$$
+\Josselin{j'ai regardé pour virer l'équation $\partial_t\rho_c + \nabla_{\vb{x}}\cdot(\rho_c\vb{u}_c)=0$ tout de suite, mais je trouve que ça ne se justifie réellement qu'après la linéarisation. En effet la variable $\rho_c$ intervient aussi dans l'équation du deuxième moment ($\rho_c\vb{E}$) mais ce terme disparait lors de la linéarisation où on obtient $\varepsilon\rho_c^0\vb{E}_1+\varepsilon\rho_{c,1}\vb{E}_1$, et $\rho_c^0$ est une constante qui se cache après dans $\Omega_{pe}^2$. $\rho_c$ peut aussi se calculer via~\eqref{eq:0:poisson}, les autres quantités étant obtenues avec d'autres équations, ce qui nous permet aussi de justifier que l'équation $\rho_c$ est redondante.}
+
+On définit maintenant le courant induit par les particules froides $\vb{j}_c=\vb{j}_c(t,\vb{x})$ comme étant une renormalisation du courant $\rho_c\vb{u}_c$ :
+$$
+  \vb{j}_c = q_e(\rho_c\vb{u}_c)
+$$
+ce qui nous permet de réécrire l'équation du deuxième moment de $f_c$ comme :
+$$
+  \partial_t\vb{j}_c + \nabla_{\vb{x}}\cdot\frac{\vb{j}_c\otimes\vb{j}_c}{q_e\rho_c} = \frac{q_e}{m_e}\left( q_e\rho_c\vb{E} + \vb{j}_c\times(\vb{B}+\vb{B}_0) \right)
+$$
+
+On écrit ainsi les équations de Vlasov-Maxwell hybride :
+\begin{align}
+	\label{eq:0:vmh:1}
+		\partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
+	\label{eq:0:vmh:2}
+		\partial_t\rho_c &+ \frac{1}{q_e}\nabla_{\vb{x}}\cdot(\vb{j}_c) = 0 \\
+	\label{eq:0:vmh:3}
+		\partial_t\vb{j}_c &+ \nabla_{\vb{x}}\cdot\frac{\vb{j}_c\otimes\vb{j}_c}{q_e\rho_c} - \frac{q_e}{m}\left( q_e\rho_c\vb{E} + \vb{j}_c\times(\vb{B}+\vb{B}_0) \right) = 0 \\
+	\label{eq:0:vmh:4}
+		\pdv{\vb{B}}{t} &= - \nabla_{\vb{x}}\times\vb{E} \\
+	\label{eq:0:vmh:5}
+		\frac{1}{c^2}\partial_t\vb{E} &= \nabla_{\vb{x}}\times \vb{B} - \mu\vb{j}_c - \mu q_e\int \vb{v} f_h\dd{\vb{v}} \\
+	\label{eq:0:vmh:6}
+		\nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\rho_c + q_e\int f_h\dd{\vb{v}} \right)
+\end{align}
+
+Ce système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} n'est pas nécessairement plus simple à résoudre numériquement que le système d'origine à cause de la non-linéarité introduite par le calcul des moments. La littérature physique propose de linéarisé la partie fluide (voir~\cite{Holderied:2019}). Ainsi on considère maintenant la linéarisation du modèle~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} satisfait par $(\rho_c,\vb{j}_c,\vb{E},\vb{B},f_h)$ autour de l'équilibre donné par $\left(\rho_c^{(0)},0,0,0,f_h^{(0)}(\vb{v})\right)$, avec $f_h^{(0)}(\vb{v})$ une fonction telle que $\int\vb{v}f_h^{(0)}\dd{\vb{v}} = 0$. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire, tout en conservant la non-linéarité dans l'équation cinétique permettant le couplage des différentes quantités. On écrit alors :
+\begin{equation}
+  \begin{aligned}
+    \rho_c. (t,\vb{x}) &= \rho_c^{(0)}(\vb{x}) & + & \varepsilon\rho_c^{(1)}(t,\vb{x}) \\
+    \vb{j}_c(t,\vb{x}) &=                      &   & \varepsilon\vb{j}_c^{(1)}(t,\vb{x}) \\
+    \vb{E}  (t,\vb{x}) &=                      &   & \varepsilon\vb{E}^{(1)}(t,\vb{x}) \\
+    \vb{B}  (t,\vb{x}) &=                      &   & \varepsilon\vb{B}^{(1)}(t,\vb{x}) \\
+    f_h(t,\vb{v},\vb{x}) &= f_h^{(0)}(\vb{v})  & + & \varepsilon f_h^{(1)}(t,\vb{v},\vb{x})
+  \end{aligned}
+\end{equation}
+Ce qui nous permet de linéariser le système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} :
+\begin{align}
+	\label{eq:0:vmhleps:1}
+		\partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
+	\label{eq:0:vmhleps:2}
+		\varepsilon\partial_t\rho_c^{(1)} &+ \frac{\varepsilon}{q_e}\nabla_{\vb{x}}\cdot(\vb{j}_c^{(1)}) = 0 \\
+	\label{eq:0:vmhleps:3}
+		\varepsilon\partial_t\vb{j}_c^{(1)} &+ \varepsilon^2\nabla_{\vb{x}}\cdot\frac{\vb{j}_c^{(1)}\otimes\vb{j}_c^{(1)}}{q_e(\rho_c^{(0)}+\varepsilon\rho_c^{(1)})} - \frac{q_e}{m_e}\left( q_e(\rho_c^{(0)}+\varepsilon\rho_c^{(1)})\varepsilon\vb{E} + \varepsilon\vb{j}_c^{(1)}\times(\varepsilon\vb{B}^{(1)}+\vb{B}_0) \right) = 0 \\
+	\label{eq:0:vmhleps:4}
+		\varepsilon\partial_t\vb{B}^{(1)} &= - \varepsilon\nabla_{\vb{x}}\times\vb{E}^{(1)} \\
+	\label{eq:0:vmhleps:5}
+		\frac{\varepsilon}{c^2}\partial_t\vb{E}^{(1)} &= \varepsilon\nabla_{\vb{x}}\times \vb{B}^{(1)} - \varepsilon\mu\vb{j}_c^{(1)} - \varepsilon\mu q_e\int \vb{v} f_h^{(1)}\dd{\vb{v}} \\
+	\label{eq:0:vmhleps:6}
+		\varepsilon\nabla_{\vb{x}}\cdot\vb{E}^{(1)} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\rho_c + q_e\int f_h\dd{\vb{v}} \right)
+\end{align}
+Nous souhaitons négliger les termes non-linéaires d'ordre $\order{\varepsilon^2}$. Dans le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} On remarque alors que~\eqref{eq:0:vmhleps:2} est la seule équation faisant intervenir $\rho_c^{(1)}$, et cette variable peut être recalculer à partir de~\eqref{eq:0:vmhleps:6} si besoin. L'équation~\eqref{eq:0:vmhleps:2} pourra donc être omise du système par la suite. Par abus de notation, pour la lisibilité, on retirera les indices de variables linéarisées lorsqu'il n'y a pas d'ambiguïté, par conséquent les variables $\vb{j}_c$, $\vb{E}$, $\vb{B}$ qui apparaissent par la suite, donc d'ordre $\varepsilon$ et correspondent à leurs perturbations par rapport à un équilibre nul. On introduit aussi la fréquence de plasma des particules froides $\Omega_{pe}^2 = \frac{q^2\rho_c^{(0)}}{\varepsilon_0m_e}$. On peut alors réécrire le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} comme :
+\begin{align}
+	\label{eq:0:vmhl:1}
+		\partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
+	\label{eq:0:vmhl:2}
+		\partial_t j_c &= \varepsilon_0\Omega_{pe}^2\vb{E} + \frac{q}{m_e}\vb{j}_c\times\vb{B}_0 \\
+	\label{eq:0:vmhl:3}
+		\partial_t\vb{B} &= -\nabla_{\vb{x}}\times\vb{E} \\
+	\label{eq:0:vmhl:4}
+		\frac{1}{c^2}\partial_t\vb{E} &= \nabla_{\vb{x}}\times\vb{B} - \mu_0\vb{j}_c - \mu_0q_e\int\vb{v}f_h\dd{\vb{v}}
+\end{align}
+
+\Josselin{Est-ce qu'on ajoute ici l'adimensionnement du système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} ou un lien vers l'annexe où cela sera fait ?}
+
+\subsection{Structure hamiltonienne}
+
+L'énergie du système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4}, ou hamiltonien, est :
+\begin{equation}
+  \mathcal{H} = \underbrace{\frac{\varepsilon_0}{2} \int_{\Omega} |\vb{E}|^2 \dd{\vb{x}} }_{\mathcal{H}_E}
+              + \underbrace{\frac{1}{2\mu_0}        \int_{\Omega} |\vb{B}|^2 \dd{\vb{x}} }_{\mathcal{H}_B}
+              + \underbrace{\frac{1}{2\varepsilon_0}\int_{\Omega} \frac{1}{\Omega_{pe}^2}|\vb{j}_c|^2 \dd{\vb{x}} }_{\mathcal{H}_{j_c}}
+              + \underbrace{\frac{m_e}{2}           \int_{\Omega}\int_{\mathbb{R}^3} |\vb{v}|^2f_h \dd{\vb{x}}\dd{\vb{v}} }_{\mathcal{H}_{f_h}}
+\end{equation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
