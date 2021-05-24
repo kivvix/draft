@@ -1,3 +1,5 @@
+% !TEX root = ../../main.tex
+
 \section{Introduction}
 \label{chap1:intro}
 
@@ -246,7 +248,7 @@ following way: they induce the CFL condition $b \Delta t\leq y_{\max}\Delta v$ f
 
 \paragraph{Exponential integrators. \\}
 
-For the exponential integrators the domain of stability is very sensitive to the value of $(a\Delta t)$. To get an idea of what we can expect, we consider the quantity $y_{\max} = \min_{(a\Delta t)\in\mathbb{R}} \; y^{exp}_{\max}(a \Delta t)$. As before, $y^{exp}_{\max}(a\Delta t)$ is the largest value such that $i(-y^{exp}_{\max}(a\Delta t), y^{exp}_{\max}(a\Delta t))\subset {\cal D}$, where ${\cal D}$ is the domain of stability for the chosen exponential time integrator for a given $(a\Delta t)$. 
+For the exponential integrators the domain of stability is very sensitive to the value of $(a\Delta t)$. To get an idea of what we can expect, we consider the quantity $y_{\max}=\min_{(a\Delta t)\in\mathbb{R}} \; y^{exp}_{\max}(a \Delta t)$. As before, $y^{exp}_{\max}(a\Delta t)$ is the largest value such that : $i(-y^{exp}_{\max}(a\Delta t), y^{exp}_{\max}(a\Delta t))\subset {\cal D}$, where ${\cal D}$ is the domain of stability for the chosen exponential time integrator for a given $(a\Delta t)$. 
 Even for relatively simple numerical methods it is not possible to compute this quantity analytically. Thus, we resort to numerical approximations. Unfortunately, it turns out that for most exponential integrators this value is zero. This can be appreciated by considering Figure \ref{fig:expRK_sd} once more. Clearly, there are values of $(a \Delta t)$ such that no relevant part of the imaginary axis (or only half the imaginary axis) is part of the domain of stability.
 Thus, most exponential integrators are unstable in the von Neumann sense. However, this is not what we observe in practice. In fact, already the results presented in \cite{Crouseilles:2018} indicate that we can successfully run numerical simulations using, for example, the Cox--Matthews scheme. There are two major points to consider here
 \begin{itemize}
@@ -316,7 +318,7 @@ In Table \ref{tab:ymax_expo} we have summarized the values of $y_{\max}$ for the
 	\label{tab:ymax_expo}
 \end{table}
 
-{\color{red}
+%{\color{red}
 Finally, we give an illustration of the above comments by running \eqref{vp_linear} ($d=b=1$ and $v_{\max}=3$) 
 with a discontinuous initial data to study the impact of high-frequency on the stability of exponential schemes coupled 
 with a centered scheme in $v$. 
@@ -355,7 +357,7 @@ As soon as $\varepsilon$ is small enough, the simulation is stable.
 %&\leq & \exp(Ct_{final}) \|\bar{f}^{0}\|_{\ell^2} = \exp(Ct_{final}) \|{f}^{0}\|_{\ell^2}, 
 %\end{eqnarray*}
 %which gives some practical informations on the stability of the methods since $C$ and $t_{final}$ are known a priori. 
-}
+%}
 
 \subsubsection{Linearized WENO5 (LW5) scheme. }
 
@@ -766,7 +768,7 @@ even if the accuracy of the solution is the same.
 
 In Figure \ref{fig:mass_energy}, the time history of the relative error of the total mass and of the total energy 
 are displayed with the phase space discretization $64\times 64\times 64\times 128$ and 
-using Lawson($RK(4,4)$) and Cox--Matthews time integrators (the perturbation formulation is used here). Since mass is a linear invariant it is preserved, up to machine precision, by the exponential integrator, see \cite{le2015KP}. We also observe good conservation of energy even in the nonlinear phase, which confirms the excellent behavior of the methods. 
+using Lawson($RK(4,4)$) and Cox--Matthews time integrators (the perturbation formulation is used here). Since mass is a linear invariant it is preserved, up to machine precision, by the exponential integrator, see \cite{Einkemmer:2015}. We also observe good conservation of energy even in the nonlinear phase, which confirms the excellent behavior of the methods. 
 
 \begin{figure}[h]
 	\centering
