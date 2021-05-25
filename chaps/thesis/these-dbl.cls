@@ -28,6 +28,7 @@
 
 \RequirePackage[utf8]{inputenc} 
 \RequirePackage[english,french]{babel} % Last language is the default, use \selectlanguage{english} to switch
+\RequirePackage{cmap}
 \RequirePackage{ifpdf}
 \RequirePackage[usenames,dvipsnames]{color} % pour les couleurs
 \RequirePackage{textcomp}
