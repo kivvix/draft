@@ -605,9 +605,7 @@ La démonstration de ce lemme est effectuée dans l'annexe~\ref{a:dispersion}. E
 %----------
 
 %\commentaire[Nicolas]{
-Dans les sous-sections pr\'ec\'edentes, nous avons obtenu les relations de dispersion des mod\`eles cin\'etique et VHL 
-correspondant \`a la condition initiale \eqref{init_f0_rel_disp}. Une premi\`ere validation va consister \`a v\'erifier 
-que les relations de dispersion du modèle cinétique données par (\ref{D_3bump})-(\ref{eq:3bumpderD})-(\ref{eq:N_3bump}) sont consistantes, quand $T_c\to 0$, avec les relations de dispersion du modèle hybride données par (\ref{eq:D_hchyb})-(\ref{eq:hchybderD})-(\ref{eq:N_hchyb}). Pour cela, rappelons que 
+Dans les sous-sections précédentes, nous avons obtenu les relations de dispersion des modèles cinétique et VHL correspondant à la condition initiale \eqref{init_f0_rel_disp}. Une première validation va consister à vérifier que les relations de dispersion du modèle cinétique données par (\ref{D_3bump})-(\ref{eq:3bumpderD})-(\ref{eq:N_3bump}) sont consistantes, quand $T_c\to 0$, avec les relations de dispersion du modèle hybride données par (\ref{eq:D_hchyb})-(\ref{eq:hchybderD})-(\ref{eq:N_hchyb}). Pour cela, rappelons que 
 $$
   Z(z)=\sqrt{\pi} \exp(-z^2) (i - erfi(z) )
 $$
@@ -624,9 +622,7 @@ Commençons par regarder la consistance en $D(k,\omega)$. Avec $z=\frac{1}{\sqrt
   -\frac{1-\alpha}{T_c}\left(1+\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}Z\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)\right)&=&-\frac{1-\alpha}{T_c}\left(1-1-\frac{1}{2\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)^2}+ \mathcal{O}\left(\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)^{-4}\right)\right)\nonumber\\
   &=& \left(1-\alpha\right)\frac{k^2}{\omega^2} + \mathcal{O}(T_c). 
 \end{eqnarray*}
-C'est le terme correspondant à la partie fluide (froide) de \eqref{eq:D_hchyb}.
-Les autres termes (venant des particules chaudes) sont les mêmes dans les deux expressions, donc $D(k,\omega)$ donné par le modèle cinétique est consistant, à la limite $T_c\to 0$, avec celui donné par le modèle hybride (avec un taux $\mathcal{O}(T_c)$).
-Regardons ensuite la consistance en $\frac{\partial D(k,\omega)}{\partial \omega}$. Les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:3bumpderD}) et hybride (\ref{eq:hchybderD}). Nous ne nous intéressons qu'aux termes venant des particules froides. De (\ref{eq:3bumpderD}), nous avons
+C'est le terme correspondant à la partie fluide (froide) de \eqref{eq:D_hchyb}. Les autres termes (venant des particules chaudes) sont les mêmes dans les deux expressions, donc $D(k,\omega)$ donné par le modèle cinétique est consistant, à la limite $T_c\to 0$, avec celui donné par le modèle hybride (avec un taux $\mathcal{O}(T_c)$). Regardons ensuite la consistance en $\frac{\partial D(k,\omega)}{\partial \omega}$. Les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:3bumpderD}) et hybride (\ref{eq:hchybderD}). Nous ne nous intéressons qu'aux termes venant des particules froides. De (\ref{eq:3bumpderD}), nous avons
 \begin{eqnarray*}
   &&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\left(Z\left(\tilde{\omega}_0\right)-2\tilde{\omega}_0^2Z\left(\tilde{\omega}_0\right)-2\tilde{\omega}_0\right)\\
   &=&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\left(-\frac{1}{\tilde{\omega}_0}-\frac{1}{2\tilde{\omega}_0^3}+2\tilde{\omega}_0+\frac{1}{\tilde{\omega}_0}+\frac{3}{2\tilde{\omega}_0^3}-2\tilde{\omega}_0\right)+\mathcal{O}\left(\tilde{\omega}_0^{-5}\right)\\
@@ -636,8 +632,7 @@ donc pour $\tilde{\omega}_0=\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}$, nous avons
 $$
   \frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\frac{2T_c\sqrt{2T_c}k^3}{\omega^3}=2\frac{1-\alpha}{\omega^3}
 $$
-qui est le terme fluide de \eqref{eq:hchybderD}.
-Regardons enfin la consistance en $N(k,\omega)$. Là encore, les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:N_3bump}) et hybride (\ref{eq:N_hchyb}). Les termes supplémentaires dans le modèle hybride s'annulent sous l'hypothèse $\hat{u}(t=0,k)=0$ et avec $\hat{g}(k)$ donné par (\ref{eq:gk}) et $\hat{E}(t=0,k)$ obtenu à partir de l'équation de Poisson 
+qui est le terme fluide de \eqref{eq:hchybderD}. Regardons enfin la consistance en $N(k,\omega)$. Là encore, les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:N_3bump}) et hybride (\ref{eq:N_hchyb}). Les termes supplémentaires dans le modèle hybride s'annulent sous l'hypothèse $\hat{u}(t=0,k)=0$ et avec $\hat{g}(k)$ donné par (\ref{eq:gk}) et $\hat{E}(t=0,k)$ obtenu à partir de l'équation de Poisson 
 \begin{eqnarray*}
   \partial_xE(t=0,x)&=& \rho_c(t=0,x)+\int f^h(t=0,x,v)dv-1\\
                     &=& \left(1-\alpha\right)+\alpha\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)-1\\

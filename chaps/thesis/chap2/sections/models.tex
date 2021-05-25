@@ -2,9 +2,7 @@
 
 \section{Hiérarchie des modèles}
 \label{s:models}
-Les mod\`eles \'etudi\'es dans cette partie sont pr\'esent\'es dans le cas uni-dimensionnel en espace et en vitesse 
-mais les d\'erivations peuvent \^etre g\'en\'eralis\'ees au cas multi-dimensionnel. 
-Ainsi, notre point de départ est l'équation de Vlasov $1dx-1dv$ suivante :
+Les modèles étudiés dans cette partie sont présentés dans le cas uni-dimensionnel en espace et en vitesse mais les dérivations peuvent être généralisées au cas multi-dimensionnel. Ainsi, notre point de départ est l'équation de Vlasov $1dx-1dv$ suivante :
 \begin{equation}
   \begin{cases}
     \partial_t f + v\partial_x f + E\partial_v f = 0\\
@@ -69,8 +67,7 @@ de sorte que le système aux moments se réécrive
   = \begin{pmatrix} 0 \\ 0 \end{pmatrix}.
 \label{eq:moments}
 \end{equation}
-Le système \eqref{eq:moments} n'étant pas fermé, il faut faire une hypothèse sur la répartition en vitesse des particules froides. On utilisera l'approximation "\emph{plasma froid}" utilis\'e dans la litt\'erature (\cite{Tronci:2014}, \cite{Holderied:2019}) 
-qui suppose l'approximation $f_c(t,x,v) = \rho_c(t,x)\delta_{\{v=u_c(t,x)\}}(v)$, ce qui nous permet d'obtenir le système :
+Le système \eqref{eq:moments} n'étant pas fermé, il faut faire une hypothèse sur la répartition en vitesse des particules froides. On utilisera l'approximation "\emph{plasma froid}" utilisé dans la littérature (\cite{Tronci:2014}, \cite{Holderied:2019}) qui suppose l'approximation $f_c(t,x,v) = \rho_c(t,x)\delta_{\{v=u_c(t,x)\}}(v)$, ce qui nous permet d'obtenir le système :
 $$
   \begin{cases}
     \partial_t \rho_c + \partial_x (\rho_cu_c) = 0 \\
@@ -96,8 +93,7 @@ $$
 $$ 
 La compatibilité $\int_{\mathbb{R}} (f^0(x, v) - f^0_h(x, v))\,\mathrm{d}v  = \rho^0_{c}(x)$ est nécessaire pour garantir le lien avec le modèle hybride non-linéaire \eqref{eq:hyb_nonlin} et le modèle cinétique de départ. 
 
-Le mod\`ele \eqref{eq:hyb_nonlin} peut \^etre r\'e\'ecrit de mani\`ere \'equivalente sous la forme d'un mod\`ele plus simple. 
-C'est l'objet de la proposition suivante.  
+Le modèle \eqref{eq:hyb_nonlin} peut être récrit de manière équivalente sous la forme d'un modèle plus simple. C'est l'objet de la proposition suivante.  
 \begin{pro}
   Le modèle \eqref{eq:hyb_nonlin} se réécrit sous la forme ($x\in\Omega\subset \mathbb{R}$ and $v\in\mathbb{R}$)
   $$
@@ -150,7 +146,7 @@ C'est l'objet de la proposition suivante.
   ce qui signifie que si l'équation de Poisson est vérifiée initialement, elle est vérifiée pour tout $t\geq 0$.
 \end{proof}
 
-Dans la littérature physique, le modèle hybride non linéaire est encore simplifié et c'est la version linéarisée de la partie fluide qui est étudiée (voir \cite{Holderied:2019}, \cite{Tronci:2014}). Ainsi, on considère maintenant la linéarisation du modèle \eqref{eq:hyb_nonlin_red} satisfait par $(\rho_c, u_c, E, f_h)$ autour de l'équilibre donné par  $(\rho_c^{(0)}(x), 0, 0, f^{(0)}_h(v))$ avec $f^{(0)}_h(v)$ une fonction paire. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire alors que l'équation cinétique non lin\'eaire  est conservée pour les particules chaudes. Remarquons que le terme $\frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf_h\,\mathrm{d}v \,\mathrm{d}x+ \frac{1}{|\Omega|}\int_\Omega \rho_cu_c \,\mathrm{d}x$ dans l'\'equation d'Amp\`ere ne sera pas pris en compte dans la suite pour all\'eger les notations. 
+Dans la littérature physique, le modèle hybride non linéaire est encore simplifié et c'est la version linéarisée de la partie fluide qui est étudiée (voir \cite{Holderied:2019}, \cite{Tronci:2014}). Ainsi, on considère maintenant la linéarisation du modèle \eqref{eq:hyb_nonlin_red} satisfait par $(\rho_c, u_c, E, f_h)$ autour de l'équilibre donné par  $(\rho_c^{(0)}(x), 0, 0, f^{(0)}_h(v))$ avec $f^{(0)}_h(v)$ une fonction paire. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire alors que l'équation cinétique non linéaire  est conservée pour les particules chaudes. Remarquons que le terme $\frac{1}{|\Omega|}\int_\Omega \int_{\mathbb{R}} vf_h\,\mathrm{d}v \,\mathrm{d}x+ \frac{1}{|\Omega|}\int_\Omega \rho_cu_c \,\mathrm{d}x$ dans l'équation d'Ampère ne sera pas pris en compte dans la suite pour alléger les notations. 
 On écrit alors
 \begin{equation}
   \begin{aligned}
@@ -172,7 +168,7 @@ $$
       - \varepsilon\rho_c^{(0)}u_c^{(1)} - \varepsilon^2\rho_c^{(1)}u_c^{(1)}. 
   \end{cases}
 $$
-On néglige maintenant  les termes non lin\'eaire (en $\varepsilon^2$), ce qui nous permet, sous l'hypothèse $f_{h}^{(0)}$ paire d'écrire le système suivant :
+On néglige maintenant  les termes non linéaire (en $\varepsilon^2$), ce qui nous permet, sous l'hypothèse $f_{h}^{(0)}$ paire d'écrire le système suivant :
 $$
   \begin{cases}
     \partial_t u_c^{(1)} -  E^{(1)} = 0 \\
@@ -251,8 +247,7 @@ Dans cette partie, quelques propriétés du modèle hybride linéarisé sont exh
   $$
     \frac{d}{dt} \left[ \int_\Omega \int_{\mathbb{R}} f v^2 \,\mathrm{d}x\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right] = 0, 
   $$
-  et l'approximation de $f_c(t, x, v)$ par $\rho_c(t, x) \delta_{v=u_c(t, x)}(v) + f_h(t, x, v)$, on peut retrouver la connservation 
-  de l'\'energie totale pour le mod\`ele VHL gr\^ace au calcul suivant 
+  et l'approximation de $f_c(t, x, v)$ par $\rho_c(t, x) \delta_{v=u_c(t, x)}(v) + f_h(t, x, v)$, on peut retrouver la connservation de l'énergie totale pour le modèle VHL grâce au calcul suivant 
   $$
     \begin{aligned}
       0 &= \frac{d}{dt} \left[ \iint_{\Omega\times\mathbb{R}} (f_c + f_h) v^2 \,\mathrm{d}x\,\mathrm{d}v + \int_\Omega E^2 \,\mathrm{d}x\right] \\
@@ -263,7 +258,7 @@ Dans cette partie, quelques propriétés du modèle hybride linéarisé sont exh
 \end{remark}
 
 \begin{proof}
-  $\,$\\
+%  $\,$\\
 %  \noindent  $\bullet$
 %  Commençons par la relation pour l'équation de Poisson. Prenons l'équation d'Ampère et dérivons-la par rapport à la variable $x$ :
 %  $$
@@ -281,52 +276,48 @@ Dans cette partie, quelques propriétés du modèle hybride linéarisé sont exh
 %  $$
 %    \partial_x E(t) = \rho_c(t) + \int f_h(t)\,\mathrm{d}v - 1. 
 %  $$
-%  Notons qu'en pratique, la densité $\rho_c$ de particules froides est calculée pour tout temps gr\^ace à cette dernière équation.
+%  Notons qu'en pratique, la densité $\rho_c$ de particules froides est calculée pour tout temps grâce à cette dernière équation.
 %
 %  \medskip
+\ 
 
-  \noindent $\bullet$
-  La conservation de la masse s'obtient en intégrant tout d'abord l'équation de Vlasov en espace et en vitesse: 
-  $$
-    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v + \int_\Omega \int_{\mathbb{R}} E \partial_v f_h\,\mathrm{d}v\mathrm{d}x =0. 
-  $$
-  Or, avec les conditions aux bords choisies, on a  $\frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v=0$ et comme $\rho^{(0)}_c$ ne dépend pas du temps, on déduit la conservation de la masse totale. Notons que $\int_\Omega E \mathrm{d}x = \int_\Omega u \mathrm{d}x = 0$. 
+  \begin{enumerate}
+    \item[$\bullet$]La conservation de la masse s'obtient en intégrant tout d'abord l'équation de Vlasov en espace et en vitesse~: 
+      $$
+        \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v + \int_\Omega \int_{\mathbb{R}} E \partial_v f_h\,\mathrm{d}v\mathrm{d}x =0. 
+      $$
+      Or, avec les conditions aux bords choisies, on a  $\frac{d}{dt} \int_\Omega\int_{\mathbb{R}} f_h \mathrm{d}x \mathrm{d}v=0$ et comme $\rho^{(0)}_c$ ne dépend pas du temps, on déduit la conservation de la masse totale. Notons que $\int_\Omega E \mathrm{d}x = \int_\Omega u \mathrm{d}x = 0$. 
 
-  \medskip 
+    % \item[$\bullet$] La conservation de l'impulsion s'obtient tout d'abord  en multipliant par $v$ et intégrant l'équation de Vlasov en espace et en vitesse: 
+    %  $$
+    %    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v f_h \mathrm{d}x \mathrm{d}v - \int_\Omega E \left(\int_{\mathbb{R}} f_h \mathrm{d}v\right) \mathrm{d}x =0. 
+    %  $$
+    %  Or d'après l'équation de Poisson, on a $\int_{\mathbb{R}} f_h \mathrm{d}v = \partial_x E - \rho_c^{(0)} +1$ donc \commentaire[Anais]{(j'ai du mal à suivre le jeu entre $\rho_c$ et $\rho_c^{(0)}$)}
+    %  $$
+    %    \int_\Omega E \Big(\int_{\mathbb{R}} f_h \mathrm{d}v\Big)\mathrm{d}x
+    %    = \int_\Omega E \Big( \partial_x E - \rho_c^{(0)} +1 \Big) \mathrm{d}x
+    %    = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x, 
+    %  $$
+    %  car $\int_\Omega E\partial_x E \mathrm{d}x = \int_\Omega \frac{1}{2}\partial_x E^2 \mathrm{d}x = 0$ et $\int_\Omega E\mathrm{d}x = 0$. On obtient donc, en utilisant l'équation sur $u_c$  
+    %  $$
+    %    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} vf_h \mathrm{d}x \mathrm{d}v = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x= - \int_\Omega (\partial_t  u_c) \rho_c^{(0)} \mathrm{d}x = -\frac{d}{dt} \int_\Omega  \rho_c^{(0)} u_c \mathrm{d}x, 
+    %  $$
+    %  d'où la conservation de l'impulsion.
+    %
 
-%  \noindent $\bullet$
-%  La conservation de l'impulsion s'obtient tout d'abord  en multipliant par $v$ et intégrant l'équation de Vlasov en espace et en vitesse: 
-%  $$
-%    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v f_h \mathrm{d}x \mathrm{d}v - \int_\Omega E \left(\int_{\mathbb{R}} f_h \mathrm{d}v\right) \mathrm{d}x =0. 
-%  $$
-%  Or d'après l'équation de Poisson, on a $\int_{\mathbb{R}} f_h \mathrm{d}v = \partial_x E - \rho_c^{(0)} +1$ donc \commentaire[Anais]{(j'ai du mal à suivre le jeu entre $\rho_c$ et $\rho_c^{(0)}$)}
-%  $$
-%    \int_\Omega E \Big(\int_{\mathbb{R}} f_h \mathrm{d}v\Big)\mathrm{d}x
-%    = \int_\Omega E \Big( \partial_x E - \rho_c^{(0)} +1 \Big) \mathrm{d}x
-%    = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x, 
-%  $$
-%  car $\int_\Omega E\partial_x E \mathrm{d}x = \int_\Omega \frac{1}{2}\partial_x E^2 \mathrm{d}x = 0$ et $\int_\Omega E\mathrm{d}x = 0$. On obtient donc, en utilisant l'équation sur $u_c$  
-%  $$
-%    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} vf_h \mathrm{d}x \mathrm{d}v = - \int_\Omega E  \rho_c^{(0)} \mathrm{d}x= - \int_\Omega (\partial_t  u_c) \rho_c^{(0)} \mathrm{d}x = -\frac{d}{dt} \int_\Omega  \rho_c^{(0)} u_c \mathrm{d}x, 
-%  $$
-%  d'où la conservation de l'impulsion.
-%
-  \medskip
-
-  \noindent $\bullet$
-  Pour la conservation de l'énergie, on multiplie l'équation de Vlasov par $v^2$ et on intègre en $x,v$ pour obtenir, après intégration par partie
-  $$  
-    \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v^2 f_h \mathrm{d}x \mathrm{d}v - 2 \int_\Omega E \Big(\int_{\mathbb{R}} v f_h \mathrm{d}v\Big)\mathrm{d}x = 0.
-  $$
-  
-  En utilisant l'équation d'Ampère, le deuxième terme devient 
-  $$
-    \begin{aligned}
-      2 \int_\Omega E \Big( \partial_t E + \rho^{(0)}_c u_c\Big)\mathrm{d}x
-        &=  \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  +2 \int_\Omega E \rho^{(0)}_c u_c \mathrm{d}x, \\
-        &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + 2\int_\Omega (\partial_t u_c ) \rho^{(0)}_c u_c \mathrm{d}x, \\ 
-        &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + \frac{d}{dt} \int_\Omega \rho_c^{(0)} u_c^2 \mathrm{d}x, 
-    \end{aligned}
-  $$
-  où on a utilisé l'équation sur $u_c$ et le fait que $\rho_c^{(0)}$ ne dépende pas du temps. 
+    \item[$\bullet$] Pour la conservation de l'énergie, on multiplie l'équation de Vlasov par $v^2$ et on intègre en $x,v$ pour obtenir, après intégration par partie
+      $$  
+        \frac{d}{dt} \int_\Omega\int_{\mathbb{R}} v^2 f_h \mathrm{d}x \mathrm{d}v - 2 \int_\Omega E \Big(\int_{\mathbb{R}} v f_h \mathrm{d}v\Big)\mathrm{d}x = 0.
+      $$
+      En utilisant l'équation d'Ampère, le deuxième terme devient 
+      $$
+        \begin{aligned}
+          2 \int_\Omega E \Big( \partial_t E + \rho^{(0)}_c u_c\Big)\mathrm{d}x
+            &=  \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  +2 \int_\Omega E \rho^{(0)}_c u_c \mathrm{d}x, \\
+            &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + 2\int_\Omega (\partial_t u_c ) \rho^{(0)}_c u_c \mathrm{d}x, \\ 
+            &= \frac{d}{dt} \int_\Omega E^2\mathrm{d}x  + \frac{d}{dt} \int_\Omega \rho_c^{(0)} u_c^2 \mathrm{d}x, 
+        \end{aligned}
+      $$
+      où on a utilisé l'équation sur $u_c$ et le fait que $\rho_c^{(0)}$ ne dépende pas du temps. 
+  \end{enumerate}
 \end{proof}

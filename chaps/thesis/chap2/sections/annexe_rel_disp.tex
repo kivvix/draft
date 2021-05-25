@@ -11,138 +11,134 @@ Nous démontrons tout d'abord le lemme \ref{lemma:doubleracine}, qui concerne la
 \end{lemma}
 
 \begin{proof}
-Nous le vérifions dans le cas cinétique, les calculs étant similaires dans le cas hybride. Avec la définition (\ref{eq:D}) de $D(k,\omega)$, nous avons 
-\begin{eqnarray*}
-&&D(k,\omega_r+i\omega_i)=0\\
-&\Leftrightarrow&
-\Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=0. 
-\end{eqnarray*}
-Distinguons les parties réelles et imaginaires :
-\begin{eqnarray*}
-\int_\gamma\frac{\partial_vf^0(v)}{v-\frac{\omega_r+i\omega_i}{k}}dv=\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r+i\omega_i}{k}\right)\left(v-\frac{\omega_r-i\omega_i}{k}\right)}\left(v-\frac{\omega_r-i\omega_i}{k}\right)dv\\
-=\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv.
-\end{eqnarray*}
-Maintenant, considérons $\omega=-\omega_r+i\omega_i$ et rappelons qu'on a supposé que $f^0(v)$ était une fonction paire. Nous obtenons
-\begin{eqnarray*}
-\int_\gamma\frac{\partial_vf^0(v)}{v-\frac{-\omega_r+i\omega_i}{k}}dv~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\
-=\int_\gamma\frac{\partial_vf^0(v)}{\left(v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v+\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(v)}{\left(v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv~~~~\\
-=-\int_\gamma\frac{\partial_{v}f^0(-v)}{\left(-v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(-v)}{\left(-v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv\\
-=\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv-i\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv~~~~.
-\end{eqnarray*}
-D'où
-\begin{eqnarray*}
-\Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=0\\
-\Leftrightarrow
-\Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{-\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{-\omega_r+i\omega_i}{k}}dv\right)=0
-\end{eqnarray*}
-et
-$$D(k,\omega_r+i\omega_i)=0\Leftrightarrow D(k,-\omega_r+i\omega_i)=0.$$
+  Nous le vérifions dans le cas cinétique, les calculs étant similaires dans le cas hybride. Avec la définition (\ref{eq:D}) de $D(k,\omega)$, nous avons 
+  \begin{eqnarray*}
+    &&D(k,\omega_r+i\omega_i)=0\\
+    &\Leftrightarrow&
+    \Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=0. 
+  \end{eqnarray*}
+  Distinguons les parties réelles et imaginaires :
+  \begin{eqnarray*}
+    \int_\gamma\frac{\partial_vf^0(v)}{v-\frac{\omega_r+i\omega_i}{k}}dv=\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r+i\omega_i}{k}\right)\left(v-\frac{\omega_r-i\omega_i}{k}\right)}\left(v-\frac{\omega_r-i\omega_i}{k}\right)dv\\
+    =\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv.
+  \end{eqnarray*}
+  Maintenant, considérons $\omega=-\omega_r+i\omega_i$ et rappelons qu'on a supposé que $f^0(v)$ était une fonction paire. Nous obtenons
+  \begin{eqnarray*}
+    \int_\gamma\frac{\partial_vf^0(v)}{v-\frac{-\omega_r+i\omega_i}{k}}dv~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\
+    =\int_\gamma\frac{\partial_vf^0(v)}{\left(v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v+\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(v)}{\left(v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv~~~~\\
+    =-\int_\gamma\frac{\partial_{v}f^0(-v)}{\left(-v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv+i\int_\gamma\frac{\partial_vf^0(-v)}{\left(-v+\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv\\
+    =\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\left(v-\frac{\omega_r}{k}\right)dv-i\int_\gamma\frac{\partial_vf^0(v)}{\left(v-\frac{\omega_r}{k}\right)^2+\left(\frac{\omega_i}{k}\right)^2}\frac{\omega_i}{k}dv~~~~.
+  \end{eqnarray*}
+  D'où
+  \begin{eqnarray*}
+    \Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{\omega_r+i\omega_i}{k}}dv\right)=0\\
+    \Leftrightarrow
+    \Re\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{-\omega_r+i\omega_i}{k}}dv\right)=1,~\Im\left(\frac{1}{k^2}\int_\gamma\frac{\partial_vf^0}{v-\frac{-\omega_r+i\omega_i}{k}}dv\right)=0
+  \end{eqnarray*}
+  et
+  $$
+    D(k,\omega_r+i\omega_i)=0\Leftrightarrow D(k,-\omega_r+i\omega_i)=0.
+  $$
 \end{proof}
 
 Nous allons maintenant démontrer les lemmes \ref{lemma:Z0}, \ref{lemma:Z+} et \ref{lemma:Z-}, dont les énoncés sont rappelés ci-dessous, qui donnent des propriétés de la fonction de Fried-Conte (\ref{eq:Zfct}).
 
 \begin{lemma}
   La fonction $Z_\alpha^0(\omega):\omega\in\mathbb{C}\mapsto Z\left(\alpha\omega\right)\in\mathbb{C}$, avec $\alpha\in\mathbb{R}$ fixé, est telle que : $Z_\alpha^0(-\bar{\omega}) = -\overline{Z_\alpha^0(\omega)}$.
- \end{lemma}
+\end{lemma}
  
- \begin{proof}
-Par définition de la fonction de Fried-Conte, et avec la notation $\omega=\omega_r+i\omega_i$, nous avons
-\begin{eqnarray*}
-Z(\alpha(\omega_r+i\omega_i))=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha(\omega_r+i\omega_i)}dz=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r+i\alpha\omega_i)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz
-\end{eqnarray*}
-d'où
-\begin{eqnarray*}
-\Re\left(Z(\alpha(\omega_r+i\omega_i))\right)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
-\Im\left(Z(\alpha(\omega_r+i\omega_i))\right)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz.
-\end{eqnarray*}
+\begin{proof}
+  Par définition de la fonction de Fried-Conte, et avec la notation $\omega=\omega_r+i\omega_i$, nous avons
+  \begin{eqnarray*}
+    Z(\alpha(\omega_r+i\omega_i))=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha(\omega_r+i\omega_i)}dz=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r+i\alpha\omega_i)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz
+  \end{eqnarray*}
+  d'où
+  \begin{eqnarray*}
+    \Re\left(Z(\alpha(\omega_r+i\omega_i))\right)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
+    \Im\left(Z(\alpha(\omega_r+i\omega_i))\right)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz.
+  \end{eqnarray*}
 
-Maintenant, $-\overline{\omega}=-\omega_r+i\omega_i$, implique
-\begin{eqnarray*}
-Z(\alpha(-\omega_r+i\omega_i))&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha(-\omega_r+i\omega_i)}dz\\
-&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z+\alpha\omega_r+i\alpha\omega_i)}{(z+\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
-&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(-z+\alpha\omega_r+i\alpha\omega_i)}{(-z+\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
-&=&-\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz+i\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz
-\end{eqnarray*}
-d'où
-\begin{eqnarray*}
-\Re\left(Z(\alpha(-\omega_r+i\omega_i))\right)=-\Re\left(Z(\alpha(\omega_r+i\omega_i))\right)\\
-\Im\left(Z(\alpha(-\omega_r+i\omega_i))\right)=\Im\left(Z(\alpha(\omega_r+i\omega_i))\right),
-\end{eqnarray*}
-ce qui termine la preuve.
+  Maintenant, $-\overline{\omega}=-\omega_r+i\omega_i$, implique
+  \begin{eqnarray*}
+    Z(\alpha(-\omega_r+i\omega_i))&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha(-\omega_r+i\omega_i)}dz\\
+    &=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z+\alpha\omega_r+i\alpha\omega_i)}{(z+\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
+    &=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(-z+\alpha\omega_r+i\alpha\omega_i)}{(-z+\alpha\omega_r)^2+(\alpha\omega_i)^2}dz\\
+    &=&-\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz+i\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i}{(z-\alpha\omega_r)^2+(\alpha\omega_i)^2}dz
+  \end{eqnarray*}
+  d'où
+  \begin{eqnarray*}
+    \Re\left(Z(\alpha(-\omega_r+i\omega_i))\right)=-\Re\left(Z(\alpha(\omega_r+i\omega_i))\right)\\
+    \Im\left(Z(\alpha(-\omega_r+i\omega_i))\right)=\Im\left(Z(\alpha(\omega_r+i\omega_i))\right),
+  \end{eqnarray*}
+  ce qui termine la preuve.
 \end{proof}
 
 
 \begin{lemma}
   La fonction $Z_{\alpha,\beta}^+(\omega):\omega\in\mathbb{C}\mapsto Z\left(\alpha\omega-\beta\right)+Z\left(\alpha\omega+\beta\right)\in\mathbb{C}$, avec $\alpha\in\mathbb{R}$, $\beta\in\mathbb{R}$ fixés, est telle que : $Z_{\alpha,\beta}^+\left(-\overline{\omega}\right)=-\overline{Z_{\alpha,\beta}^+(\omega)}$.
-  \end{lemma}
+\end{lemma}
   
- \begin{proof}
-Nous avons par définition de la fonction de Fried-Conte
-\begin{eqnarray*}
-&&Z(\alpha\omega-\beta)+Z(\alpha\omega+\beta)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha\omega+\beta}+\frac{e^{-z^2}}{z-\alpha\omega-\beta}dz\\
-&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega-\beta)+e^{-z^2}(z-\alpha\omega+\beta)}{(z-\alpha\omega)^2-\beta^2}dz\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega)}{(z-\alpha\omega)^2-\beta^2}dz.
-\end{eqnarray*}
-Maintenant, avec la notation $\omega=\omega_r+i\omega_i$, nous avons
-\begin{eqnarray*}
-&&Z(\alpha(\omega_r+i\omega_i)-\beta)+Z(\alpha(\omega_r+i\omega_i)+\beta)=\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)}{(z-\alpha\omega_r-i\alpha\omega_i)^2-\beta^2}dz\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)}{(z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)}dz\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z-\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\left((z-\alpha\omega_r)\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)+2(\alpha\omega_i)^2(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
-&+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\left(2\alpha\omega_i(z-\alpha\omega_r)^2-\alpha\omega_i\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
-&+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz.
-\end{eqnarray*}
-%
-Par ailleurs, en considérant $-\overline{\omega}=-\omega_r+i\omega_i$, nous avons
-%
-\begin{eqnarray*}
-&&Z(\alpha(-\omega_r+i\omega_i)-\beta)+Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
-&=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z+\alpha\omega_r)\left((z+\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz\\
-&+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z+\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz.
-\end{eqnarray*}
-La seule fonction impaire en $z$ est $(z+\alpha\omega_r)$, qui apparaît dans la partie réelle, ainsi
-\begin{eqnarray*}
-&&Z(\alpha(-\omega_r+i\omega_i)-\beta)+Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
-&+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz.
-\end{eqnarray*}
-L'identification des parties réelles et imaginaires de $Z(\alpha\omega-\beta)+Z(\alpha\omega+\beta)$ et $Z(-\alpha\overline{\omega}-\beta)+Z(-\alpha\overline{\omega}+\beta)$ achève la preuve.
+\begin{proof}
+  Nous avons par définition de la fonction de Fried-Conte
+  \begin{eqnarray*}
+    &&Z(\alpha\omega-\beta)+Z(\alpha\omega+\beta)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha\omega+\beta}+\frac{e^{-z^2}}{z-\alpha\omega-\beta}dz\\
+    &=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega-\beta)+e^{-z^2}(z-\alpha\omega+\beta)}{(z-\alpha\omega)^2-\beta^2}dz\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega)}{(z-\alpha\omega)^2-\beta^2}dz.
+  \end{eqnarray*}
+  Maintenant, avec la notation $\omega=\omega_r+i\omega_i$, nous avons
+  \begin{eqnarray*}
+    &&Z(\alpha(\omega_r+i\omega_i)-\beta)+Z(\alpha(\omega_r+i\omega_i)+\beta)=\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)}{(z-\alpha\omega_r-i\alpha\omega_i)^2-\beta^2}dz\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)}{(z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)}dz\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r-i\alpha\omega_i)\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z-\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\left((z-\alpha\omega_r)\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)+2(\alpha\omega_i)^2(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
+    &+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\left(2\alpha\omega_i(z-\alpha\omega_r)^2-\alpha\omega_i\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
+    &+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz.
+  \end{eqnarray*}
+  Par ailleurs, en considérant $-\overline{\omega}=-\omega_r+i\omega_i$, nous avons
+  \begin{eqnarray*}
+    &&Z(\alpha(-\omega_r+i\omega_i)-\beta)+Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
+    &=&\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z+\alpha\omega_r)\left((z+\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz\\
+    &+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z+\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz.
+  \end{eqnarray*}
+  La seule fonction impaire en $z$ est $(z+\alpha\omega_r)$, qui apparaît dans la partie réelle, ainsi
+  \begin{eqnarray*}
+    &&Z(\alpha(-\omega_r+i\omega_i)-\beta)+Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega_r)\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2-\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz\\
+    &+&i\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\alpha\omega_i\left((z-\alpha\omega_r)^2+(\alpha\omega_i)^2+\beta^2\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz.
+  \end{eqnarray*}
+  L'identification des parties réelles et imaginaires de $Z(\alpha\omega-\beta)+Z(\alpha\omega+\beta)$ et $Z(-\alpha\overline{\omega}-\beta)+Z(-\alpha\overline{\omega}+\beta)$ achève la preuve.
 \end{proof}
 
 
 \begin{lemma}
   La fonction $Z_{\alpha,\beta}^-(\omega):\omega\in\mathbb{C}\mapsto Z\left(\alpha\omega-\beta\right)-Z\left(\alpha\omega+\beta\right)\in\mathbb{C}$, avec $\alpha\in\mathbb{R}$, $\beta\in\mathbb{R}$ fixés, est telle que : $Z_{\alpha,\beta}^-\left(-\overline{\omega}\right)=\overline{Z_{\alpha,\beta}^-(\omega)}$.
-  \end{lemma}
+\end{lemma}
 
 \begin{proof}
-Nous avons par définition de la fonction de Fried-Conte
-\begin{eqnarray*}
-&&Z(\alpha\omega-\beta)-Z(\alpha\omega+\beta)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha\omega+\beta}-\frac{e^{-z^2}}{z-\alpha\omega-\beta}dz\\
-&=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega-\beta)-e^{-z^2}(z-\alpha\omega+\beta)}{(z-\alpha\omega)^2-\beta^2}dz\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega)^2-\beta^2}dz.
-\end{eqnarray*}
-%
-Maintenant, avec la notation $\omega=\omega_r+i\omega_i$, nous avons
-%
-\begin{eqnarray*}
-&&Z(\alpha(\omega_r+i\omega_i)-\beta)-Z(\alpha(\omega_r+i\omega_i)+\beta)=-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega_r-i\alpha\omega_i)^2-\beta^2}dz\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)}dz\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz
-\end{eqnarray*}
-%
-Par ailleurs, avec $-\overline{\omega}=-\omega_r+i\omega_i$, nous avons
-%
-\begin{eqnarray*}
-&&Z(\alpha(-\omega_r+i\omega_i)-\beta)-Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z+\alpha\omega_r)\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz
-\end{eqnarray*}
-La seule fonction impaire en $z$ est $(z+\alpha\omega_r)$, apparaissant dans la partie imaginaire, d'où
-\begin{eqnarray*}
-&&Z(\alpha(-\omega_r+i\omega_i)-\beta)-Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
-&=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz
-\end{eqnarray*}
-L'identification des parties réelles et imaginaires de $Z(\alpha\omega-\beta)-Z(\alpha\omega+\beta)$ et $Z(-\alpha\overline{\omega}-\beta)-Z(-\alpha\overline{\omega}+\beta)$ achève la preuve.
+  Nous avons par définition de la fonction de Fried-Conte
+  \begin{eqnarray*}
+    &&Z(\alpha\omega-\beta)-Z(\alpha\omega+\beta)=\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}}{z-\alpha\omega+\beta}-\frac{e^{-z^2}}{z-\alpha\omega-\beta}dz\\
+    &=&\frac{1}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}(z-\alpha\omega-\beta)-e^{-z^2}(z-\alpha\omega+\beta)}{(z-\alpha\omega)^2-\beta^2}dz\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega)^2-\beta^2}dz.
+  \end{eqnarray*}
+  Maintenant, avec la notation $\omega=\omega_r+i\omega_i$, nous avons
+  \begin{eqnarray*}
+    &&Z(\alpha(\omega_r+i\omega_i)-\beta)-Z(\alpha(\omega_r+i\omega_i)+\beta)=-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega_r-i\alpha\omega_i)^2-\beta^2}dz\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta}{(z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)}dz\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz
+  \end{eqnarray*}
+  Par ailleurs, avec $-\overline{\omega}=-\omega_r+i\omega_i$, nous avons
+  \begin{eqnarray*}
+    &&Z(\alpha(-\omega_r+i\omega_i)-\beta)-Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2+2i\alpha\omega_i(z+\alpha\omega_r)\right)}{\left((z+\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z+\alpha\omega_r)^2}dz
+  \end{eqnarray*}
+  La seule fonction impaire en $z$ est $(z+\alpha\omega_r)$, apparaissant dans la partie imaginaire, d'où
+  \begin{eqnarray*}
+    &&Z(\alpha(-\omega_r+i\omega_i)-\beta)-Z(\alpha(-\omega_r+i\omega_i)+\beta)\\
+    &=&-\frac{2}{\sqrt{\pi}}\int_\gamma\frac{e^{-z^2}\beta\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2-2i\alpha\omega_i(z-\alpha\omega_r)\right)}{\left((z-\alpha\omega_r)^2-(\alpha\omega_i)^2-\beta^2\right)^2+4\left(\alpha\omega_i\right)^2(z-\alpha\omega_r)^2}dz
+  \end{eqnarray*}
+  L'identification des parties réelles et imaginaires de $Z(\alpha\omega-\beta)-Z(\alpha\omega+\beta)$ et $Z(-\alpha\overline{\omega}-\beta)-Z(-\alpha\overline{\omega}+\beta)$ achève la preuve.
 \end{proof}
 
 Nous pouvons enfin démontrer les lemmes \ref{lemme:hypcashyb} et \ref{lemme:hypcascin} concernant la vérification de l'hypothèse \ref{hyp:sym}, qui conduit à l'expression (\ref{eq:Etk}) du mode fondamental du champ électrique linéarisé puis à l'approximation (\ref{eq:enelec}) de l'énergie électrique linéarisée. Ces lemmes sont rappelés ci-dessous.
@@ -153,39 +149,39 @@ D'une part, nous rappelons le résultat \ref{lemme:hypcascin} dans le cas cinét
 \end{lemma}
 
 \begin{proof}
-En utilisant (\ref{eq:3bumpderD}) et les lemmes \ref{lemma:Z0}, \ref{lemma:Z+}, \ref{lemma:Z-} avec $\delta=\frac{1}{\sqrt{2T_c}k}$, $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
-\begin{eqnarray*}
-\frac{\partial D}{\partial \omega}(k,\omega)&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{\omega^2}{T_ck^2}\right)Z_\delta^0\left(\omega\right)-2\frac{\omega}{\sqrt{2T_c}k}\right)\right.\nonumber\\
-&&~~~~~~~~~~~~~+\frac{\alpha}{2}\left(\left(1-\left(\frac{\omega}{k}-v_0\right)^2\right)Z\left(\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)\right)\right.\nonumber\\
-&&~~~~~~~~~~~~~~~~~~+\left.\left.\left(1-\left(\frac{\omega}{k}+v_0\right)^2\right)Z\left(\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)\right)\right.\right.\nonumber\\
-&&~~~~~~~~~~~~~\left.\left.-\frac{2}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)-\frac{2}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)\right)\right]\nonumber\\
-&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{\omega^2}{T_ck^2}\right)Z_\delta^0\left(\omega\right)-2\frac{\omega}{\sqrt{2T_c}k}\right)-2\sqrt{2}\frac{\omega}{k}\right.\nonumber\\
-&&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left((1-v_0^2)Z_{\eta,\beta}^+\left(\omega\right)-\frac{\omega^2}{k^2}Z_{\eta,\beta}^+\left(\omega\right)+2v_0\frac{\omega}{k}Z_{\eta,\beta}^-\left(\omega\right)\right)\right]
-\end{eqnarray*}
-et
-\begin{eqnarray*}
-\frac{\partial D}{\partial \omega}(k,-\overline{\omega})&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{(-\overline{\omega})^2}{T_ck^2}\right)Z_\delta^0\left(-\overline{\omega}\right)+2\frac{\overline{\omega}}{\sqrt{2T_c}k}\right)+2\sqrt{2}\frac{\overline{\omega}}{k}\right.\nonumber\\
-&&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left((1-v_0^2)Z_{\eta,\beta}^+\left(-\overline{\omega}\right)-\frac{(-\overline{\omega})^2}{k^2}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)-2v_0\frac{\overline{\omega}}{k}Z_{\eta,\beta}^-\left(-\overline{\omega}\right)\right)\right]\\
-&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(-\left(1-\frac{\overline{\omega^2}}{T_ck^2}\right)\overline{Z_\delta^0\left(\omega\right)}+2\frac{\overline{\omega}}{\sqrt{2T_c}k}\right)+2\sqrt{2}\frac{\overline{\omega}}{k}\right.\nonumber\\
-&&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left(-(1-v_0^2)\overline{Z_{\eta,\beta}^+\left(\omega\right)}+\frac{\overline{\omega^2}}{k^2}\overline{Z_{\eta,\beta}^+\left(\omega\right)}-2v_0\frac{\overline{\omega}}{k}\overline{Z_{\eta,\beta}^-\left(\omega\right)}\right)\right]\nonumber\\
-&=&-\overline{\frac{\partial D}{\partial \omega}(k,\omega)}.
-\end{eqnarray*}
+  En utilisant (\ref{eq:3bumpderD}) et les lemmes \ref{lemma:Z0}, \ref{lemma:Z+}, \ref{lemma:Z-} avec $\delta=\frac{1}{\sqrt{2T_c}k}$, $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
+  \begin{eqnarray*}
+    \frac{\partial D}{\partial \omega}(k,\omega)&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{\omega^2}{T_ck^2}\right)Z_\delta^0\left(\omega\right)-2\frac{\omega}{\sqrt{2T_c}k}\right)\right.\nonumber\\
+    &&~~~~~~~~~~~~~+\frac{\alpha}{2}\left(\left(1-\left(\frac{\omega}{k}-v_0\right)^2\right)Z\left(\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)\right)\right.\nonumber\\
+    &&~~~~~~~~~~~~~~~~~~+\left.\left.\left(1-\left(\frac{\omega}{k}+v_0\right)^2\right)Z\left(\frac{1}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)\right)\right.\right.\nonumber\\
+    &&~~~~~~~~~~~~~\left.\left.-\frac{2}{\sqrt{2}}\left(\frac{\omega}{k}-v_0\right)-\frac{2}{\sqrt{2}}\left(\frac{\omega}{k}+v_0\right)\right)\right]\nonumber\\
+    &=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{\omega^2}{T_ck^2}\right)Z_\delta^0\left(\omega\right)-2\frac{\omega}{\sqrt{2T_c}k}\right)-2\sqrt{2}\frac{\omega}{k}\right.\nonumber\\
+    &&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left((1-v_0^2)Z_{\eta,\beta}^+\left(\omega\right)-\frac{\omega^2}{k^2}Z_{\eta,\beta}^+\left(\omega\right)+2v_0\frac{\omega}{k}Z_{\eta,\beta}^-\left(\omega\right)\right)\right]
+  \end{eqnarray*}
+  et
+  \begin{eqnarray*}
+    \frac{\partial D}{\partial \omega}(k,-\overline{\omega})&=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(\left(1-\frac{(-\overline{\omega})^2}{T_ck^2}\right)Z_\delta^0\left(-\overline{\omega}\right)+2\frac{\overline{\omega}}{\sqrt{2T_c}k}\right)+2\sqrt{2}\frac{\overline{\omega}}{k}\right.\nonumber\\
+    &&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left((1-v_0^2)Z_{\eta,\beta}^+\left(-\overline{\omega}\right)-\frac{(-\overline{\omega})^2}{k^2}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)-2v_0\frac{\overline{\omega}}{k}Z_{\eta,\beta}^-\left(-\overline{\omega}\right)\right)\right]\\
+    &=&\frac{1}{\sqrt{2}k^3}\left[\frac{1-\alpha}{T_c\sqrt{T_c}}\left(-\left(1-\frac{\overline{\omega^2}}{T_ck^2}\right)\overline{Z_\delta^0\left(\omega\right)}+2\frac{\overline{\omega}}{\sqrt{2T_c}k}\right)+2\sqrt{2}\frac{\overline{\omega}}{k}\right.\nonumber\\
+    &&~~~~~~~~~~~~~\left.+\frac{\alpha}{2}\left(-(1-v_0^2)\overline{Z_{\eta,\beta}^+\left(\omega\right)}+\frac{\overline{\omega^2}}{k^2}\overline{Z_{\eta,\beta}^+\left(\omega\right)}-2v_0\frac{\overline{\omega}}{k}\overline{Z_{\eta,\beta}^-\left(\omega\right)}\right)\right]\nonumber\\
+    &=&-\overline{\frac{\partial D}{\partial \omega}(k,\omega)}.
+  \end{eqnarray*}
 
-Maintenant, en utilisant (\ref{eq:N_3bump}) et le lemme \ref{lemma:Z+} avec $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
-\begin{eqnarray*}
-N(k,\omega)&=&-\frac{\hat{g}(k)}{k^2}\left(\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(\omega\right)\right)
-\end{eqnarray*}
-et
-\begin{eqnarray*}
-N(k,-\overline{\omega})&=&-\frac{\hat{g}(k)}{k^2}\left(\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)\right)\\
-&=&-\frac{\hat{g}(k)}{k^2}\left(-\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right)=-\overline{N(k,\omega)}.
-\end{eqnarray*}
+  Maintenant, en utilisant (\ref{eq:N_3bump}) et le lemme \ref{lemma:Z+} avec $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
+  \begin{eqnarray*}
+    N(k,\omega)&=&-\frac{\hat{g}(k)}{k^2}\left(\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(\omega\right)\right)
+  \end{eqnarray*}
+  et
+  \begin{eqnarray*}
+    N(k,-\overline{\omega})&=&-\frac{\hat{g}(k)}{k^2}\left(\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)\right)\\
+    &=&-\frac{\hat{g}(k)}{k^2}\left(-\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right)=-\overline{N(k,\omega)}.
+  \end{eqnarray*}
 
-Ainsi, nous obtenons 
-\begin{eqnarray*}
-\frac{N(k,-\overline{\omega})}{\frac{\partial D}{\partial \omega}(k,-\overline{\omega})}=\overline{\left(\frac{N(k,\omega)}{\frac{\partial D}{\partial \omega}(k,\omega)}\right)}.
-\end{eqnarray*}
-Autrement dit, $\frac{N(k,\omega)}{\frac{\partial D}{\partial \omega}(k,\omega)}=re^{i\phi}$ si et seulement si $\frac{N(k,-\overline{\omega})}{\frac{\partial D}{\partial \omega}(k,-\overline{\omega})}=re^{-i\phi}$.
+  Ainsi, nous obtenons 
+  \begin{eqnarray*}
+    \frac{N(k,-\overline{\omega})}{\frac{\partial D}{\partial \omega}(k,-\overline{\omega})}=\overline{\left(\frac{N(k,\omega)}{\frac{\partial D}{\partial \omega}(k,\omega)}\right)}.
+  \end{eqnarray*}
+  Autrement dit, $\frac{N(k,\omega)}{\frac{\partial D}{\partial \omega}(k,\omega)}=re^{i\phi}$ si et seulement si $\frac{N(k,-\overline{\omega})}{\frac{\partial D}{\partial \omega}(k,-\overline{\omega})}=re^{-i\phi}$.
 \end{proof}
 
 D'autre part, nous rappelons le résultat \ref{lemme:hypcashyb} dans le cas hybride.
@@ -194,46 +190,48 @@ D'autre part, nous rappelons le résultat \ref{lemme:hypcashyb} dans le cas hybr
 \end{lemma}
 
 \begin{proof}
-Regardons d'abord $\frac{\partial D(k,\omega)}{\partial\omega}$. Les termes en facteur de $\alpha$ (venant de la partie chaude cinétique) se comportent comme dans la preuve du lemme \ref{lemme:hypcashyb} (voir la preuve ci-dessus). Les termes en facteur de $1-\alpha$ sont tels que
-$$\frac{1}{(-\overline{\omega})^3}=-\frac{1}{\overline{\omega^3}}=-\overline{\frac{1}{\omega^3}}.$$
+  Regardons d'abord $\frac{\partial D(k,\omega)}{\partial\omega}$. Les termes en facteur de $\alpha$ (venant de la partie chaude cinétique) se comportent comme dans la preuve du lemme \ref{lemme:hypcashyb} (voir la preuve ci-dessus). Les termes en facteur de $1-\alpha$ sont tels que
+  $$
+    \frac{1}{(-\overline{\omega})^3}=-\frac{1}{\overline{\omega^3}}=-\overline{\frac{1}{\omega^3}}.
+  $$
 
-Nous en déduisons $\frac{\partial D}{\partial \omega}(k,-\overline{\omega})=-\overline{\frac{\partial D}{\partial \omega}(k,\omega)}$.
+  Nous en déduisons $\frac{\partial D}{\partial \omega}(k,-\overline{\omega})=-\overline{\frac{\partial D}{\partial \omega}(k,\omega)}$.
 
-Regardons ensuite $N(k,\omega)$. Sous l'hypothèse $\hat{u}(t=0,k)=0$ et avec les notations $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
-\begin{eqnarray*}
-N(k,-\overline{\omega})&=&-\frac{1}{-i\overline{\omega}}\hat{E}(t=0,k)-\frac{\hat{g}(k)}{ k^2}\left[\alpha\frac{k}{-\overline{\omega}}+\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)\right].
-\end{eqnarray*}
-%Maintenant, pour $E(t=0,x)$ donné par l'équation de Poisson, nous avons 
-%\begin{eqnarray*}
-%\partial_xE(t=0,x)&=&\rho_c(t=0,x)+\int f^h(t=0,x,v)dv-1\\
-%&=&\left(1-\alpha\right)\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)+\alpha\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)-1\\
-%&=&\varepsilon\cos\left(\frac{2\pi}{L}x\right)
-%\end{eqnarray*}
-%Donc le champ électrique initial s'écrit
-%$$E(t=0,x)=\frac{\varepsilon L}{2\pi}\sin\left(\frac{2\pi}{L}x\right),~~~\int_0^LE(t=0,x)dx=0,$$
-%et 
-%$$E^1(t=0,x)=\frac{L}{2\pi}\sin\left(\frac{2\pi}{L}x\right).$$
-%Sa transformée de Fourier, pour $k=\frac{2\pi}{L}n,~n\in\mathbb{Z}$, s'écrit
-%\begin{eqnarray*}
-%\hat{E}(t=0,k)&=&\frac{1}{2\pi}\int_0^L\sin\left(\frac{2\pi}{L}x\right)e^{-\frac{2i\pi n}{L}x}dx\\
-%&=&\frac{1}{4i\pi}\int_0^Le^{\frac{2i\pi}{L}(1-n)x}-e^{-\frac{2i\pi}{L}(1+n)x}dx.
-%\end{eqnarray*}
-%Si $k\neq \frac{2\pi}{L}$ et $k\neq -\frac{2\pi}{L}$, $\hat{E}(t=0,k)=0$. If $n=1$, ou de manière équivalente $k=\frac{2\pi}{L}$, nous avons
-%\begin{eqnarray*}
-%\hat{E}(t=0,k)&=&\frac{1}{4i\pi}\left[x+\frac{L}{4i\pi}e^{-\frac{2i\pi}{L}2x}\right]_0^L=-i\frac{L}{4\pi}=-\frac{i}{2k}.
-%\end{eqnarray*}
-%Si $n=-1$, ou de manière équivalente $k=-\frac{2\pi}{L}$, nous avons
-%\begin{eqnarray*}
-%\hat{E}(t=0,k)&=&\frac{1}{4i\pi}\left[\frac{L}{4i\pi}e^{\frac{2i\pi}{L}2x}-x\right]_0^L=i\frac{ L}{4\pi}=-\frac{i}{2k}.
-%\end{eqnarray*}
-%Ainsi
-%\begin{equation}
-%\hat{E}\left(t=0,k\right)=-\frac{i}{2k},~k\in\left\{-\frac{2\pi}{L},\frac{2\pi}{L}\right\},~~~\hat{E}(k)=0,~k\notin\left\{-\frac{2\pi}{L},\frac{2\pi}{L}\right\},
-%\label{eq:Ek}\end{equation}
-Nous rappelons que $\hat{E}(t=0,k)$ est un imaginaire pur (éventuellement nul) donné par (\ref{eq:Ekbis}). Ceci implique
-\begin{eqnarray*}
-N(k,-\overline{\omega})&=&\frac{1}{i\overline{\omega}}\hat{E}(t=0,k)+\frac{\hat{g}(k)}{ k^2}\left[\alpha\frac{k}{\overline{\omega}}+\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right]\\
-&=&\overline{\frac{1}{i\omega}\hat{E}(t=0,k)}+\frac{\hat{g}(k)}{ k^2}\left[\alpha\overline{\frac{k}{\omega}}+\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right]=-\overline{N(k,\omega)}.
-\end{eqnarray*}
-La preuve est terminée.
+  Regardons ensuite $N(k,\omega)$. Sous l'hypothèse $\hat{u}(t=0,k)=0$ et avec les notations $\eta=\frac{1}{\sqrt{2}k}$ et $\beta=\frac{v_0}{\sqrt{2}}$, nous avons
+  \begin{eqnarray*}
+    N(k,-\overline{\omega})&=&-\frac{1}{-i\overline{\omega}}\hat{E}(t=0,k)-\frac{\hat{g}(k)}{ k^2}\left[\alpha\frac{k}{-\overline{\omega}}+\frac{\alpha}{2\sqrt{2}}Z_{\eta,\beta}^+\left(-\overline{\omega}\right)\right].
+  \end{eqnarray*}
+  %Maintenant, pour $E(t=0,x)$ donné par l'équation de Poisson, nous avons 
+  %\begin{eqnarray*}
+  %\partial_xE(t=0,x)&=&\rho_c(t=0,x)+\int f^h(t=0,x,v)dv-1\\
+  %&=&\left(1-\alpha\right)\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)+\alpha\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)-1\\
+  %&=&\varepsilon\cos\left(\frac{2\pi}{L}x\right)
+  %\end{eqnarray*}
+  %Donc le champ électrique initial s'écrit
+  %$$E(t=0,x)=\frac{\varepsilon L}{2\pi}\sin\left(\frac{2\pi}{L}x\right),~~~\int_0^LE(t=0,x)dx=0,$$
+  %et 
+  %$$E^1(t=0,x)=\frac{L}{2\pi}\sin\left(\frac{2\pi}{L}x\right).$$
+  %Sa transformée de Fourier, pour $k=\frac{2\pi}{L}n,~n\in\mathbb{Z}$, s'écrit
+  %\begin{eqnarray*}
+  %\hat{E}(t=0,k)&=&\frac{1}{2\pi}\int_0^L\sin\left(\frac{2\pi}{L}x\right)e^{-\frac{2i\pi n}{L}x}dx\\
+  %&=&\frac{1}{4i\pi}\int_0^Le^{\frac{2i\pi}{L}(1-n)x}-e^{-\frac{2i\pi}{L}(1+n)x}dx.
+  %\end{eqnarray*}
+  %Si $k\neq \frac{2\pi}{L}$ et $k\neq -\frac{2\pi}{L}$, $\hat{E}(t=0,k)=0$. If $n=1$, ou de manière équivalente $k=\frac{2\pi}{L}$, nous avons
+  %\begin{eqnarray*}
+  %\hat{E}(t=0,k)&=&\frac{1}{4i\pi}\left[x+\frac{L}{4i\pi}e^{-\frac{2i\pi}{L}2x}\right]_0^L=-i\frac{L}{4\pi}=-\frac{i}{2k}.
+  %\end{eqnarray*}
+  %Si $n=-1$, ou de manière équivalente $k=-\frac{2\pi}{L}$, nous avons
+  %\begin{eqnarray*}
+  %\hat{E}(t=0,k)&=&\frac{1}{4i\pi}\left[\frac{L}{4i\pi}e^{\frac{2i\pi}{L}2x}-x\right]_0^L=i\frac{ L}{4\pi}=-\frac{i}{2k}.
+  %\end{eqnarray*}
+  %Ainsi
+  %\begin{equation}
+  %\hat{E}\left(t=0,k\right)=-\frac{i}{2k},~k\in\left\{-\frac{2\pi}{L},\frac{2\pi}{L}\right\},~~~\hat{E}(k)=0,~k\notin\left\{-\frac{2\pi}{L},\frac{2\pi}{L}\right\},
+  %\label{eq:Ek}\end{equation}
+  Nous rappelons que $\hat{E}(t=0,k)$ est un imaginaire pur (éventuellement nul) donné par (\ref{eq:Ekbis}). Ceci implique
+  \begin{eqnarray*}
+    N(k,-\overline{\omega})&=&\frac{1}{i\overline{\omega}}\hat{E}(t=0,k)+\frac{\hat{g}(k)}{ k^2}\left[\alpha\frac{k}{\overline{\omega}}+\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right]\\
+    &=&\overline{\frac{1}{i\omega}\hat{E}(t=0,k)}+\frac{\hat{g}(k)}{ k^2}\left[\alpha\overline{\frac{k}{\omega}}+\frac{\alpha}{2\sqrt{2}}\overline{Z_{\eta,\beta}^+\left(\omega\right)}\right]=-\overline{N(k,\omega)}.
+  \end{eqnarray*}
+  La preuve est terminée.
 \end{proof}
