@@ -109,7 +109,7 @@ $$
 $$
 
 avec :
-$$
+\begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\
     B_0 &  0   & 0          &  0          &  0             & \Omega_{pe}^2 & 0 \\
@@ -129,7 +129,123 @@ $$
     \int v_y f \,\mathrm{d}v \\
     E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\nabla_v f
   \end{pmatrix}
+  \label{eq:3:LNmaxwell}
+\end{equation}
+Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\partial_z \equiv ik$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
+\begin{equation}
+  L = \begin{pmatrix}
+    0   & -B_0 & 0 &  0 &  \Omega_{pe}^2 & 0             & 0 \\
+    B_0 &  0   & 0 &  0 &  0             & \Omega_{pe}^2 & 0 \\
+    0   &  0   & 0 &  0 &  0             & 0             & 0 \\
+    0   &  0   & 0 &  0 &  0             & 0             & 0 \\
+   -1   &  0   & 0 &  0 &  0             & 0             & 0 \\
+    0   & -1   & 0 &  0 &  0             & 0             & 0 \\
+    0   &  0   & 0 &  0 &  0             & 0             & -v_z\partial_z \\
+  \end{pmatrix},
+  \quad
+  N:t,U\mapsto \begin{pmatrix}
+    0 \\
+    0 \\
+     ikE_y \\
+    -ikE_x \\
+    -ikB_y + \int v_x f \,\mathrm{d}v \\
+     ikB_x + \int v_y f \,\mathrm{d}v \\
+    E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\nabla_v f
+  \end{pmatrix}
+  \label{eq:3:LNsmaxwell}
+\end{equation}
+Une logiciel de calcul formel, comme \sympy, permet d'obtenir $e^{\tau L}$ pour toute valeur $\tau\in\mathbb{R}$ :
 $$
-Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\partial_z \equiv ik$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$.
+  e^{\tau L} \approx \begin{pmatrix}
+    0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+    0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+  - 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
 
+  - 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+    0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
+
+  0 & 0 & 1.0 & 0 & 0 & 0\\
+  0 & 0 & 0 & 1.0 & 0 & 0\\
+
+  - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+    0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
+
+  - 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+  - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+  - 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+    0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}
+  \end{pmatrix}
+$$
+\Josselin{Il semble compliqué de mettre la matrice $e^{\tau L}$ dans le document (et encore il s'agit d'une version après demande d'évaluation numérique de \sympy) ce que je peux proposer c'est juste l'allure de la matrice :
+$$
+  e^{\tau L} = \begin{pmatrix}
+    * & * & 0 & 0 & * & * & 0 \\
+    * & * & 0 & 0 & * & * & 0 \\
+    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    * & * & 0 & 0 & * & * & 0 \\
+    * & * & 0 & 0 & * & * & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & e^{-ikv_z\tau} \\
+  \end{pmatrix}
+$$
+mais ne pas mettre du tout la matrice est aussi une alternative.
+}
+% $$
+%   \begin{pmatrix}
+%     0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.621267812518167 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+%     0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%   - 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
+
+%   - 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518166 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+%     0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
+
+%   0 & 0 & 1.0 & 0 & 0 & 0\\
+%   0 & 0 & 0 & 1.0 & 0 & 0\\
+
+%   - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+%     0.621267812518166 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.621267812518167 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
+
+%   - 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%   - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
+%   - 0.621267812518166 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
+%     0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}
+%   \end{pmatrix}
+% $$
+C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $k$ données est élevé et ne peut être effectuer en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
+
+\subsubsection{Filtrage de l'équation de Vlasov}
+
+L'équation de Vlasov contient le terme $(\vb{v}\times\vb{B}_0)$ qui introduit une condition de CFL restrictive qui peut être outrepassé en utilisant le changement de variable $w=e^{tB_0J}v$, avec $w=(w_x,w_y)^\top$ et $v=(v_x,v_y)^\top$, pour filtrer ce terme en influençant le moins possible le reste du système. Nous introduisons $g(t,z,w,v_z) = f_h(t,z,\exp(-tB_0J)w,v_z)$ avec :
+$$
+  e^{-tB_0J} = \begin{pmatrix}
+    \cos(tB_0) & -\sin(tB_0) \\
+    \sin(tB_0) &  \cos(tB_0)
+  \end{pmatrix},
+  \quad
+  J = \begin{pmatrix}
+    0  & 1 \\
+    -1 & 0
+  \end{pmatrix}
+$$
+
+
+\Josselin{Dans l'intro de la thèse, dans mon plan, j'ai une partie consacrée aux méthodes numériques, la méthode de Lawson sera sans doute plus présentée en détail là-bas (le schéma, comment construire une méthode de Lawson à partir d'une méthode RK, chose qui est déjà un peu faite dans le chapitre 1 dans \ref{butcher}). Donc je décide de ne pas m'attarder sur le schéma choisi etc. mais plutôt sur les différences par rapport à son utilisation simple dans les chapitres 1 et 2.}
+
+\subsubsection{Calcul de stabilité avec les équations de Maxwell}
+
+L'introduction des équations de Maxwell dans la partie non-linéaire de la méthode de Lawson, comme indiquée dans~\eqref{eq:3:LNsmaxwell}, implique une condition de stabilité provenant de ces termes.
+
+Présenter la méthode où on s'intéresse à la CFL de Maxwell qu'avec $\dot{u} = A(u)$ avec $u\in\mathbb{R}^2$ et $A$ qui est une matrice qui contient juste la diagonale de $ik$ de Maxwell.
+
+Présenter la méthode où on s'intéresse à la CFL du système complet de Lawson, dire que la partie linéaire mélange des trucs mais que l'estimation faite dans la résolution de $\dot{u} = A(u)$ est plutôt bonne.
 
