@@ -1,4 +1,4 @@
-% !TEX root = ../chap2.tex
+% !TEX root = ../../main.tex
 
 \section{Limite du modèle cinétique vers le modèle hybride}
  \label{s:limit}
@@ -8,7 +8,7 @@ Il s'agit ici d'étudier numériquement la convergence du modèle cinétique \eq
   f^0(x,v) = \mathcal{M}_{1-\alpha,0,T_c}(v) + (1+\epsilon\cos(kx))\left( \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v) \right)
 \label{eq:K:init}
 \end{equation}
-avec $k = 0.5$, $v_0 = 4$, $\alpha$, $x\in[0,4\pi]$, $v\in[-v_{\text{max}},v_{\text{max}}]$ avec $v_{\text{max}}=8$ et la perturbation des particules chaudes $\epsilon = 10^{-3}$.  Le paramètre $T_c$ prendra différentes valeurs selon les résultats que nous souhaitons illustrer. Comme dans la sous-section \ref{ssec:disp_appl}, on a noté  $\mathcal{M}_{\rho,u,T}(v)$ la distribution Maxwellienne :
+avec $k = 0.5$, $v_0 = 3.4$, $\alpha=0.2$, $x\in[0,L]$, $L=\frac{2\pi}{k}=2\pi$, $v\in[-v_{\text{max}},v_{\text{max}}]$ avec $v_{\text{max}}=12$ et la perturbation des particules chaudes $\epsilon = 10^{-2}$.  Le paramètre $T_c$ prendra différentes valeurs selon les résultats que nous souhaitons illustrer. Comme dans la sous-section \ref{ssec:disp_appl}, on a noté  $\mathcal{M}_{\rho,u,T}(v)$ la distribution Maxwellienne :
 $$
   \mathcal{M}_{\rho,u,T}(v) := \frac{1}{(2\pi T)^{\frac{1}{2}}}\exp\left(-\frac{\left|v-u\right|^2}{2T}\right)
 $$
@@ -25,27 +25,26 @@ où $k$, $v_0$, $\alpha$ et $\epsilon$ sont pris identiques au modèle cinétiqu
 $$
   \partial_x E(t=0) = (1-\alpha) + \int (1+\epsilon\cos(kx))\left( \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v) \right)\,\mathrm{d}v - 1
 $$
-\commentaire[Nicolas]{expliquer pourquoi il y a une bande jaune dans Fig. 1}
-Avant une étude plus détaillée, nous donnons un premier aperçu des solutions des deux modèles pour le choix $T_c=0.05$. Sur la figure~\ref{fig:limit_vp}, sont tracées la condition initiale $f^0(x, v)$ du modèle cinétique (gauche), la solution numérique  $f(T_f=300, x, v)$ au temps final du modèle cinétique (milieu) et la solution numérique $f_h(T_f=300, x, v)$ au temps final des particules chaudes pour le modèle hybride (droite).  De plus, sur la figure \ref{fig:limit_ee_Tf300} est tracée l'évolution de l'énergie électrique $\|E(t, \cdot)\|_{L_2}$ au cours du temps pour ces deux modèles avec les mêmes paramètres numériques (échelle semi-logarithmique).
+Avant une étude plus détaillée, nous donnons un premier aperçu des solutions des deux modèles pour le choix $T_c=0.05$. Sur la figure~\ref{fig:limit_vp}, sont tracées la condition initiale $f^0(x, v)$ du modèle cinétique (gauche), la solution numérique  $f(T_f=300, x, v)$ au temps final du modèle cinétique (milieu) et la solution numérique $f_h(T_f=300, x, v)$ des particules chaudes pour le modèle hybride ainsi que la vitesse moyenne des particules froides $u_c(T_f=300,x)$ (courbe cyan) au temps final (droite). La bande jaune correspond à la population de particules froides, absente dans la modélisation hybride. On observe une bonne corrélation des vortex dans l'espace des phases dans la population de particules froides, et une bonne reconstruction de la population de particules chaudes à partir de la vitesse moyenne $u_c$. De plus, sur la figure \ref{fig:limit_ee_Tf300} est tracée l'évolution de l'énergie électrique $\|E(t, \cdot)\|_{L_2}$ au cours du temps pour ces deux modèles avec les mêmes paramètres numériques (échelle semi-logarithmique) pour différentes valeurs de $T_c=0.05,0.1,0.2,0.4$ pour le modèle cinétique. On observe une convergence de l'énergie électrique du modèle cinétique vers le modèle hybride lorsque $T_c$ tend vers $0$.
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.9\textwidth]{\localPath/figures/limit_vp.png}
-  \caption{Représentation de la condition initiale du modèle cinétique à gauche et la solution obtenue au temps final $T_f=300$ avec le modèle cinétique avec $T_c = 0.05$ (au milieu) et la densité de particules chaudes obtenue avec modèle hybride linéarisé (à droite).}
+  \includegraphics[width=\textwidth]{\localPath/figures/vp_t1.png}
+  \caption{Représentation de la condition initiale du modèle cinétique à gauche et la solution obtenue au temps final $T_f=300$ avec le modèle cinétique avec $T_c = 0.05$ (au milieu) et la densité de particules chaudes obtenue avec modèle hybride linéarisé ainsi que la vitesse moyenne des particules froides (courbe cyan) (à droite).}
   \label{fig:limit_vp}
 \end{figure}
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/limit_ee_Tf300.png}
-  \caption{Énergie électrique donnée pour le modèle cinétique avec $T_c=0.05$ et le modèle hybride linéarisé.}
+  \includegraphics[width=\textwidth]{\localPath/figures/ee_t1.png}
+  \caption{Énergie électrique donnée pour le modèle cinétique avec $T_c=0.05,0.1,0.2,0.4$ et le modèle hybride linéarisé.}
   \label{fig:limit_ee_Tf300}
 \end{figure}
-La première observation est que les résultats proches de ceux obtenus par le modèle hybride linéarisé \eqref{eq:vahl} sont très proches de ceux obtenus par le modèle cinétique \eqref{eq:vlasov}-\eqref{eq:poisson}, ce qui valide la modélisation. La perturbation des particules chaudes induit une instabilité (l'équilibre étant du type double Gaussienne) qu'on voit se développer jusqu'au temps $t=200$ (voir figure \ref{fig:limit_ee_Tf300}) et deux vortex sont alors crés autour de la vitesse $v\approx 2$, au centre desquels de fines structures se développent. 
+La première observation est que les résultats proches de ceux obtenus par le modèle hybride linéarisé \eqref{eq:vahl} sont très proches de ceux obtenus par le modèle cinétique \eqref{eq:vlasov}-\eqref{eq:poisson}, ce qui valide la modélisation. La perturbation des particules chaudes induit une instabilité (l'équilibre étant du type double Gaussienne) qu'on voit se développer jusqu'au temps $t=75$ (voir figure \ref{fig:limit_ee_Tf300}) et deux vortex sont alors crés autour de la vitesse $v\approx 2$, au centre desquels de fines structures se développent. 
 
 Dans la suite, nous allons approfondir cette étude en comparant les résultats obtenus aux relations de dispersion des deux modèles puis en essayant de déterminer le domaine de validité du modèle VHL.  
 
 %\commentaire[Anais]{(revoir un peu la rédaction de cette intro car elle ne tenait pas du tout compte de la sous-section relations de dispersion et je n'ai pas l'impression de l'avoir suffisamment modifiée)}
 
-
+\FloatBarrier
 %----------
 \subsection{Convergence en énergie totale}
 %----------
@@ -86,38 +85,25 @@ $$
     c'est-à-dire que la convergence du modèle hybride est liée à la pression $\rho_c^{(0)}T_c$ des particules froides.
 \end{proof}
 
-Pour vérifier numériquement cette proposition nous effectuons un jeu de simulations. Le modèle cinétique de Vlasov-Poisson \eqref{eq:vlasov}-\eqref{eq:poisson} est simulé à l'aide d'une méthode en temps de type Lawson basée sur une méthode de Runge-Kutta d'ordre 4, la méthode WENO d'ordre 5 pour approcher la dérivée dans la direction $v$ et l'algorithme de FFT pour la dérivée dans la direction $x$. Il s'agit ainsi du même schéma que celui utilisé pour la fonction de distribution $f_h$ des particules chaudes du modèle hybride linéarisé. Nous choisissons la condition initiale \eqref{eq:K:init} avec $\alpha = 0.2$, $T_c \in \left\{ 0.06,0.1,0.125,0.15,0.175,0.2\right\}$, la discrétisation du domaine $\Omega = [0,4\pi]$ s'effectue avec $N_x = 135$ points, la discrétisation du domaine en vitesse $[-v_{\text{max}},v_{\text{max}}]$ nécessite de capturer la gaussienne représentant les particules froides pour différentes valeurs de $T_c$, nous choisissons donc d'adapter le nombre de points de discrétisation en vitesse $N_v$ à $T_c$, $N_v \in \left\{ 1131,1011,905,826,764,715 \right\}$, ceux-ci correspondant à environ 20 points de discrétisation pour capturer la gaussienne de température $T_c$, $N_v \approx \lceil \frac{16}{{\sqrt{T_c}}/{20}} \rceil$. Nous avons une condition CFL sur le schéma WENO utilisé dans la direction $v$, nous nous assurons d'être sous cette condition quelle que soit l'évolution de $E$ en prenant $\Delta t = 0.5\Delta v$. Ce jeu de simulations s'arrête au temps 7, or le choix des différents $\Delta t$ implique des données à des temps différents, nous choisissons d'effectuer une interpolation polynomiale de Lagrange d'ordre 5 pour exploiter les données au temps $T^\star = 6.5$. Nous obtenons ainsi l'énergie totale pour différentes températures sur la figure~\ref{fig:limit:totalenergy}, bien que le schéma de type Runge-Kutta ne conserve pas exactement l'énergie, celle-ci est bien préservée en temps court \commentaire[Nicolas]{(dire a quelle precision environ $10^{-12}$, $10^{-8}$ ?)}. Après l'interpolation au temps $T^\star = 6.5$ on obtient la convergence vers le modèle hybride sur la figure~\ref{fig:limit:totalenergy:slope} où l'on observe bien l'ordre 1 en température.
+Pour vérifier numériquement cette proposition nous effectuons un jeu de simulations. Le modèle cinétique de Vlasov-Poisson \eqref{eq:vlasov}-\eqref{eq:poisson} est simulé à l'aide d'une méthode en temps de type Lawson basée sur une méthode de Runge-Kutta d'ordre 4, la méthode WENO d'ordre 5 pour approcher la dérivée dans la direction $v$ et l'algorithme de FFT pour la dérivée dans la direction $x$. Il s'agit ainsi du même schéma que celui utilisé pour la fonction de distribution $f_h$ des particules chaudes du modèle hybride linéarisé. Nous choisissons la condition initiale \eqref{eq:K:init} avec $\alpha = 0.2$, $T_c \in \left\{ 0.05,0.1,0.2,0.4\right\}$, la discrétisation du domaine $\Omega = [0,4\pi]$ s'effectue avec $N_x = 135$ points, la discrétisation du domaine en vitesse $[-v_{\text{max}},v_{\text{max}}]$ nécessite de capturer la gaussienne représentant les particules froides pour différentes valeurs de $T_c$, nous choisissons donc d'adapter le nombre de points de discrétisation en vitesse $N_v$ à $T_c$, $N_v \in \left\{ 1431,1011,715,505 \right\}$, ceux-ci correspondant à environ 20 points de discrétisation pour capturer la gaussienne de température $T_c$, $N_v \approx \lceil \frac{24}{{\sqrt{T_c}}/{14}} \rceil$ \Josselin{En réalité le calcul de $N_v$ a été fait à partir d'un domaine $[-8,8]$ et donc $\frac{16}{{\sqrt{T_c}}/{20}}$, mais j'ai gardé cette formule alors que j'ai changé le $v_\text{max}$\dots donc on a pas vraiment 14 points pour capturer notre gaussienne}. Nous avons une condition CFL sur le schéma WENO utilisé dans la direction $v$, nous nous assurons d'être sous cette condition quelle que soit l'évolution de $E$ en prenant $\Delta t = 0.5\Delta v$. Ce jeu de simulations s'arrête au temps 7, or le choix des différents $\Delta t$ implique des données à des temps différents, nous choisissons d'effectuer une interpolation polynomiale de Lagrange d'ordre 5 pour exploiter les données au temps $T^\star = 6.5$. Nous obtenons ainsi l'énergie totale pour différentes températures sur la figure~\ref{fig:limit:totalenergy}, bien que le schéma de type Runge-Kutta ne conserve pas exactement l'énergie, celle-ci est bien préservée en temps court \commentaire[Nicolas]{(dire a quelle precision environ $10^{-12}$, $10^{-8}$ ?)}\Josselin{L'erreur est sous l'erreur machine, c'est des vieux \emph{runs} c'est avant que je force l'affichage de 15 chiffres significatifs}. Après l'interpolation au temps $T^\star = 6.5$ on obtient la convergence vers le modèle hybride sur la figure~\ref{fig:limit:totalenergy} (figure de droite) où l'on observe bien l'ordre 1 en température.
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/limit_totalenergy.png}
-  \caption{Énergie totale avec les différents modèles.}
+  \includegraphics[width=\textwidth]{\localPath/figures/order_HTc.png}
+  \caption{Énergie totale avec les différents modèles en échelle semi-log (gauche) et convergence de l'énergie totale du modèle cinétique vers le modèle hybride quand $T_c$ tend vers $0$ en échelle log (droite).}
   \label{fig:limit:totalenergy}
 \end{figure}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/limit_slope_totalenergy.png}
-  \caption{Convergence de l'énergie totale du modèle cinétique vers le modèle hybride quand $T_c$ tend vers $0$.}
-  \label{fig:limit:totalenergy:slope}
-\end{figure}
 
-Nous effectuons le même type d'analyse sur l'énergie électrique, à partir des données des simulations précédentes, en sachant qu'il n'existe pas de résultat théorique sur sa convergence. L'énergie électrique pour les différents choix de $T_c$ est représentée sur la figure~\ref{fig:limit:ee}\subref{fig:limit:ee:ee}, cette figure illustre mieux la nécessité d'effectuer une interpolation pour extraire les données. Une convergence est observée mais avec un ordre plus faible, environ $0.59$, que l'énergie totale sur la figure~\ref{fig:limit:ee}\subref{fig:limit:ee:slope}.
+Nous effectuons le même type d'analyse sur l'énergie électrique, à partir des données des simulations précédentes, en sachant qu'il n'existe pas de résultat théorique sur sa convergence. L'énergie électrique pour les différents choix de $T_c$ est représentée sur la figure~\ref{fig:limit:ee} (gauche), cette figure illustre mieux la nécessité d'effectuer une interpolation pour extraire les données. Une convergence est observée sur la figure~\ref{fig:limit:ee} (droite).
 \begin{figure}[h]
   \centering
-  \begin{subfigure}{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/limit_ee.png}
-    \caption{Énergie électrique avec les différents modèles}
-    \label{fig:limit:ee:ee}
-  \end{subfigure}
-  \begin{subfigure}{0.45\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/limit_slope_ee.png}
-    \caption{Convergence de l'énergie électrique du modèle cinétique vers le modèle hybride quand $T_c$ tend vers $0$.}
-    \label{fig:limit:ee:slope}
-  \end{subfigure}
-  \caption{Étude de la convergence de l'énergie électrique lorsque $T_c$ tend vers 0.}
+  \includegraphics[width=\textwidth]{\localPath/figures/order_eeTc.png}
+  \caption{Énergie électrique avec les différents modèles en échelle semi-log (gauche) et convergence de l'énergie totale du modèle cinétique vers le modèle hybride quand $T_c$ tend vers $0$ en échelle log (droite).}
   \label{fig:limit:ee}
 \end{figure}
+
+\FloatBarrier
+
+\Josselin{J'ai passé un peu plus de temps que prévu à refaire ces figures mais au moins j'ai pu refaire ces figures à partir des \emph{runs} que j'avais déjà. La suite est plus simple, ce sont à peu de choses près les mêmes figures (en moins jolies) que celles du papier, donc c'est de la reprise des figures et améliorer le blabla dans les paragraphes. Et il y a même plus de choses dans le papier sur cette partie (ordre, temps de calcul, comparatifs plus précis de Lawson et Suzuki, test de CFL, etc.). Bref je laisse cette seconde partie à plus tard.}
 
 %----------
 \subsection{Convergence en température à l'aide des relations de dispersion}
@@ -155,7 +141,7 @@ La racine de plus grande partie imaginaire permettent de valider la phase linéa
 \end{figure}
 En plus du taux d'instabilité de l'énergie électrique, il est possible à l'aide des relations de dispersion d'obtenir une très bonne approximation de l'énergie électrique dans la phase linéaire. On peut voir que l'étude des relations de dispersion ne permet pas d'obtenir des résultats fiables en début de simulation, où d'autres modes que le mode principal sont encore visibles (modes évanescents). De même, comme on peut le voir sur la figure~\ref{fig:limit_ee_Tf300}, la phase non-linéaire où l'énergie électrique atteint une saturation mélange de nombreux modes, c qui est incompatible avec l'étude du linéarisé. Néanmoins, même au temps $t\approx 200$, les résultats du code sont en excellent accord avec ceux obtenus grâce aux relations de dispersion  (voir figure \ref{fig:limit:ee:Tf200:cmp_zoom}). 
 
-
+\FloatBarrier
 %----------
 \subsection{Évolution avec la densité de particules chaudes}
 %----------
@@ -172,3 +158,5 @@ La condition initiale du modèle cinétique est donnée par : $f^0(x,v) = \mathc
   \label{fig:limit:slope:alpha}
 \end{figure}
 On retrouve sur la figure~\ref{fig:limit:slope:alpha} la convergence en température du modèle cinétique vers le modèle hybride. Pour $\alpha=0$ la condition initiale se restreint aux particules froides, qui ne sont pas perturbées, il est donc normal d'obtenir une pente nulle ; pour $\alpha=1$, il n'y a que des particules chaudes et on retrouve l'instabilité double faisceaux (TSI) avec le bon taux d'instabilité. On peut enfin observer que pour ce choix de $T_c$, les taux d'instabilité obtenus restent proches de ceux du modèle VHL pour $0\leq \alpha \leq 0.5$ (qui correspond à une population identique de particules chaude et froide).
+
+\FloatBarrier
