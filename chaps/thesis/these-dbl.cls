@@ -86,24 +86,22 @@
 % il y a un bug avec href qui fait que les liens ne fonctionnent pas
 \usepackage{etoolbox}
 \pretocmd{\chapter}{\renewcommand\thesection{\thechapter.\arabic{section}}}{}{}
-%\newcommand\appsection{%
-%  \setcounter{section}{0}%
-%  \renewcommand\thesection{\thechapter.\Alph{section}}}
 
 \usepackage{appendix}
 \usepackage{chngcntr}
+\counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
+\usepackage{algorithm}
+\counterwithin{algorithm}{chapter}
+
 % Start of subappendices environment
 \AtBeginEnvironment{subappendices}{%
 \chapter*{Appendices}
 \addcontentsline{toc}{chapter}{Appendices}
-\counterwithin{figure}{section}
-\counterwithin{table}{section}
 }
 
 % End of subappendices environment
 \AtEndEnvironment{subappendices}{%
-\counterwithout{figure}{section}
-\counterwithout{table}{section}
 }
 
 %\newcounter{appendixShift}
