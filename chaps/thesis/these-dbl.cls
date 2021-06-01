@@ -82,6 +82,9 @@
 % petite astuce pour conserver la valeur du titre
 \def\title#1{\gdef\@title{#1}\gdef\thetitleFR{#1}}
 
+% get all section in sans-serif
+\allsectionsfont{\bfseries\sffamily}
+
 % pour avoir des appencides à la fin de chaque chapitre
 % il y a un bug avec href qui fait que les liens ne fonctionnent pas
 \usepackage{etoolbox}
@@ -116,6 +119,10 @@
 %   \thechapter.\symbol{\numexpr64+\c@section-\value{appendixShift}\relax}-\the\value{appendixShift}%
 
 \renewcommand{\theequation}{\the\value{chapter}.\arabic{equation}} 
+
+% numbering also subsubsection
+\setcounter{secnumdepth}{3}
+%\setcounter{tocdepth}{3}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
