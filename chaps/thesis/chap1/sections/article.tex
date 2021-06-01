@@ -162,9 +162,6 @@ where $\hat{f}_k(t,v)$ denotes the Fourier transform of $f(t,x,v)$ with respect 
 
 We now perform the discretization in the $v$ direction. The grid points are denoted by $v_j=-v_{\max}+j \Delta v$, with $\Delta v=2v_{\max}/N_v$, where $N_v$ is the number of points. We will consider two options here. Namely, either using a centered difference scheme or an upwind scheme.
 
-
-
-
 \paragraph{Centered scheme in $v$.\\} The classic centered scheme is obtained by approximating the velocity derivative in equation \eqref{fourier_x_vlasov} by
 $$
 (\partial_v \hat{f}_{k})(v_j) \approx \frac{\hat{f}_{k, j+1}-\hat{f}_{k, j-1}}{2\Delta v},
@@ -248,7 +245,7 @@ following way: they induce the CFL condition $b \Delta t\leq y_{\max}\Delta v$ f
 
 \paragraph{Exponential integrators. \\}
 
-For the exponential integrators the domain of stability is very sensitive to the value of $(a\Delta t)$. To get an idea of what we can expect, we consider the quantity $y_{\max}=\min_{(a\Delta t)\in\mathbb{R}} \; y^{exp}_{\max}(a \Delta t)$. As before, $y^{exp}_{\max}(a\Delta t)$ is the largest value such that : $i(-y^{exp}_{\max}(a\Delta t), y^{exp}_{\max}(a\Delta t))\subset {\cal D}$, where ${\cal D}$ is the domain of stability for the chosen exponential time integrator for a given $(a\Delta t)$. 
+For the exponential integrators the domain of stability is very sensitive to the value of $(a\Delta t)$. To get an idea of what we can expect, we consider the quantity $$y_{\max}=\min_{(a\Delta t)\in\mathbb{R}} \; y^{exp}_{\max}(a \Delta t).$$ As before, $y^{exp}_{\max}(a\Delta t)$ is the largest value such that : $$i(-y^{exp}_{\max}(a\Delta t), y^{exp}_{\max}(a\Delta t))\subset {\cal D},$$ where ${\cal D}$ is the domain of stability for the chosen exponential time integrator for a given $(a\Delta t)$. 
 Even for relatively simple numerical methods it is not possible to compute this quantity analytically. Thus, we resort to numerical approximations. Unfortunately, it turns out that for most exponential integrators this value is zero. This can be appreciated by considering Figure \ref{fig:expRK_sd} once more. Clearly, there are values of $(a \Delta t)$ such that no relevant part of the imaginary axis (or only half the imaginary axis) is part of the domain of stability.
 Thus, most exponential integrators are unstable in the von Neumann sense. However, this is not what we observe in practice. In fact, already the results presented in \cite{Crouseilles:2018} indicate that we can successfully run numerical simulations using, for example, the Cox--Matthews scheme. There are two major points to consider here
 \begin{itemize}

@@ -4,7 +4,9 @@
 \clearemptydoublepage
 \chapter[Méthodes exponentielles appliquées aux équations cinétiques]{Méthodes exponentielles pour résoudre un problème hyperbolique avec application aux équations cinétiques}
 
-\boitemagique{TODO}{Indiquer qu'il s'agit d'un copier-coller de l'article \cite{Crouseilles:2019b}, avec peut-être une petite intro et conclusion pour ajouter un peu plus d'info sur l'algorithme d'obtention de CFL etc.}
+%\boitemagique{TODO}{Indiquer qu'il s'agit d'un copier-coller de l'article~\cite{Crouseilles:2019b}, avec peut-être une petite intro et conclusion pour ajouter un peu plus d'info sur l'algorithme d'obtention de CFL etc.}
+
+Ce chapitre a pour objectif de présenter les outils de calcul de stabilité, les schémas exponentielles, et se familiariser avec des méthodes d'ordre élevé comme le schéma WENO5. Le calcul de stabilité pour une méthode WENO a été initié dans~\cite{Wang:2007} et~\cite{Motamed:2010}, le calcul de condition de CFL a été poursuivit dans~\cite{Lunet:2017} ; ce chapitre continue ce travail et propose un algorithme d'estimation de condition de CFL entre un schéma WENO et une méthode Runge-Kutta donnée, en plus d'étudier la stabilité des méthodes exponentielles en temps pour une équation de transport, avec une application a des équations cinétiques que sont les équations de la physique des plasmas. Ce travail est synthétisé par cet article qui est un travail colaboratif avec Nicolas Crouseilles\footnote{Univ Rennes, Inria Bretagne Atlantique (MINGuS) \& ENS Rennes} et Lukas Einkemmer\footnote{Department of Mathematics, Univeristy of Innsbruck, Austria} qui a mené a un article \emph{Exponential methods for solving hyperbolic problems with application to kinetic equations} publié dans \emph{Journal of Computational Physics} en 2020~\cite{Crouseilles:2019b}.
 
 \selectlanguage{english}
 %% article
