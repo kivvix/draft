@@ -10,114 +10,155 @@ $$
     f_h(x,v) &=  \left(\mathcal{M}_{^\alpha/_2,v_0,1}(v) +  \mathcal{M}_{^\alpha/_2,-v_0,1}(v) \right)(1 + \epsilon\cos(kx))
   \end{aligned}
 $$
-avec $k=0.5$, $\alpha=0.2$, $v_0 = 4$, $x\in [0,4\pi]$, $v\in[-8,8]$, et la perturbation $\epsilon = 0.1$. Le champ électrique initiale $E(t=0,x)$ est obtenu en résolvant l'équation de Poisson sur notre condition initiale, comme indiqué dans la proposition~\ref{p:vhl_conservation}~:
+avec $k=0.5$, $\alpha=0.2$, $v_0 = 3.4$, $x\in [0,L]$, $L=4\pi$, $v\in[-12,12]$, et la perturbation $\epsilon = 10^{-2}$. Le champ électrique initiale $E(t=0,x)$ est obtenu en résolvant l'équation de Poisson sur notre condition initiale, comme indiqué dans la proposition~\ref{p:vhl_conservation}~:
 $$
   \partial_x E(t=0) = (1-\alpha) + \int (1+\epsilon\cos(kx))\left( \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v) \right)\,\mathrm{d}v - 1
 $$
-La discrétisation du domaine s'effectue avec $N_x=81$ dans la direction $x$, et $N_v=128$ points dans la direction $v$.
+La discrétisation du domaine s'effectue avec $N_x=27$ dans la direction $x$, et $N_v=128$ points dans la direction $v$.
 
-Nous allons effectuer différentes configurations pour tester et comparer les deux méthodes 
-\begin{enumerate}
-  \item pas de temps fixe 
-    \begin{itemize}
-      \item  $\Delta t = 0.5\Delta v$ 
-      \item  $\Delta t = \sigma\frac{\Delta t}{\|E^n\|_\infty}$ où $\sigma \approx 1.433$ est la condition CFL de WENO5 avec DP4, et $\|E^n\|_\infty = \max_{t^n}(\max_i|E_i^n|) \approx 0.2$ d'après une estimation issue des résultats d'une simulation ; 
-      \item  $\Delta t = 1$ qui est un pas de temps choisi arbitrairement grand pour illustrer l'absence de condition CFL de la méthode de Suzuki. 
-    \end{itemize}
-  \item pas de temps adaptatif
-    \begin{itemize}
-      \item méthode présentée dans la section~\ref{ssec:dtadapt} avec une tolérance $tol = 10^{-4}$, 
-      \item méthode basée sur la condition de CFL en choisissant $\Delta t^n = \min\left(\sigma\frac{\Delta v}{\|E^n_i\|_\infty},2\right)$ où $\sigma \approx 1.433$, et $\|E_i^n\|_\infty = \max_i\left( |E^n_i|\right)$.
-    \end{itemize}
-\end{enumerate}
-Quelque soit la méthode de simulation choisie, nous allons regarder les estimateurs d'erreur présentées dans la section~\ref{ssec:dtadapt} :
-$$
-  \begin{aligned}
-    L &= \left(\sum_i (\left.u_c\right.^{[4]}_i-\left.u_c\right.^{[3]}_i)^2\Delta x\right)^{\frac{1}{2}}
-          + \left(\sum_i (\left.E\right.^{[4]}_i-\left.E\right.^{[3]}_i)^2\Delta x\right)^{\frac{1}{2}}
-          + \left(\sum_{i,j} \left|\left.{f}_h\right.^{[4]}_{i,j}-\left.{f}_h\right.^{[3]}_{i,j}\right|^2\Delta v\Delta x\right)^{\frac{1}{2}} \\
-      &= L_{u_c} + L_{E} + L_{{f}_h}
-  \end{aligned}
-$$
-Cela permettra de comparer l'estimation de l'erreur avec une même tolérance entre la méthode DP4(3) et la méthode de Suzuki. Nous allons aussi regarder le nombre d'itération de chaque méthode de simulation, et la taille des pas de temps que la méthode de pas de temps adaptatif propose. Il est à noter que uniquement les deux méthodes de la section~\ref{ssec:dtadapt} utilisent cette estimation d'erreur et ont un critère pour rejeter une itération.
+Nous allons effectuer deux types de comparaisons entre les méthodes de \emph{splitting} hamiltonien et de Lawson, une comparaison à pas de temps fixe, où on illustrera l'absence de condition de CFL des méthodes de \emph{splitting} ; puis une comparaison des méthodes de pas de temps adaptatif associés à ces méthodes présentées dans la section~\ref{ssec:dtadapt} avec une tolérance $tol = 2\times10^{-5}$.
 
-\commentaire[Nicolas]{Figure 9 : en faire 2 figure (Suzuki et DP par exemple ?). Reprendre les commentaires en fonction du coup. }
+\subsection{Comparaison des deux résolutions hybrides à pas de temps fixe}
+
+Cette section est dédié à la comparaison entre la méthode de \emph{splitting} hamiltonien, présenté dans la sous-section~\ref{ssec:splitting}, et la méthode de Lawson présenté dans la sous-section~\ref{ssec:lawson}, pour la résolution du modèle hybride linéarisé~\eqref{eq:vahl}.
+
+Nous considèrerons trois pas de temps différents :
+\begin{itemize}
+  \item $\Delta t = 0.1 \approx 0.5\Delta v$, il s'agit d'une condition de CFL classique pour des méthodes de volumes finis ;
+  \item $\Delta t = 0.5 \approx \sigma\frac{\Delta v}{\|E^n\|_\infty} = 0.54$, with $\sigma\approx 1.732$, il s'agit de la condition de CFL entre WENO5 et RK($4$,$4$) calculé dans le chapitre précédent ou~\cite{Crouseilles:2019b}, et calculé à partir d'une précédente estimation numérique $\|E^n\|_\infty = \max_{i,n}|E^n_i|\approx 0.6$ ;
+  \item $\Delta t = 0.7$, il s'agit dans ce cas d'un cas test avec un pas de temps plus grand que la CFL de la méthode de Lawson, pour illustrer que la méthode de \emph{splitting} n'a pas de contrainte de stabilité sur le pas de temps.
+\end{itemize}
+
+Sur la figure~\ref{fig:compare:ee}, on trace l'évolution de l'énergie électrique (en échelle semi-log) calculée par deux méthodes d'ordre 4 (méthode de Suzuki et de Lawson-RK(4,4)), avec différentes valeurs de pas de temps $\Delta t$, $0.1$, $0.5$ et $0.7$. On note que toutes les simulations capturent correctement l'énergie électrique dans la phase linéaire, jusqu'au temps 60, même lorsque la méthode est instable. Pour $\Delta t=0.1,0.5$, on vérifie la stabilité prévue des méthodes, qui donnent des résultats très similaires. Dans cas $\Delta t=0.7$, la méthode de Lawson-RK(4,4) devient instable dans la phase non-linéaire, c'est en fait dans cette phase que l'amplitude du champ électrique atteint son maximum, et le paramètre $\Delta t=0.7$ viole la condition de CFL, alors que la méthode de \emph{splitting} de Suzuki reste stable comme prévu.
+
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_ee.png}
-  \caption{Évolution de l'énergie électrique avec les différentes méthodes}
+  \includegraphics[width=\textwidth]{\localPath/figures/ee_t2.png}
+  \caption{Évolution de l'énergie électrique pour le modèle hybride (résolu avec la méthode de Lawson et de Suzuki) pour différentes valeurs de pas de temps $\Delta t=0.1,0.5,0.7$.}
   \label{fig:compare:ee}
 \end{figure}
 
-Sur la figure~\ref{fig:compare:ee} on peut voir l'évolution de l'énergie électrique au cours du temps pour les différentes simulations. Il est important de remarquer que 4 résultats sont différents de ce que prédit la relation de dispersion, la courbe rouge, qui est un résultat donné par la méthode DP4 avec un pas de temps $\Delta t=1$ hors de la condtion CFL, le schéma est instable ; la courbe jaune, dont les résultats sont donnés par la méthode DP4 avec un pas de temps $\Delta t=1.433\Delta v/\|E\|_\infty$ est l'illustration d'un schéma utilisé juste sous sa condition de CFL, le schéma est stable mais il n'est pas précis ; les courbes violettes et vertes sont issus des résultats respectivement de DP4 et Suzuki avec une méthode de pas de temps adaptatif donné par la condition de CFL, cette méthode de pas de temps adaptatif propose de très grand pas de temps dans la phase linéaire du problème où le champ électrique est faible, mais produit une erreur importante, qui se répercute sur les résultats en fin de simulation. Les autres résultats sont conformes aux relations de dispersion. 
+
+Sur la figure~\ref{fig:H:t2}, on observe l'évolution de l'erreur relative sur l'énergie totale, calculée par :
+\begin{equation}
+	\frac{\mathcal{H}^n}{\mathcal{H}^0}-1
+	\label{eq:relativeerror:H}
+\end{equation}
+avec :
+$$
+  \mathcal{H}^n = \frac{1}{2}\iint v^2f_h^n\dd{v}\dd{x}
+                + \frac{1}{2}\int\rho_c^{(0)}\left(u_c^n\right)^2\dd{x}
+                + \frac{1}{2}\int\left(E^n\right)^2\dd{x}.
+$$
+On considère les mêmes paramètres numériques et on compare l'effet de la méthode d'intégration en temps (méthode de \emph{splitting} hamiltonien : Lie~\eqref{eq:lie}, Strang~\eqref{eq:strang} et Suzuki~\eqref{eq:suzuki}, et la méthode Lawson-RK(4,4)) sur la préservation de l'énergie totale. On observe que les méthodes géométriques de \emph{splitting} hamiltonien, préservent très bien l'énergie totale, en particulier, l'erreur relative oscille autour d'une constante en temps long, ce qui est un comportement typique d'une méthode géométrique. On observe sur la méthode de Lawson, si le pas de temps est pris sous la condition de CFL, l'erreur est proche de $4\%$, ce qui est acceptable. Évidemment, comme évoqué précédemment sur l'énergie électrique, on observe un problème lorsque $\Delta t=0.7$, l'erreur donnée par la méthode Lawson-RK($4$,$4$) diverge dans la phase non-linéaire, à cause de l'instabilité numérique ; avant cela, l'erreur est autour des $2\%$. Le tableau~\ref{tab:H:max} résume le maximum de l'erreur relative $\max_n \left| {\cal H}^n / {\cal H}^0 -1 \right|$ pour les différentes méthodes et les différents pas de temps considérés.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_time_dtt}
-  \caption{Évolution du temps au cours des itérations de la simulation}
-  \label{fig:compare:time:dtt}
+  \includegraphics[width=\textwidth]{\localPath/figures/H_t2.png}
+  \caption{Évolution de l'erreur relative sur l'énergie totale pour le modèle hybride (résolu avec la méthode de Lawson et de Suzuki) pour différentes valeurs de pas de temps $\Delta t=0.1,0.5,0.7$.}
+  \label{fig:H:t2}
 \end{figure}
 
-Sur la figure~\ref{fig:compare:time:dtt} on représente l'évolution du temps courant dans la simulation en fonction des itérations. Les courbes en pointillés sont celles avec un pas de temps constant. On remarque que les simulations où le pas de temps est guidé par la condition de CFL locale sont parmi les plus performantes pour atteindre le temps final, mais comme nous avons pu le voir sur la figure précédente~\ref{fig:compare:ee}, ce sont aussi celles qui donnent des résultats avec une très mauvaise précision. Les simulations avec un pas de temps constant très grand, donnent à première vue de bon résultat avec un intégrateur en temps sans condition de CFL comme Suzuki, mais de mauvais résultats avec la méthode DP4. La méthode DP4(3) s'impose ensuite comme un très bon choix pour maintenir l'erreur sous une certaine tolérance tout en atteignant rapidement le temps final, ici $T_f=100$. Les résultats pour la méthodes de Suzuki à pas de temps adaptatif ou les simulations avec un pas de temps pris arbitrairement petit $\Delta t = 0.5\Delta v$, ont été tronqués pour mieux observer les simulations plus rapide, la méthode de Suzuki termine en 1290 itérations, et les simulations avec un pas de temps fixé à $\Delta t = 0.5\Delta v$ en 1600 itérations.
-\commentaire[Nicolas]{Je ne comprends pas bien la fin : pourquoi 2 méthodes ont été "tronquées" ? }
+\begin{table}[h]
+  \centering
+  \begin{tabular}{l|c|c|c}
+                   & $0.1$             & $0.5$     & $0.7$        \\
+    \hline
+    Lie            & $0.0036$          & $0.0187$  & $0.0394$     \\
+    Strang         & $0.0001$          & $0.0019$  & $0.0109$     \\
+    Suzuki         & $3\times 10^{-8}$ & $0.0001$  & $0.0028$     \\
+    Lawson-RK(4,4) & $0.0372$          & $0.0331$  & \texttt{NaN} \\
+  \end{tabular}
+  \caption{Maximum de l'erreur relative donnée sur la figure~\ref{fig:H:t2}.}
+  \label{tab:H:max}
+\end{table}
+
+Dans le cas $\Delta t=0.1$, on compare sur la figure~\ref{fig:vp:t2} la distribution de particules chaudes $f_h$ calculée par les méthodes de Suzuki et de Lawson-RK(4,4) au temps $t=100$, sur laquelle on ajoute la vitesse moyenne des particules froides $u_c$. Les solutions numériques ainsi obtenues sont très proches, la position des vortex et l'allure de la vitesse moyenne des particules froides sont très similaires entre les deux méthodes. On observe aussi que la méthode Lawson-RK(4,4) introduit plus de diffusion numérique que la méthode de Suzuki, en effet les vortex semblent avoir une meilleure résolution. Cela peut s'expliquer par la discrétisation dans l'espace des phases dans la direction $v$, une méthode WENO5 (avec limiteurs de pente) est utilisé avec la méthode Lawson-RK(4,4), contre une interpolation d'ordre 5 par des polynômes de Lagrange (sans limiteurs de pente) avec la méthode de Suzuki.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_dt_cfl.png}
-  \caption{Évolution de la taille du pas de temps $\Delta t^n$ au cours du temps, les itérations rejetées sont notées à l'aide des carrés}
-  \label{fig:compare:dt:all}
+  \includegraphics[width=0.9\textwidth]{\localPath/figures/vp_t2.png}
+  \caption{Densité des particules chaudes $f_h$ et vitesse moyenne des particules froides $u_c$ (en cyan) la condition initiale (gauche), au temps $t=100$ calculé par la méthode de Suzuki (milieu) et calculé par la méthode de Lawson-RK(4,4) (droite).}
+  \label{fig:vp:t2}
 \end{figure}
 
-Il est intéressant de regarder, pour des méthodes à pas de temps adaptatif, l'évolution de la taille du pas de temps. C'est ce qui est tracé sur la figure~\ref{fig:compare:dt:all} en fonction du temps, les itérations rejetées par un critère d'erreur n'ont pas été représentées sur cette figure. Les simulations dont le pas de temps est donné par la condition de CFL locale $\sigma \Delta v/(\max |E^n|)$ (en violet et en vert sur la figure) sont soumis à de très importantes variations dans le choix du pas de temps, de plus, pour éviter des erreurs trop importantes en début de simulation, il a été choisi de toujours prendre un pas de temps inférieur à 2, cette forte variabilité dans le choix du pas de temps implique une erreur relativement importante dans les résultats. La méthode DP4(3) propose des pas de temps autour de $0.5$ et propose des pas de temps plus important dans la phase linéaire (entre les temps 5 et 40). La méthode de Suzuki, alors qu'elle n'est soumis à aucune condition de stabilité, propose des pas de temps bien plus faible, jusqu'à proposer des pas de temps similaire au choix arbitraire $\Delta t = 0.5\Delta v$, et ce avant l'installation de la saturation de l'énergie électrique au temps 40. Sur la figure~\ref{fig:compare:dt} on représente à la fois les itérations acceptées et rejetées par le critère d'erreur, on remarque que le pas de temps des itérations rejetées reste du même ordre de grandeur que les autres itérations. Les rejets d'itérations ont toujours lieu lors des rebonds de l'énergie électrique, pour éviter trop de rejets de la sorte, il est possible de limiter les évolutions du pas de temps de l'itération suivante avec par exemple $\Delta t^{n+1} \in [0.5\Delta t^n,2\Delta t^n]$. \commentaire[Nicolas]{Dire que si on rejete moins, on va plus vite...)}
-\commentaire[Nicolas]{Il faudrait parler des courbes "fail" de la figure 11 ; j'imagine que ce sont les iterations rejetees ?}
-
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_dt.png}
-  \caption{Évolution de la taille du pas de temps $\Delta t^n$ au cours du temps, les itérations rejetées sont notées à l'aide des carrés}
-  \label{fig:compare:dt}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{\localPath/figures/order_t2.png}
+	\caption{Étude de l'ordre en temps des différentes méthodes numériques pour résoudre le modèle hybride (méthodes de Lawson et de \emph{splitting}). L'erreur est calculée à partir du maximum de l'erreur relative sur l'énergie totale.}
+	\label{fig:order:t2}
 \end{figure}
 
-On peut regarder l'évolution de l'erreur estimée $L$ au cours du temps de la simulation sur la figure~\ref{fig:compare:error_dtt}, ici encore les itérations rejetées par le critère sont représentées différemment. Les deux méthodes effectuent dans les itérations acceptées une erreur similaire qui semble tourner autour de $0.5 tol$. On peut également combiner les résultats de la figure~\ref{fig:compare:dt} avec ceux de la figure~\ref{fig:compare:error_dtt} pour tracer le nuage de points de l'erreur commise à chaque itération en fonction du pas de temps proposé par la méthode, ce que l'on trace sur la figure~\ref{fig:compare:error:dt}. On remarque que de manière général la méthode DP4(3) propose des pas de temps plus grand, et pour chaque méthode, ce ne sont pas les itérations avec les plus grands pas de temps qui sont rejetées. La méthode de Suzuki semble ne jamais effectuer une erreur qui excède $2tol$.
+Pour compléter cette étude, on trace sur la figure~\ref{fig:order:t2} l'ordre en temps des différents intégrateurs en temps utilisés pour résoudre le modèle hybride : les méthodes de \emph{splitting} hamiltonien (Lie, Strang et Suzuki), les méthodes de Lawson (RK(4,4) et RK(3,3)). Pour cela on calcule le maximum de l'erreur relative sur l'énergie totale : $\max_n|\mathcal{H}^n/\mathcal{H}^0-1|$, jusqu'au temps $t=15$, en fonction du pas de temps $\Delta t\in[0.01,0.125]$, avec $N_x=243$ et $N_v=512$. Tous les ordres théoriques des méthodes en temps sont bien reconstruits. On remarque que la constante d'erreur entre la méthode de Suzuki et de Lawson-RK(4,4) sont très proches, mais que cette première est légèrement plus coûteuse que la méthode de Lawson (plus de détails dans la section~\ref{ssec:2:time}).
+
+\FloatBarrier
+
+\subsection{Comparaison des deux méthodes de pas de temps adaptatif}
+
+Cette section est dédiée à l'étude des méthodes de Suzuki et de Lawson avec leur stratégie de pas de temps adaptatif associée, présentée dans la section~\ref{ssec:dtadapt}. Pour toutes les simulations nous nous somme intéresse à l'estimateur d'erreur qui dans ce cas s'écrit :
+\begin{equation}
+  \begin{aligned}
+    L^{n+1}_{[3]} & = \left(\sum_{i=0}^{N_x-1}\left( {u_c}_i^{n_1,[4]}-{u_c}_i^{n_1,[3]} \right)^2\Delta x\right)^{\frac{1}{2}}
+                    + \left(\sum_{i=0}^{N_x-1}\left( {E}_i^{n_1,[4]}-{E}_i^{n_1,[3]} \right)^2\Delta x\right)^{\frac{1}{2}} \\
+                  & + \left(\sum_{i=0}^{N_x-1}\sum_{j=0}^{N_v-1}\left| {f_h}_{i,j}^{n_1,[4]}-{f_h}_{i,j}^{n_1,[3]} \right|^2\Delta v\Delta x\right)^{\frac{1}{2}} \\
+                  & = L_{u_c}^{n+1} + L_{E}^{n+1} + L_{f_h}^{n+1},
+  \end{aligned}
+  \label{eq:LucEfh:localerror}
+\end{equation}
+où ${u_c}_i^{n+1,[p]}$,${E}_i^{n+1,[p]}$ et ${f_h}_{i,j}^{n+1,[p]}$ sont les inconnues discrétisées calculées avec une méthode d'ordre $p$ en temps et associée au temps $t^{n+1}$ et au point $x_i=i\Delta x$, $i=0,\dots,N_x$ et $v_j = -v_\text{max} + j\Delta v$, $j=0,\dots,N_v$ de l'espace des phases. Pour les deux méthodes, si le critère d'erreur $\|L_{[3]}^{n+1}\|<tol$ est satisfait, alors l'itération est acceptée et le temps incrémenté, sinon l'itération est rejetée et reprend au temps $t^n$. Dans les deux cas, le pas de temps suivant est calculé en utilisant~\eqref{eq:dtopt}. Cela nous permet de comparer l'estimateur d'erreur avec la même tolérance $tol$ (prise arbitrairement à $tol=2\times10^{-5}$) entre les deux intégrateurs en temps : la méthode de Suzuki et DP4(3). Nous regarderons aussi la taille des pas de temps proposés par les deux méthodes et le nombre d'itérations nécessaires pour finir la simulation.
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|c|c|c}
+      method              & nombre d'itérations & nombre d'itérations acceptées & ratio \\
+%      \hline
+%       $\Delta t = 0.5$ & 600                  & 600                          & 1     \\
+%       $\Delta t = 0.1$ & 3000                 & 3000                         & 1     \\
+      \hline
+      Suzuki              & 23895                & 23849                        & 0.998 \\
+      Lawson-DP4(3)       & 2288                 & 2192                         & 0.958 \\
+	\end{tabular}
+	\caption{Comparaison du nombre d'itération pour résoudre le problème jusqu'au temps $t=300$, le nombre d'itérations acceptées de la méthode de pas de temps adaptatif et le ratio entre le nombre d'itérations acceptées et le nombre totale d'itérations.}
+	\label{tab:compare:iteration}
+\end{table}
+
+Le tableau~\ref{tab:compare:iteration} présente le nombre d'itérations nécessaires pour atteindre le temps final $t=300$ pour les deux méthodes de pas de temps adaptatif considérées (méthode de Suzuki et de Lawson-DP4(3)) avec les paramètres numériques suivants $N_x=81$, $N_v=128$. Le nombre d'itérations acceptées (itérations où le critères d'erreur $\|L_{[3]}^{n+1}\|<tol$ est satisfait), et le ratio entre le nombre d'itérations acceptées et le nombre total d'itérations est aussi présenté. On observe qu'une très large majorité des itérations sont acceptées pour les deux méthodes, ce qui signifie que l'estimateur d'erreur est un bon indicateur. Pour la méthode de Lawson-DP4(3) le ratio d'itérations acceptées est légèrement plus faible que pour la méthode de Suzuki, ce qui signifie que la stratégie de pas de temps adaptatif essaie des pas de temps plus larges qui sont parfois rejetés. La très faible proportion d'itérations rejetées indique qu'il est très rarement nécessaire de recalculer une itération avec un pas de temps plus petit. Le surcoût engendré par la méthode de pas de temps adaptatif est donc négligeable. La seconde remarque que l'on peut faire est à propos de la méthode de Suzuki, qui nécessite 10 fois plus d'itérations que la méthode de Lawson-DP4(3) pour atteindre le temps final $t=300$, ce qui signifie que la méthode de Suzuki nécessite de plus petits pas de temps pour satisfaire le critère d'erreur $\|L_{[3]}^{n+1}\|<tol$.
+
+Sur la figure~\ref{fig:compare:dt_and_error} est représentée l'évolution de la taille du pas de temps au cours du temps, en effet celui-ci suit l'équation~\eqref{eq:dtopt} et est donc recalculé à chaque itération. Les itérations rejetées, celles où le critère d'erreur n'est pas satisfait, sont représentées avec des carrés. On remarque tout d'abord que dans la phase linéaire (jusqu'au temps $t\approx 50$) des pas de temps plus grands sont pris. Pendant la phase non-linéaire, le pas de temps oscille près d'une constante, qui permet de capturer les effets non-linéaires (vortex dans la distribution de particules) et les forts gradients (filamentation issue de la formation des votex). On remarque ensuite, que pour une même tolérance ($tol=2\times10^{-5}$), la méthode de Suzuki nécessite de plus petits pas de temps, comparé à la méthode DP4(3), pour satisfaire le critère d'erreur, comme remarqué dans le tableau~\ref{tab:compare:iteration}. On remarque que les variations du pas de temps sont relativement importantes ; il est possible de contrôler ces oscillations en limitant l'évolution des pas de temps en prenant par exemple $\Delta t^{n+1}\in[0.5\Delta t^n,2\Delta t^n]$, comme proposé dans \cite{Balac:2014}. Sur la figure~\ref{fig:compare:error:dtc} est tracée l'évolution de l'erreur local $L_{[3]}^n$ comme une fonction du temps pour la méthode de Lawson (gauche) et de Suzuki (droite), avec une stratégie de pas de temps adaptatif un pas de temps constant. Pour un grand pas de temps ($\Delta t = 0.5$), les méthodes sont stables, mais le pas de temps dépasse largement la tolérance fixée à $tol=2\times10^{-5}$. Les méthodes à pas de temps adaptatif, choisissent automatiquement un pas de temps permettant de garantir une erreur locale sous la tolérance. La méthode de Lawson avec un pas de temps adaptatif (DP4(3)) et avec un pas de temps fixe à $\Delta t = 0.1$ (RK(4,4)) calculent une erreur locale très proche, pourtant la méthode DP4(3) optimise son pas de temps pour assurer une erreur locale sous la tolérance, et permet d'obtenir des pas de temps plus grand que $\Delta t =0.1$ comme on peut le remarquer sur la figure~\ref{fig:compare:dt_and_error}. Assurer une erreur sous une tolérance avec les plus grands pas de temps possible est une heuristique intéressante. En ce qui concerne les résultats avec la méthode de Suzuki, on remarque de nouveau que la stratégie requière de plus petits pas de temps, comparé à DP4(3), pour assurer une estimation de l'erreur locale sous la tolérance. De plus, avec un pas de temps constant à $\Delta t = 0.1$, la méthode de Suzuki génère des erreurs locales bien plus importante, alors que la méthode DP4(3) était presque sous la tolérance.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_error_dtt.png}
-  \caption{Étude de l'erreur $L$ au cours du temps, l'erreur des itérations rejetées est notée à l'aide des carrés}
-  \label{fig:compare:error_dtt}
+  \includegraphics[width=0.75\textwidth]{\localPath/figures/dt_size_t3.png}
+  \caption{Évolution du pas de temps $\Delta t_n$ (les itérations rejetées sont représentées par des carrés) pour la modèle hybride avec des méthodes de pas de temps adaptatif.} 
+  \label{fig:compare:dt_and_error}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_error_dt.png}
-  \caption{Comparaison de l'erreur commise en fonction de la taille du pas de temps}
-  \label{fig:compare:error:dt}
+  \includegraphics[width=0.49\textwidth]{\localPath/figures/Ll_t3.png}
+  \includegraphics[width=0.49\textwidth]{\localPath/figures/Ls_t3.png}
+  \caption{Comparaison de l'évolution en temps de l'estimateur d'erreur pour une méthode à pas de temps constant et à pas de temps adaptatif. La méthode de Lawson est à gauche. La méthode de Suzuki est à droite. Les résultats sont en échelle semi-$\log$.}
+  \label{fig:compare:error:dtc}
 \end{figure}
-
-Regardons, toujours pour ces 2 méthodes, l'évolution de l'erreur au cours du temps, mais en regardant la contribution dans $L$ d\^ue à $L_{u_c}$, $L_E$ et $L_{\hat{f}_h}$. C'est ce que l'on représente dans la figure~\ref{fig:compare:error:LucEfh}. L'erreur de la méthode DP4(3) et ses différentes contributions est représentée en haut, alors que celle de la méthode de Suzuki est représentée en bas. La méthode de Lawson propose de résoudre exactement la partie linéaire du problème, dans notre cas seul $u_c$ est entièrement résolu par la partie linéaire, ce qui explique une contribution à l'erreur de l'ordre de $10^{-18}$ pour $L_{u_c}$. La partie non linéaire comprend le calcul du courant de $f_h$ dans $L_E$, et le transport dans la direction $v$ dans $L_{\hat{f}_h}$, ces 2 composantes restent élevées tout au long de la simulation. Pour la méthode de Suzuki, l'erreur provient essentiellement de $L_{\hat{f}_h}$, ce qui est  lié à l'erreur produite par la méthode Lagrange 5 pour la résolution du transport dans la direction $v$.
-
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_error_LucEfh.png}
-  \caption{Comparaison de l'erreur au cours du temps et de la contribution de chaque composante de l'erreur}
+  \includegraphics[width=0.8\textwidth]{\localPath/figures/L_LucEfh_t3.png}
+  \caption{Comparaison de la contribution de chaque composante de l'estimateur d'erreur locale en fonction du temps, pour la méthode de Lawson (haut) et de Suzuki (bas).}
   \label{fig:compare:error:LucEfh}
 \end{figure}
 
-%\commentaire[Nicolas]{Il faut expliquer comment tu calcules l'erreur pour les methodes non-embedded. J'imagine que tu calcules l'erreur locale 
-%comme avec le pas de temps adaptatif mais sans changer le pas de temps avec la formule ? 
-%On peut aussi regarder l'évolution de l'erreur sur toutes les simulations effectuées, quelque soit la méthode d'intégration en temps et le choix du pas de temps. C'est ce qui est effectué sur la figure~\ref{fig:compare:error:dtc} où l'on trace l'évolution de l'erreur en échelle semi-log. 
-\commentaire[Nicolas]{Quelque soit le choix du pas de temps, on peut utiliser les estimateurs d'erreur locale pour étudier l'évolution de l'erreur au cours du temps pour les différentes méthodes. C'est l'objet de la figure~\ref{fig:compare:error:dtc} où l'on trace l'évolution de l'erreur en échelle semi-log pour différentes méthodes ainsi que la tolérance $10^{-4}$.}
-On remarque que l'erreur commise par la méthode de Suzuki et DP4(3) est bien plus faible que les autres méthodes, et ce d'environ deux ordres de grandeur. Il n'y a que les simulations avec un pas fixe $\Delta t = 0.5\Delta v$ qui sont également sous la tolérance  fixé à $10^{-4}$. Donc sans connaissance a priori du problème, les méthodes à pas de temps adaptatif présentées dans la section~\ref{ssec:dtadapt} sont très intéressantes. Nous pouvons aussi remarquer que la constante d'erreur en temps de la méthode de Suzuki est bien plus importante que la méthode DP4(3) en regardant pour des simulations avec un pas de temps fixe l'erreur commise (par exemple les courbes en pointillées), ceci explique pourquoi la méthode DP4(3) propose des pas de temps plus important pour la même tolérance.
+Pour les deux méthodes à pas de temps adaptatif, on s'intéresse maintenant à l'évolution de l'estimateur d'erreur locale au cours du temps, en prennant en compte les différentes contributions de $L^n_{[3]}$, à savoir $L^n_{u_c}$, $L^n_{E}$ et $L^n_{f_h}$ définies dans~\eqref{eq:LucEfh:localerror}. Les résultats sont visibles sur la figure~\ref{fig:compare:error:LucEfh}. L'erreur de la méthode DP4(3) et de ces différentes contributions sont visible en haut, alors que celles de la méthode de Suzuki sont tracées en bas. Pour la méthode DP4(3), on remarque tout d'abord que la contribution venant de $L^n_{u_c}$ est négligeable (autour de l'erreur machine), ce qui peut s'expliquer par le fait que dans la méthode de Lawson la partie linéaire est résolue exactement. Puisque la partie non-linéaire de la méthode de Lawson comprend le calcul du courant chaud $\int vf_h\dd{v}$ qui va impacter $L^n_E$ et le transport dans la direction $v$ qui va impacter $L^n_{f_h}$, les contributions à l'estimateur d'erreur de ces deux contributions reste prépondérante tout au long de la simulation. Pour la méthode de Suzuki, l'erreur provient essentiellement de $L^n_{f_h}$, erreur venant de l'interpolation du transport dans la direction $v$. Il est à noter, que les erreurs $L^n_{u_c}$, $L^n_{E}$ ne sont pas nulles au delà du temps $t\approx 50$, mais sont respectivement de l'ordre de $10^{-10}$ et $10^{-8}$.
+
+%\FloatBarrier
+
+\subsection{À propos des temps de calcul}
+\label{ssec:2:time}
+
+Pour finir la comparaison entre les méthodes de \emph{splitting} et de Lawson, nous comparerons leurs temps de calcul. Sur la figure~\ref{fig:timer_boxplot_t4} (gauche), on représente la valeur moyenne ainsi que les quartiles du temps de calcul d'une itération de RK(4,4), DP4(3) et de la méthode de Suzuki. Nous rappelons que la méthode RK(4,4) est constituée de 4 étages, alors que les méthodes DP4(3) et de Suzuki en comprennent 5. Cela explique pourquoi une itération de la méthode RK(4,4) coûte moins qu'une itération des deux autres méthodes. Sur la partie de droite de la figure~\ref{fig:timer_boxplot_t4} on compare le temps de calcul de chaque étape des différentes méthodes. On rappelle que la méthode DP4(3) est formée à partir des 4 étages de la méthode RK(4,4) plus un étage supplémentaire. Comme espéré, chaque étape de la méthode de Suzuki a le même coût (puisque la méthode de Suzuki est une composition de 5 méthode de Strang). Au contraire, on observe que les deux premiers étages des méthodes RK(4,4) ou DP4(3) sont moins coûteux que les autres étages, ces deux premiers contenant moins d'opérations.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.8\textwidth]{\localPath/figures/compare_error_dtc.png}
-  \caption{Comparaison de l'erreur obtenue à l'aide du temps de temps adaptatif et d'un pas de temps constant}
-  \label{fig:compare:error:dtc}
+  \includegraphics[width=\textwidth]{\localPath/figures/timer_boxplot_t4.png}
+  \caption{Valeur moyenne et quartiles du temps de calcul sur une itération (gauche) et pour chaque étape d'une itération (droite).}
+  \label{fig:timer_boxplot_t4}
 \end{figure}
-
-
-\commentaire[Nicolas]{Tracer l'energie totale pour differentes methods (pas de temps fixe Suzuki(dt=1 et dt=2) et DP4(3) + Suzuki en dt adaptatif) }
-\commentaire[Nicolas]{temps de calcul par iteration et par etape de calcul. }
-
