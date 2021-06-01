@@ -1,4 +1,4 @@
-% !TEX root = ../chap3.tex
+% !TEX root = ../../main.tex
 
 \section{Schémas numériques}
 
@@ -16,7 +16,6 @@ Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle
 Nous allons nous intéresser au calcul de $\varphi_t^{[j_c]}$, $\varphi_t^{[B]}$, $\varphi_t^{[E]}$ et $\varphi_t^{[f_h]}$ les solutions correspondant à chaque étape de sorte que $\varphi(U_0)$ de~\eqref{eq:hamsplitting} peut être approximé au temps $t$ avec une composition des sous-flux $\varphi_t^{[j_c,B,E,f_h]}$.
 
 \paragraph{Étape $\mathcal{H}_{j_c}$ :\\}
-
 Pour obtenir $\varphi_t^{[j_c]}$, solution du sous-flux $\mathcal{H}_{j_c}$ :
 $$
   \begin{cases}
@@ -36,7 +35,6 @@ $$
   \end{pmatrix}
 $$
 Cela s'obtient car $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$.
-
 
 \paragraph{Étape $\mathcal{H}_B$ :\\}
 Nous souhaitons calculer $\varphi_t^{[B]}$, correspondant à la solution du système :
@@ -142,7 +140,7 @@ Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la mé
     0   & -1   & 0 &  0 &  0             & 0             & 0 \\
     0   &  0   & 0 &  0 &  0             & 0             & -v_z\partial_z \\
   \end{pmatrix},
-  \quad
+  \ 
   N:t,U\mapsto \begin{pmatrix}
     0 \\
     0 \\
@@ -155,32 +153,20 @@ Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la mé
   \label{eq:3:LNsmaxwell}
 \end{equation}
 Une logiciel de calcul formel, comme \sympy, permet d'obtenir $e^{\tau L}$ pour toute valeur $\tau\in\mathbb{R}$ :
-$$
+\begin{equation}
+\resizebox{.9\hsize}{!}{$
   e^{\tau L} \approx \begin{pmatrix}
-    0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-    0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-  - 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
-
-  - 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-    0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.970 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
-
-  0 & 0 & 1.0 & 0 & 0 & 0\\
-  0 & 0 & 0 & 1.0 & 0 & 0\\
-
-  - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-    0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
-
-  - 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.242 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-  - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-  - 0.621 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-    0.621 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}
-  \end{pmatrix}
-$$
+  		 \alpha\cos(\theta^-)+\beta\cos(\theta^+) & \alpha\sin(\theta^-)-\beta\sin(\theta^+) & 0 & 0 & \gamma\sin(\theta^-) + \gamma\sin(\theta^+) & -\gamma\cos(\theta^-) + \gamma\cos(\theta^+) & 0 \\
+  		-\alpha\sin(\theta^-)+\beta\sin(\theta^+) & \alpha\cos(\theta^-)+\beta\cos(\theta^+) & 0 & 0 & \gamma\cos(\theta^-) - \gamma\cos(\theta^+) &  \gamma\sin(\theta^-) + \gamma\sin(\theta^+) & 0 \\
+    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    -\delta\sin(\theta^-)-\delta\sin(\theta^+) &  \delta\cos(\theta^-)-\delta\cos(\theta^+) & 0 & 0 &  \beta\cos(\theta^-)+\alpha\cos(\theta^+) & \beta\sin(\theta^-)-\alpha\sin(\theta^+) & 0 \\
+    -\delta\cos(\theta^-)+\delta\cos(\theta^+) & -\delta\sin(\theta^-)-\delta\sin(\theta^+) & 0 & 0 & -\beta\sin(\theta^-)+\alpha\sin(\theta^+) & \beta\cos(\theta^-)+\alpha\cos(\theta^+) & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & e^{-ikv_z\tau} \\
+    \end{pmatrix}
+$}
+\end{equation}
+avec $\alpha = 0.378732187481834$, $\beta = 0.621267812518167$, $\gamma = 0.970142500145332$, $\delta = 0.242535625036333$, et $\theta^\pm = \frac{\sqrt{2}}{2}\tau\sqrt{9\pm\sqrt{17}}$.
 \Josselin{Il semble compliqué de mettre la matrice $e^{\tau L}$ dans le document (et encore il s'agit d'une version après demande d'évaluation numérique de \sympy) ce que je peux proposer c'est juste l'allure de la matrice :
 $$
   e^{\tau L} = \begin{pmatrix}
