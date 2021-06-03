@@ -3,6 +3,7 @@
 \section{Schémas numériques}
 
 \subsection{Méthode de \emph{splitting} haniltonien}
+% -------------------------------------------------------------------
 
 Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle $1dz -- 3dv$ celui-ci se décompose en 4 étapes, et il s'écrit sous la forme :
 \begin{equation}
@@ -97,24 +98,28 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\ref{Li:2019}), ce s
   \item $\mathcal{H}_{f_{h,z}}$ :
 \end{itemize}
  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 \subsection{Méthode de Lawson sur le modèle hybride}
+% -------------------------------------------------------------------
 
 Dans cette section nous allons présenter la méthode d'intégration exponentielle pour discrétiser le modèle $1dz-3dv$.
 
-Il est naturel de réécrire le système sous la forme :
+Il est naturel de réécrire le système, après une transformée de Fourier dans la direction $z$, sous la forme :
 $$
   \partial_t U = LU + N(t,U)
 $$
-
-avec :
+où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ représente les modes de Fourier et avec :
 \begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\
     B_0 &  0   & 0          &  0          &  0             & \Omega_{pe}^2 & 0 \\
-    0   &  0   & 0          &  0          &  0             & \partial_z    & 0 \\
-    0   &  0   & 0          &  0          & -\partial_z    & 0             & 0 \\
-   -1   &  0   & 0          & -\partial_z &  0             & 0             & 0 \\
-    0   & -1   & \partial_z &  0          &  0             & 0             & 0 \\
+    0   &  0   & 0          &  0          &  0             & i\kappa       & 0 \\
+    0   &  0   & 0          &  0          & -i\kappa       & 0             & 0 \\
+   -1   &  0   & 0          & -i\kappa    &  0             & 0             & 0 \\
+    0   & -1   & i\kappa    &  0          &  0             & 0             & 0 \\
     0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\
   \end{pmatrix},
   \quad
@@ -129,7 +134,7 @@ avec :
   \end{pmatrix}
   \label{eq:3:LNmaxwell}
 \end{equation}
-Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\partial_z \equiv ik$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
+Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\kappa\in\left\{\frac{2\pi j}{L},j\in[\![-N_z,N_z]\!]\right\}$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
 \begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0 &  0 &  \Omega_{pe}^2 & 0             & 0 \\
@@ -144,15 +149,15 @@ Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la mé
   N:t,U\mapsto \begin{pmatrix}
     0 \\
     0 \\
-     ikE_y \\
-    -ikE_x \\
-    -ikB_y + \int v_x f \,\mathrm{d}v \\
-     ikB_x + \int v_y f \,\mathrm{d}v \\
+     i\kappa E_y \\
+    -i\kappa E_x \\
+    -i\kappa B_y + \int v_x f \,\mathrm{d}v \\
+     i\kappa B_x + \int v_y f \,\mathrm{d}v \\
     E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\nabla_v f
   \end{pmatrix}
   \label{eq:3:LNsmaxwell}
 \end{equation}
-Une logiciel de calcul formel, comme \sympy, permet d'obtenir $e^{\tau L}$ pour toute valeur $\tau\in\mathbb{R}$ :
+Un logiciel de calcul formel, comme \sympy, permet d'obtenir $e^{\tau L}$ pour toute valeur $\tau\in\mathbb{R}$ :
 \begin{equation}
 \resizebox{.9\hsize}{!}{$
   e^{\tau L} \approx \begin{pmatrix}
@@ -167,49 +172,11 @@ Une logiciel de calcul formel, comme \sympy, permet d'obtenir $e^{\tau L}$ pour 
 $}
 \end{equation}
 avec $\alpha = 0.378732187481834$, $\beta = 0.621267812518167$, $\gamma = 0.970142500145332$, $\delta = 0.242535625036333$, et $\theta^\pm = \frac{\sqrt{2}}{2}\tau\sqrt{9\pm\sqrt{17}}$.
-\Josselin{Il semble compliqué de mettre la matrice $e^{\tau L}$ dans le document (et encore il s'agit d'une version après demande d'évaluation numérique de \sympy) ce que je peux proposer c'est juste l'allure de la matrice :
-$$
-  e^{\tau L} = \begin{pmatrix}
-    * & * & 0 & 0 & * & * & 0 \\
-    * & * & 0 & 0 & * & * & 0 \\
-    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-    0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-    * & * & 0 & 0 & * & * & 0 \\
-    * & * & 0 & 0 & * & * & 0 \\
-    0 & 0 & 0 & 0 & 0 & 0 & e^{-ikv_z\tau} \\
-  \end{pmatrix}
-$$
-mais ne pas mettre du tout la matrice est aussi une alternative.
-}
-% $$
-%   \begin{pmatrix}
-%     0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.621267812518167 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-%     0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%   - 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
 
-%   - 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518166 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-%     0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.970142500145332 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.970142500145332 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
-
-%   0 & 0 & 1.0 & 0 & 0 & 0\\
-%   0 & 0 & 0 & 1.0 & 0 & 0\\
-
-%   - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-%     0.621267812518166 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.621267812518167 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}\\
-
-%   - 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.242535625036333 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%   - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} - 0.242535625036333 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} & 0 & 0 &
-%   - 0.621267812518166 \sin{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \sin{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)} &
-%     0.621267812518167 \cos{\left(\frac{\sqrt{2} \tau \sqrt{9 - \sqrt{17}}}{2} \right)} + 0.378732187481834 \cos{\left(\frac{\sqrt{2} \tau \sqrt{\sqrt{17} + 9}}{2} \right)}
-%   \end{pmatrix}
-% $$
 C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $k$ données est élevé et ne peut être effectuer en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
 
 \subsubsection{Filtrage de l'équation de Vlasov}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 L'équation de Vlasov contient le terme $(\vb{v}\times\vb{B}_0)$ qui introduit une condition de CFL restrictive qui peut être outrepassé en utilisant le changement de variable $w=e^{tB_0J}v$, avec $w=(w_x,w_y)^\top$ et $v=(v_x,v_y)^\top$, pour filtrer ce terme en influençant le moins possible le reste du système. Nous introduisons $g(t,z,w,v_z) = f_h(t,z,\exp(-tB_0J)w,v_z)$ avec :
 $$
@@ -227,11 +194,139 @@ $$
 
 \Josselin{Dans l'intro de la thèse, dans mon plan, j'ai une partie consacrée aux méthodes numériques, la méthode de Lawson sera sans doute plus présentée en détail là-bas (le schéma, comment construire une méthode de Lawson à partir d'une méthode RK, chose qui est déjà un peu faite dans le chapitre 1 dans \ref{butcher}). Donc je décide de ne pas m'attarder sur le schéma choisi etc. mais plutôt sur les différences par rapport à son utilisation simple dans les chapitres 1 et 2.}
 
+
 \subsubsection{Calcul de stabilité avec les équations de Maxwell}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-L'introduction des équations de Maxwell dans la partie non-linéaire de la méthode de Lawson, comme indiquée dans~\eqref{eq:3:LNsmaxwell}, implique une condition de stabilité provenant de ces termes.
+L'introduction des équations de Maxwell dans la partie non-linéaire de la méthode de Lawson, comme indiquée dans~\eqref{eq:3:LNsmaxwell}, implique une condition de stabilité provenant de ces termes. \Josselin{Il faut dire à un moment que la CFL de Maxwell risque d'être plus restrictive que celle provenant de la partie non-linéaire, car dans $N(U)$ il y a un peu de monde, entre autre on a jamais regardé si une CFL survenait des termes de couplage $\int v_\star f \,\mathrm{d}v$. En même temps le titre de la sous-sous-section parle uniquement de la CFL provenant des équations de Maxwell, la CFL qu'on est obligé de subir car on ne sait pas mettre les équations de Maxwell dans la partie linéaire de Lawson.}
 
-Présenter la méthode où on s'intéresse à la CFL de Maxwell qu'avec $\dot{u} = A(u)$ avec $u\in\mathbb{R}^2$ et $A$ qui est une matrice qui contient juste la diagonale de $ik$ de Maxwell.
+\paragraph{Estimation de la condition de stabilité à partir d'une méthode Runge-Kutta :\\}
+Il est possible de faire une première estimation de la condition de stabilité en ne considérant que l'équation :
+\begin{equation}\label{eq:3:maxeq}
+  \dot{U} = A\cdot U
+\end{equation}
+avec $U = (B_x,B_y,E_x,_y)^\top$ le vecteur des seules variables impliquées dans les équations de Maxwell, et $A$ la matrice :
+$$
+  A = \begin{pmatrix}
+    0       &  0       &  0       & i\kappa \\
+    0       &  0       & -i\kappa & 0       \\
+    0       & -i\kappa &  0       & 0       \\
+    i\kappa &  0       &  0       & 0 
+  \end{pmatrix}
+$$
+On souhaite résoudre ce problème avec une méthode de type Runge-Kutta, en effet notre choix de partie linéaire dans la méthode de Lawson pour résoudre le système VMHL nous impose de résoudre les équations de Maxwell via une méthode de type Runge-Kutta. La fonction à intégrer en temps par la méthode Runge-Kutta étant linéaire en $U$, on sait que calculer $U^{n+1}$ par une méthode Runge-Kutta revient à multiplier $U^n$ par la fonction de stabilité de la méthode Runge-Kutta choisie, évaluée en $\Delta tA$. On a donc pour une méthode RK(3,3) :
+$$
+  U^{n+1} = \left(I + \Delta t A + \frac{\Delta t^2}{2}A^2 + \frac{\Delta t^3}{6}A^3 \right)U^n,
+$$
+et pour une méthode RK(4,4) :
+$$
+  U^{n+1} = \left(I + \Delta t A + \frac{\Delta t^2}{2}A^2 + \frac{\Delta t^3}{6}A^3 + \frac{\Delta t^4}{24}A^4 \right)U^n.
+$$
+On note $p_{(s,n)}$ la fonction de stabilité de la méthode Runge-Kutta à $s$ étages et d'ordre $n$ RK($s$,$n$). On appellera par la suite \emph{matrice d'amplification}, la matrice correspondant à l'évaluation de la fonction de stabilité de la méthode RK($s$,$n$) évaluée en $\Delta t A$. Pour des méthodes de type Runge-Kutta à $s$ étages et d'ordre $n$ explicite on a :
+$$
+  p_{(s,n)}(\Delta t A) = \sum_{k=0}^n \frac{\Delta t^k}{k!}A^k + \sum_{k=n+1}^s c_k\Delta t^kA^k
+$$
+Ce qui correspond au développement de l'exponentielle jusqu'à l'ordre $n$, plus des termes supplémentaires si $n\neq s$. Pour estimer la CFL de l'équation~\eqref{eq:3:maxeq}, il faut rechercher les valeurs propres de la matrice d'amplification $p_{(s,n)}(\Delta t A)$ de la méthode choisie. Celles-ci dépendent de $\Delta t$ et de $\kappa$, avec les modes de Fourier $\kappa$ qui dépendent directement de la discrétisation en espace choisie, car $\kappa=\frac{2\pi j}{L}$ avec $j \in[\![-\frac{N_z}{2},\frac{N_z}{2} ]\!]$. Pour trouver la condition de stabilité de cette équation il faut donc trouver le couple $(\Delta t,\kappa)$ permettant de garantir que les valeurs propres de $p_{(s,n)}(\Delta t A)$ soient inférieure à 1.
 
-Présenter la méthode où on s'intéresse à la CFL du système complet de Lawson, dire que la partie linéaire mélange des trucs mais que l'estimation faite dans la résolution de $\dot{u} = A(u)$ est plutôt bonne.
+On rappelle que les valeurs propres de $A$ sont : $i\kappa$ et $-i\kappa$, chacune de multiplicité 2, cela nous permet de déterminer les valeurs propres de $p_{(s,n)}(\Delta t A)$ qui sont :
+$$
+  \begin{aligned}
+    p_{(s,n)}( i\kappa\Delta t) &= \sum_{k=0}^n       i^k\frac{\Delta t^k\kappa^k}{k!} + \sum_{k=n+1}^s       i^kc_k\Delta t^k\kappa^k \\
+    p_{(s,n)}(-i\kappa\Delta t) &= \sum_{k=0}^n (-1)^ki^k\frac{\Delta t^k\kappa^k}{k!} + \sum_{k=n+1}^s (-1)^ki^kc_k\Delta t^k\kappa^k
+  \end{aligned}
+$$
+Il s'agit de polynômes en $\Delta t\kappa$ que l'on peut réécrire :
+$$
+  \begin{aligned}
+    p_{(s,n)}( i\kappa\Delta t) &=  \sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
+                                 + i\sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
+                                 &\quad+  \sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
+                                 + i\sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
+    p_{(s,n)}(-i\kappa\Delta t) &=  \sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
+                                 - i\sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
+                                 &\quad+  \sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
+                                 - i\sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
+  \end{aligned}
+$$
+où l'on remarque que $p_{(s,n)}(-i\kappa\Delta t) = \widebar{p_{(s,n)}(i\kappa\Delta t)}$, donc $\left|p_{(s,n)}(-i\kappa\Delta t)\right|=\left|p_{(s,n)}(i\kappa\Delta t)\right|$. On peut déterminer la condition de stabilité pourles méthodes RK(3,3) et RK(4,4), c'est-à-dire la valeur de $\Delta t\kappa$ telle que $|p_{(n,n)}(i\kappa\Delta t)|=1$, on obtient ainsi respectivement les valeurs $\frac{\sqrt{3}}{\kappa}$ et $\frac{2\sqrt{2}}{\kappa}$ avec $\kappa = \frac{2j\pi}{L}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$.
 
+
+\paragraph{Estimation de la condition de stabilité à partir d'une méthode de Lawson complète :\\}
+Une estimation plus précise de la condition de stabilité dû aux équations de Maxwell peut être calculée en résolvant avec une méthode de Lawson le système :
+$$
+  \dot{U} = LU + NU
+$$
+où $U = (j_{c,x},j_{c,y},B_x,B_y,E_x,E_y)^\top$, et $L$ (partie linéaire de la méthode de Lawson) et $N$ (partie considérée comme non-linéaire dans la méthode de Lawson) sont deux matrices données par :
+$$  L = \begin{pmatrix}
+    0 & -1 & 0 & 0 & 4 & 0 \\
+    1 &  0 & 0 & 0 & 0 & 4 \\
+    0 &  0 & 0 & 0 & 0 & 0 \\
+    0 &  0 & 0 & 0 & 0 & 0 \\
+   -1 &  0 & 0 & 0 & 0 & 0 \\
+    0 & -1 & 0 & 0 & 0 & 0 \\
+  \end{pmatrix},
+  \ 
+  N = \begin{pmatrix}
+    0 & 0 & 0  &  0  &  0  & 0  \\
+    0 & 0 & 0  &  0  &  0  & 0  \\
+    0 & 0 & 0  &  0  &  0  & ik \\
+    0 & 0 & 0  &  0  & -ik & 0  \\
+    0 & 0 & 0  & -ik &  0  & 0  \\
+    0 & 0 & ik &  0  &  0  & 0  \\
+  \end{pmatrix}
+$$
+Les matrices $L$ et $N$ ne commutent pas, donc la fonction de stabilité de la méthode de Lawson ne peut pas être obtenu comme dans le cas scalaire du chapitre~\ref{chap1}. Il est nécessaire pour chaque méthode de calculer sa fonction de stabilité. Nous n'étudierons ici que les méthodes de Lawson induites par la méthode RK(3,3) de Shu-Osher et celle induite par la méthode RK(4,4) dites classique.
+
+Nous allons commencer l'étude par la méthode RK(3,3) définie par :
+$$
+  \begin{aligned}
+    U^{(1)} &= e^{\Delta tL}U^n + \Delta te^{\Delta tL}NU^n \\
+    U^{(2)} &= \frac{3}{4}e^{\frac{\Delta t}{2}L}U^n + \frac{1}{4}e^{-\frac{\Delta t}{2}L}U^{(1)} + \frac{\Delta t}{4}e^{-\frac{\Delta t}{2}L}NU^{(1)} \\
+    U^{n+1} &= \frac{1}{3}e^{\Delta tL}U^n + \frac{2}{3}e^{\frac{\Delta t}{2}L}U^{(2)} + \frac{2}{3}\Delta te^{\frac{\Delta t}{2}L}NU^{(2)} \\
+  \end{aligned}
+$$
+On peut calculer la fonction de stabilité de la méthode, on obtient alors :
+$$
+  \begin{aligned}
+    U^{n+1} = \Big[ e^{\Delta tL} &+ \Delta t\left(\frac{2}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}+\frac{1}{6}e^{\Delta tL}N + \frac{1}{6}Ne^{\Delta tL}\right) \\
+    & + \frac{\Delta t^2}{2}\left(\frac{1}{3}Ne^{\Delta tL}N + \frac{1}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}N + \frac{1}{3} e^{\frac{\Delta t}{2}L}Ne^{-\frac{\Delta t}{2}L}Ne^{\Delta tL} \right) \\
+    & + \frac{\Delta t^3}{6}e^{\frac{\Delta t}{2}L}Ne^{-\frac{\Delta t}{2}L}Ne^{\Delta tL}N \Big]U^n
+  \end{aligned}
+$$
+La matrice d'amplification n'est plus un polynôme, nous nous proposons donc de faire une étude numérique. Pour cela on choisit une discrétisation des modes de Fourier $\kappa\in[\![-27,27]\!]$, et pour les pas de temps $\Delta t\in[0,0.125]$. Pour tout couple de cette discrétisation on calcule numériquement les valeurs propres de la matrice d'amplification, qui sont au nombre de 5, sans compter la multiplicité, que l'on tri par valeur absolue. Cela nous permet de représenter graphiquement, sur la figure~\ref{fig:3:vplrk33}, la plus grande valeur propre en chaque point $(\kappa,\Delta t)$ de la discrétisation. On remarque une symétrie, attendue, entre les modes de Fourier positifs et négatifs, et c'est le mode le plus élevé qui va contraindre le plus notre condition de stabilité entre $\kappa$ et $\Delta t$.
+\begin{figure}[h]
+  \centering
+  \includegraphics[height=0.49\textheight]{\localPath/figures/vplrk33.png}
+  \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(3,3) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
+  \label{fig:3:vplrk33}
+\end{figure}
+On peut ainsi estimer une condition de stabilité pour $N_z = 15,27$ et on obtient : pour $N_z = 15$, $\Delta t <0.053$, et pour $N_z = 27$, $\Delta t <0.048$. \Josselin{J'ai essayé de forcer le calcul avec des \texttt{float64} ou des \texttt{float128} mais je n'ai pas réussi à avoir de meilleurs résultats... c'est assez éloigné des résultats précédent, à savoir $\frac{\sqrt{3}}{N_z}$ ce qui nous donne pour $N_z=15$ : 0.115, et pour $N_z = 27$ : 0.064. Ce qui est étrange c'est que ça marche nettement mieux avec LRK(4,4).}
+
+On effectue une analyse similaire pour la méthode de Lawson LRK(4,4) suivante :
+$$
+  \begin{aligned}
+    U^{(1)} &= e^{\frac{\Delta t}{2}L}U^n + \frac{\Delta t}{2}e^{\frac{\Delta t}{2}L}NU^n \\
+    U^{(2)} &= e^{\frac{\Delta t}{2}L}U^n + \frac{\Delta t}{2}NU^{(1)} \\
+    U^{(3)} &= e^{\Delta tL}U^n + \Delta te^{\frac{\Delta t}{2}L}NU^{(2)} \\
+    U^{n+1} &= -\frac{1}{3}e^{\Delta tL}U^n + \frac{1}{3}e^{\frac{\Delta t}{2}L}U^{(1)} + \frac{2}{3}e^{\frac{\Delta t}{2}L}U^{(2)} + \frac{1}{3}U^{(3)} \frac{\Delta t}{6}NU^{(3)} \\
+  \end{aligned}
+$$
+Où l'on peut également calculer sa matrice d'amplification :
+$$
+  \begin{aligned}
+    U^{n+1} = \Big[ e^{\Delta t} 
+              & + \Delta t\left( \frac{1}{6}e^{\Delta t L}N + \frac{2}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L} + \frac{1}{6}Ne^{\Delta t L} \right) \\
+              & + \frac{\Delta t^2}{2} \left( \frac{1}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}N + \frac{1}{3}e^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L} + \frac{1}{3}Ne^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L} \right) \\
+              & + \frac{\Delta t^3}{6} \left( \frac{1}{2}e^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L}N + \frac{1}{2}Ne^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L} \right) \\
+              & + \frac{\Delta t^4}{24}Ne^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L}N \Big]U^n
+  \end{aligned}
+$$
+Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de tracer la figure~\ref{fig:3:vplrk44} qui représente la plus grande valeur propre en valeur absolue en chaque point $(\kappa,\Delta t)$ de la discrétisation. Cela nous permet d'obtenir les conditions de stabilité pour différentes discrétisation en espace, et par exemple pour $N_z = 15$ on trouve $\Delta t<0.188 \approx \frac{2\sqrt{2}}{15}$ et pour $N_z = 27$ on trouve $\Delta t < 0.104 \approx \frac{2\sqrt{2}}{27}$.
+\begin{figure}[h]
+  \centering
+  \includegraphics[height=0.49\textheight]{\localPath/figures/vplrk44.png}
+  \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(4,4) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
+  \label{fig:3:vplrk44}
+\end{figure}
+
+\Josselin{Je ne suis pas nécessairement convaincu par ces 2 figures, qui en plus d'être très similaire visuellement, ne sont pas très lisible. J'ai également tracé la valeur absolue de la plus grande valeur propre en fonction de $\Delta t$ pour différentes valeurs de $\kappa$, j'ai aussi pour un $\kappa$ donné les différentes valeurs propres (et pas que la plus grande). Ce sont des graphiques 2d, sans doute plus lisible, en tout ça ici je trouve ça redondant mais j'attends vos retours pour discuter et savoir ce qui serait mieux}
