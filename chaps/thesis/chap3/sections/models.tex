@@ -2,14 +2,20 @@
 
 \section{Présentation du modèle}
 
-$$
-  \begin{cases}
-    \partial_t j_{c,x} &= \Omega_{pe}^2E_x - j_{c,y}B_0 \\
-    \partial_t j_{c,y} &= \Omega_{pe}^2E_y + j_{c,x}B_0 \\
-    \partial_t B_{x}   &=  \partial_zE_y \\
-    \partial_t B_{y}   &= -\partial_zE_x \\
-    \partial_t E_{x}   &= -\partial_zB_y - j_{c,x} + \int v_xf_h\,\mathrm{d}v \\
-    \partial_t E_{y}   &=  \partial_zB_x - j_{c,y} + \int v_yf_h\,\mathrm{d}v \\
-    \partial_t f_h     &= -v_z\partial_zf_h + (E_x+v_yB_0-v_zB_y)\partial_{v_x}f_h + (E_y-v_xB_0+v_zB_x)\partial_{v_y}f_h + (v_xB_y - v_yB_x)\partial_{v_z}f_h
-  \end{cases}
-$$
+\begin{align}
+  \label{eq:VHM:jx}
+  &\pdv{j_{c,x}}{t} = \Omega_{pe}^2 { E}_x - { j}_{c,y}B_0,\\
+  \label{eq:VHM:jy}
+  &\pdv{j_{c,y}}{t} = \Omega_{pe}^2 { E}_y + { j}_{c,x}B_0,\\
+  \label{eq:VHM:Bx}
+  &\pdv{B_{x  }}{t} = \partial_z E_y,\\
+  \label{eq:VHM:By}
+  &\pdv{B_{y  }}{t} = -\partial_z E_x,\\
+  \label{eq:VHM:Ex}
+  &\pdv{E_{x  }}{t} =-\partial_z B_y - {j}_{c,x} + \int v_x f_h \dd{\vb{v}},\\
+  \label{eq:VHM:Ey}
+  &\pdv{E_{y  }}{t} =\partial_z B_x - {j}_{c,y} + \int v_y f_h \dd{\vb{v}}, \\
+  \label{eq:VHM:fh}
+  &\pdv{f_{h  }}{t} +  v_z\partial_z f_h - \left(E_x + v_y B_0 - v_zB_y\right)\partial_{v_x} f_h\\
+  &\hspace{2cm}- \left(E_y - v_x B_0 + v_z B_x\right)\partial_{v_y} f_h- \left(v_x B_y- v_y B_x\right)\partial_{v_z} f_h = 0.\nonumber
+\end{align}

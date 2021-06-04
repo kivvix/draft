@@ -105,9 +105,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\ref{Li:2019}), ce s
 \subsection{Méthode de Lawson sur le modèle hybride}
 % -------------------------------------------------------------------
 
-Dans cette section nous allons présenter la méthode d'intégration exponentielle pour discrétiser le modèle $1dz-3dv$.
-
-Il est naturel de réécrire le système, après une transformée de Fourier dans la direction $z$, sous la forme :
+Dans cette section nous allons présenter la méthode d'intégration exponentielle pour discrétiser le modèle VHL~\eqref{eq:VHM:jx}-\eqref{eq:VHM:fh}. Il est naturel de réécrire ce système, après une transformée de Fourier dans la direction $z$, sous la forme :
 $$
   \partial_t U = LU + N(t,U)
 $$
@@ -134,7 +132,7 @@ où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ repr�
   \end{pmatrix}
   \label{eq:3:LNmaxwell}
 \end{equation}
-Mais le calcul de $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\kappa\in\left\{\frac{2\pi j}{L},j\in[\![-N_z,N_z]\!]\right\}$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
+Mais le calcul de la partie linéaire $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\kappa\in\left\{\frac{2\pi j}{L},j\in[\![-N_z,N_z]\!]\right\}$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
 \begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0 &  0 &  \Omega_{pe}^2 & 0             & 0 \\
@@ -173,7 +171,7 @@ $}
 \end{equation}
 avec $\alpha = 0.378732187481834$, $\beta = 0.621267812518167$, $\gamma = 0.970142500145332$, $\delta = 0.242535625036333$, et $\theta^\pm = \frac{\sqrt{2}}{2}\tau\sqrt{9\pm\sqrt{17}}$.
 
-C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $k$ données est élevé et ne peut être effectuer en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
+C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $k$ données est élevé et ne peut être effectuer en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace donnée, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
 
 \subsubsection{Filtrage de l'équation de Vlasov}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,10 +188,50 @@ $$
     -1 & 0
   \end{pmatrix}
 $$
-
-
-\Josselin{Dans l'intro de la thèse, dans mon plan, j'ai une partie consacrée aux méthodes numériques, la méthode de Lawson sera sans doute plus présentée en détail là-bas (le schéma, comment construire une méthode de Lawson à partir d'une méthode RK, chose qui est déjà un peu faite dans le chapitre 1 dans \ref{butcher}). Donc je décide de ne pas m'attarder sur le schéma choisi etc. mais plutôt sur les différences par rapport à son utilisation simple dans les chapitres 1 et 2.}
-
+alors on a $\exp(-tB_0J)w = \left( \cos(tB_0)w_x - \sin(tB_0)w_y , \sin(tB_0)w_x + \cos(tB_0)w_y \right)^\top$. On peut désormais dériver l'équation sur $g$ :
+\begin{equation}
+  \partial_t g + v_z\partial_z g - e^{-tB_0J}\vb{E}\cdot\nabla_w g - \mathcal{T}_{\vb{v}}^{[B_0]}g = 0,
+\end{equation}
+où $\mathcal{T}_{\vb{v}}^{[B_0]}g$ est donné par :
+\begin{equation}
+  \begin{aligned}
+    \mathcal{T}_{\vb{v}}^{[B_0]}g &:= (\vb{v}\times\vb{B})\cdot_{\vb{v}}f_h \\
+                                  & = \begin{pmatrix}
+                                    \cos(tB_0)w_x - \sin(tB_0)w_y \\
+                                    \sin(tB_0)w_x + \cos(tB_0)w_y \\
+                                    v_z
+                                  \end{pmatrix}
+                                  \times
+                                  \begin{pmatrix}
+                                     B_x \\ B_y \\ 0
+                                  \end{pmatrix} 
+                                  \cdot
+                                  \begin{pmatrix}
+                                    e^{-tB_0J}\nabla_w g \\
+                                    \partial_{v_z}g
+                                  \end{pmatrix} \\
+                                  & = \begin{pmatrix}
+                                    v_z(-\cos(tB_0)B_y + \sin(tB_0)B_x) \\
+                                    v_z(\sin(tB_0)B_y + \cos(tB_0)B_x) \\
+                                    (\cos(tB_0)w_x-\sin(tB_0)w_y)B_y - (\sin(tB_0)w_x+\cos(tB_0)w_y)B_x
+                                  \end{pmatrix}
+                                  \cdot
+                                  \begin{pmatrix}
+                                    \partial_{w_x}g \\
+                                    \partial_{w_y}g \\
+                                    \partial_{v_z}g
+                                  \end{pmatrix}
+  \end{aligned}
+\end{equation}
+Le changement de variable impacte également l'équation d'Ampère~\eqref{eq:VHM:Ex}-\eqref{eq:VHM:Ey}, l'intégrale du courant des particules chaudes devient :
+$$
+  \int\vb{v}f\dd{\vb{v}} = \int(e^{-tB_0J}w)g\dd{w}\dd{v_z},
+$$
+les équations d'Ampère peuvent alors se réécrire comme :
+\begin{equation}
+  \partial_t E_\perp = -J\partial_z B_\perp - j_{c,\perp} + \int (e^{-tB_0J}w)g\dd{w}\dd{v_z}.
+\end{equation}
+Les autres équations restent  inchangées.
 
 \subsubsection{Calcul de stabilité avec les équations de Maxwell}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -205,7 +243,7 @@ Il est possible de faire une première estimation de la condition de stabilité 
 \begin{equation}\label{eq:3:maxeq}
   \dot{U} = A\cdot U
 \end{equation}
-avec $U = (B_x,B_y,E_x,_y)^\top$ le vecteur des seules variables impliquées dans les équations de Maxwell, et $A$ la matrice :
+avec $U = (B_x,B_y,E_x,E_y)^\top$ le vecteur des seules variables impliquées dans les équations de Maxwell, et $A$ la matrice :
 $$
   A = \begin{pmatrix}
     0       &  0       &  0       & i\kappa \\
@@ -238,14 +276,14 @@ $$
 Il s'agit de polynômes en $\Delta t\kappa$ que l'on peut réécrire :
 $$
   \begin{aligned}
-    p_{(s,n)}( i\kappa\Delta t) &=  \sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
-                                 + i\sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
-                                 &\quad+  \sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
-                                 + i\sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
-    p_{(s,n)}(-i\kappa\Delta t) &=  \sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
-                                 - i\sum_{k=0}^{\frac{n}{2}}(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
-                                 &\quad+  \sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
-                                 - i\sum_{k=\frac{n}{2}+1}^\frac{s}{2} (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
+    p_{(s,n)}( i\kappa\Delta t) &=  \sum_{k=0}^{ \floor{\frac{n}{2}}   }(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
+                                 + i\sum_{k=0}^{ \floor{\frac{n}{2}}-1 }(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
+                                 &\quad+  \sum_{k=\floor{\frac{n}{2}}+1}^{ \floor{\frac{s}{2}}   } (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
+                                       + i\sum_{k=\floor{\frac{n}{2}}  }^{ \floor{\frac{s}{2}}-1 } (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
+    p_{(s,n)}(-i\kappa\Delta t) &=  \sum_{k=0}^{ \floor{\frac{n}{2}}   }(-1)^k\frac{\Delta t^{2k}\kappa^{2k}}{(2k)!}
+                                 - i\sum_{k=0}^{ \floor{\frac{n}{2}}-1 }(-1)^k\frac{\Delta t^{2k+1}\kappa^{2k+1}}{(2k+1)!}\\
+                                 &\quad+  \sum_{k=\floor{\frac{n}{2}}+1}^{ \floor{\frac{s}{2}}   } (-1)^k c_{2k}\Delta t^{2k}\kappa^{2k}
+                                       - i\sum_{k=\floor{\frac{n}{2}}  }^{ \floor{\frac{s}{2}}-1 } (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
   \end{aligned}
 $$
 où l'on remarque que $p_{(s,n)}(-i\kappa\Delta t) = \widebar{p_{(s,n)}(i\kappa\Delta t)}$, donc $\left|p_{(s,n)}(-i\kappa\Delta t)\right|=\left|p_{(s,n)}(i\kappa\Delta t)\right|$. On peut déterminer la condition de stabilité pourles méthodes RK(3,3) et RK(4,4), c'est-à-dire la valeur de $\Delta t\kappa$ telle que $|p_{(n,n)}(i\kappa\Delta t)|=1$, on obtient ainsi respectivement les valeurs $\frac{\sqrt{3}}{\kappa}$ et $\frac{2\sqrt{2}}{\kappa}$ avec $\kappa = \frac{2j\pi}{L}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$.
@@ -300,7 +338,7 @@ La matrice d'amplification n'est plus un polynôme, nous nous proposons donc de 
   \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(3,3) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
   \label{fig:3:vplrk33}
 \end{figure}
-On peut ainsi estimer une condition de stabilité pour $N_z = 15,27$ et on obtient : pour $N_z = 15$, $\Delta t <0.053$, et pour $N_z = 27$, $\Delta t <0.048$. \Josselin{J'ai essayé de forcer le calcul avec des \texttt{float64} ou des \texttt{float128} mais je n'ai pas réussi à avoir de meilleurs résultats... c'est assez éloigné des résultats précédent, à savoir $\frac{\sqrt{3}}{N_z}$ ce qui nous donne pour $N_z=15$ : 0.115, et pour $N_z = 27$ : 0.064. Ce qui est étrange c'est que ça marche nettement mieux avec LRK(4,4).}
+On peut ainsi estimer une condition de stabilité pour $N_z = 15,27$ et on obtient : pour $N_z = 15$, $\Delta t <0.115 \approx \frac{\sqrt{3}}{15}$, et pour $N_z = 27$, $\Delta t <0.066 \approx \frac{\sqrt{3}}{27}$.
 
 On effectue une analyse similaire pour la méthode de Lawson LRK(4,4) suivante :
 $$
@@ -328,5 +366,60 @@ Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de t
   \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(4,4) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
   \label{fig:3:vplrk44}
 \end{figure}
-
 \Josselin{Je ne suis pas nécessairement convaincu par ces 2 figures, qui en plus d'être très similaire visuellement, ne sont pas très lisible. J'ai également tracé la valeur absolue de la plus grande valeur propre en fonction de $\Delta t$ pour différentes valeurs de $\kappa$, j'ai aussi pour un $\kappa$ donné les différentes valeurs propres (et pas que la plus grande). Ce sont des graphiques 2d, sans doute plus lisible, en tout ça ici je trouve ça redondant mais j'attends vos retours pour discuter et savoir ce qui serait mieux}
+
+
+Cela conclu l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condtion de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(\vb{B},\vb{E})^\top$.
+
+
+\subsubsection{Synthèse d'un étage}
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les méthodes de type Runge-Kutta s'écrivent comme une succession d'étage et chaque étage possède des expressions différentes mais une structure similaire. Ces premières sont générées à l'aide d'outils de méta-programmation, présentés dans la sous-section~\ref{ssec:3:codegen}, basés sur la bibliothèque \Python{} de calcul symbolique \sympy{}. Le squelette d'un étage est présent dans l'algorithme~\ref{alg:squeltte}. Celui-ci se comporte en deux grandes sections voir~\ref{alg:l:0} et lignes~\ref{alg:l:15}.
+
+\begin{algorithm}
+  \caption{Squelette de l'algorithme d'un étage $s$ d'une méthode LRK}
+  \label{alg:squeltte}
+  \begin{algorithmic}[1]
+    \State{$\triangleright$ Calcul des variables $\hat{j}_{c,x}^{(s)}$, $\hat{j}_{c,y}^{(s)}$, $\hat{B}_{x}^{(s)}$, $\hat{B}_{y}^{(s)}$, $\hat{E}_{x}^{(s)}$ et $\hat{E}_{y}^{(s)}$}\label{alg:l:0}
+
+    \For{$i=0,\dots,N_z$}
+      \State $\hat{j}_{h,x,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_x}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$
+      \State $\hat{j}_{h,y,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_y}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$
+    \EndFor
+
+    \For{$i=0,\dots,N_z$}
+      \State $\hat{j}_{c,x,[i]}^{(s)} \gets \dots$ \Comment{les expressions ici sont données par \sympy}
+      \State $\hat{j}_{c,y,[i]}^{(s)} \gets \dots$
+      \State $\hat{B}_{x,[i]}^{(s)}   \gets \dots$
+      \State $\hat{B}_{y,[i]}^{(s)}   \gets \dots$
+      \State $\hat{E}_{x,[i]}^{(s)}   \gets \dots$
+      \State $\hat{E}_{y,[i]}^{(s)}   \gets \dots$
+    \EndFor
+
+    \State
+    \State{$\triangleright$ Calcul de la variable $\hat{f}_h^{(s)}$}\label{alg:l:15}
+
+    \State $\left(f\right)_{h,[\cdot,k_x,k_y,k_z]} \gets \textrm{iFFT}_z\left( \hat{f}^{(s-1)}_{h,[\cdot,k_x,k_y,k_z]} \right)$
+    \ForAll{ $(k_x,k_y,k_z)\in [\![0,N_x]\!] \times [\![0,N_y]\!] \times [\![0,N_z]\!]$ }
+      \For{$i=0,\dots,N_z$}
+        \State $a_{v_x} \gets E_{x,[i]} + v_{k_y}B_0 + v_{k_z}B_{y,[i]}$
+        \State $a_{v_y} \gets E_{y,[i]} + v_{k_x}B_0 + v_{k_z}B_{x,[i]}$
+        \State $a_{v_z} \gets v_{k_x}B_{y,[i]} + v_{k_y}B_{x,[i]}$
+        \State $\begin{aligned}\partial_vf_{h,[i,k_x,k_y,k_z]} \gets &\text{WENO}(a_{v_x},f_{h,[i,k_x-3:k_x+3,k_y,k_z]})+\text{WENO}(a_{v_y},f_{h,[i,k_x,k_y-3:k_y+3,k_z]})\\
+       &+ \text{WENO}(a_{v_z},f_{h,[i,k_x,k_y,k_z-3:k_z+3]})\end{aligned}$
+      \EndFor
+    \EndFor
+
+    \ForAll{ $(k_x,k_y,k_z)\in [\![0,N_x]\!] \times [\![0,N_y]\!] \times [\![0,N_z]\!]$ }
+      \State $\left(\widehat{\partial_vf}\right)_i \gets \text{FFT}_z(\partial_vf_{\cdot,k_x,k_y,k_z})$
+      \For{$i=0,\dots,N_z$}
+        \State $\hat{f}_h^{(s)} \gets \dots$ \Comment{l'expression ici est donnée par \sympy}
+      \EndFor
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+
+
+
