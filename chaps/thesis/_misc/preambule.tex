@@ -156,6 +156,11 @@
 \renewcommand{\algorithmicfunction}  {\textbf{Fonction}    }
 \renewcommand{\algorithmicreturn}    {\textbf{retourner}   }
 
+\usepackage{refcount}
+\newcommand{\setlineref}[1]{
+  \setcounterref{ALG@line}{#1}\addtocounter{ALG@line}{-1}
+}
+
 % source: https://isocpp.org/wiki/faq/misc-environmental-issues#latex-macros
 \def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
 

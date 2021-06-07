@@ -94,6 +94,7 @@
 \usepackage{chngcntr}
 \counterwithin{figure}{chapter}
 \counterwithin{table}{chapter}
+\usepackage{algorithmicx}
 \usepackage{algorithm}
 \counterwithin{algorithm}{chapter}
 
