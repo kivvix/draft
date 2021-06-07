@@ -231,7 +231,7 @@ les équations d'Ampère peuvent alors se réécrire comme :
 \begin{equation}
   \partial_t E_\perp = -J\partial_z B_\perp - j_{c,\perp} + \int (e^{-tB_0J}w)g\dd{w}\dd{v_z}.
 \end{equation}
-Les autres équations restent  inchangées.
+Les autres équations restent inchangées. Les termes impactés sont dans la partie non-linéaire de la méthode de Lawson, il n'y a donc aucune implication sur le calcul de l'exponentielle de la matrice de la partie linéaire.
 
 \subsubsection{Calcul de stabilité avec les équations de Maxwell}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -313,7 +313,7 @@ $$  L = \begin{pmatrix}
     0 & 0 & ik &  0  &  0  & 0  \\
   \end{pmatrix}
 $$
-Les matrices $L$ et $N$ ne commutent pas, donc la fonction de stabilité de la méthode de Lawson ne peut pas être obtenu comme dans le cas scalaire du chapitre~\ref{chap1}. Il est nécessaire pour chaque méthode de calculer sa fonction de stabilité. Nous n'étudierons ici que les méthodes de Lawson induites par la méthode RK(3,3) de Shu-Osher et celle induite par la méthode RK(4,4) dites classique.
+On ne s'intéresse ici qu'à la condition de stabilité provenant des équations de Maxwell, dû à l'impossibilité de calculer formellement $e^{\tau L}$ avec les équations de Maxwell. La densité de particules $f_h$ n'est donc pas considérée ici. De plus la condition de stabilité que nous cherchons est celle provenant des équations de Maxwell, donc une condition sur la discrétisation spatiale, la condition de stabilité induite par $f_h$ ne porte que sur la discrétisation en vitesse et ne sera pas étudié ici car le terme est fortement non-linéaire. Les matrices $L$ et $N$ ne commutent pas, donc la fonction de stabilité de la méthode de Lawson ne peut pas être obtenu comme dans le cas scalaire du chapitre~\ref{chap1}. Il est nécessaire pour chaque méthode de calculer sa fonction de stabilité. Nous n'étudierons ici que les méthodes de Lawson induites par la méthode RK(3,3) de Shu-Osher et celle induite par la méthode RK(4,4) dites classique.
 
 Nous allons commencer l'étude par la méthode RK(3,3) définie par :
 $$
@@ -369,43 +369,47 @@ Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de t
 \Josselin{Je ne suis pas nécessairement convaincu par ces 2 figures, qui en plus d'être très similaire visuellement, ne sont pas très lisible. J'ai également tracé la valeur absolue de la plus grande valeur propre en fonction de $\Delta t$ pour différentes valeurs de $\kappa$, j'ai aussi pour un $\kappa$ donné les différentes valeurs propres (et pas que la plus grande). Ce sont des graphiques 2d, sans doute plus lisible, en tout ça ici je trouve ça redondant mais j'attends vos retours pour discuter et savoir ce qui serait mieux}
 
 
-Cela conclu l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condtion de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(\vb{B},\vb{E})^\top$.
+Cela conclu l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condition de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(B_x,B_y,E_x,E_y)^\top$.
 
 
 \subsubsection{Synthèse d'un étage}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\label{ssec:3:stage}
 
-Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les méthodes de type Runge-Kutta s'écrivent comme une succession d'étage et chaque étage possède des expressions différentes mais une structure similaire. Ces premières sont générées à l'aide d'outils de méta-programmation, présentés dans la sous-section~\ref{ssec:3:codegen}, basés sur la bibliothèque \Python{} de calcul symbolique \sympy{}. Le squelette d'un étage est présent dans l'algorithme~\ref{alg:squeltte}. Celui-ci se comporte en deux grandes sections voir~\ref{alg:l:0} et lignes~\ref{alg:l:15}.
+Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les méthodes de type Runge-Kutta s'écrivent comme une succession d'étage et chaque étage possède des expressions différentes mais une structure similaire. Ces premières sont générées à l'aide d'outils de méta-programmation, présentés dans la sous-section~\ref{ssec:3:codegen}, basés sur la bibliothèque \Python{} de calcul symbolique \sympy{}. Le squelette d'un étage est présent dans l'algorithme~\ref{alg:squeltte}. La résolution numérique des dérivées en espace $z$ se font dans l'espace de Fourier, pour cette raison, les variables transmises entres étages ou itérations, sont des tableaux de complexes, correspondant aux modes de Fourier des différentes variables.
+
+L'algorithme d'un étage se comporte en deux grandes sections. La première partie permet de mettre à jour les variables spatiales $(j_{c,x},j_{c,y},B_x,B_y,E_x,E_y)$ dans l'espace de Fourier, qui commence à la ligne~\ref{alg:l:0}, qui commence par le calcul des courants induits par les particules chaudes $\int v_\star f_h\dd{\vb{v}}$ où $\star\in\{x,y\}$ dans l'espace de Fourier. Les lignes~\ref{alg:l:sp0} à~\ref{alg:l:sp5}, sont générées à l'aide d'outils présentés dans la sous-section~\ref{ssec:3:codegen}. La seconde partie permet la mise à jour de $f_h$ dans l'espace de Fourier et commence à la lignes~\ref{alg:l:15}. Cette partie commence par le calcul de $\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h$ à l'aide de la méthode WENO, puis continue par la mise à jour de $f_h$ dans l'espace de Fourier en effectuant la transformée de Fourier en $z$ de $\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h$ pour une vitesse $\vb{v}$ donnée. La ligne~\ref{alg:l:sp6} est également générée automatiquement.
+
+%\Josselin{je ne sais pas si le détail de l'algorithme est très convainquant, je peux aussi ajouter un peu plus de commentaires dans l'algorithme, donc peut-être à voir selon vos retours car j'ai peut-être un peu trop bosser dessus et j'ai un regard moins matheux. Je présume en plus qu'il sera nécessaire d'expliquer les notations où j'ai mis entre crochets les indices dont dépendent les variables, et j'ai utilisé la notation de MATLAB et de \Python{} pour indiquer un ensemble de valeurs entre 2 indices de tableau. Mais je pense que dans la partie \emph{splitting} j'ajouterai aussi des algorithmes pour $\mathcal{H}_{j_c}$, $\mathcal{H}_{B}$, $\mathcal{H}_{E}$, $\mathcal{H}_{f_h}$ donc j'expliquerais les notations à ce moment là.}
 
 \begin{algorithm}
   \caption{Squelette de l'algorithme d'un étage $s$ d'une méthode LRK}
   \label{alg:squeltte}
   \begin{algorithmic}[1]
-    \State{$\triangleright$ Calcul des variables $\hat{j}_{c,x}^{(s)}$, $\hat{j}_{c,y}^{(s)}$, $\hat{B}_{x}^{(s)}$, $\hat{B}_{y}^{(s)}$, $\hat{E}_{x}^{(s)}$ et $\hat{E}_{y}^{(s)}$}\label{alg:l:0}
+    \State{$\triangleright$ Calcul des variables $\hat{j}_{c,x}^{(s)}$, $\hat{j}_{c,y}^{(s)}$, $\hat{B}_{x}^{(s)}$, $\hat{B}_{y}^{(s)}$, $\hat{E}_{x}^{(s)}$ et $\hat{E}_{y}^{(s)}$} \label{alg:l:0}
 
     \For{$i=0,\dots,N_z$}
-      \State $\hat{j}_{h,x,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_x}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$
-      \State $\hat{j}_{h,y,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_y}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$
+      \State $\hat{j}_{h,x,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_x}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhx}
+      \State $\hat{j}_{h,y,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_y}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhy}
     \EndFor
 
     \For{$i=0,\dots,N_z$}
-      \State $\hat{j}_{c,x,[i]}^{(s)} \gets \dots$ \Comment{les expressions ici sont données par \sympy}
+      \State $\hat{j}_{c,x,[i]}^{(s)} \gets \dots$ \Comment{les expressions ici sont données par \sympy}\label{alg:l:sp0}
       \State $\hat{j}_{c,y,[i]}^{(s)} \gets \dots$
       \State $\hat{B}_{x,[i]}^{(s)}   \gets \dots$
       \State $\hat{B}_{y,[i]}^{(s)}   \gets \dots$
       \State $\hat{E}_{x,[i]}^{(s)}   \gets \dots$
-      \State $\hat{E}_{y,[i]}^{(s)}   \gets \dots$
+      \State $\hat{E}_{y,[i]}^{(s)}   \gets \dots$ \label{alg:l:sp5}
     \EndFor
 
-    \State
-    \State{$\triangleright$ Calcul de la variable $\hat{f}_h^{(s)}$}\label{alg:l:15}
+    \State{$\triangleright$ Calcul de la variable $\hat{f}_h^{(s)}$} \label{alg:l:15}
 
     \State $\left(f\right)_{h,[\cdot,k_x,k_y,k_z]} \gets \textrm{iFFT}_z\left( \hat{f}^{(s-1)}_{h,[\cdot,k_x,k_y,k_z]} \right)$
     \ForAll{ $(k_x,k_y,k_z)\in [\![0,N_x]\!] \times [\![0,N_y]\!] \times [\![0,N_z]\!]$ }
       \For{$i=0,\dots,N_z$}
-        \State $a_{v_x} \gets E_{x,[i]} + v_{k_y}B_0 + v_{k_z}B_{y,[i]}$
-        \State $a_{v_y} \gets E_{y,[i]} + v_{k_x}B_0 + v_{k_z}B_{x,[i]}$
-        \State $a_{v_z} \gets v_{k_x}B_{y,[i]} + v_{k_y}B_{x,[i]}$
+        \State $a_{v_x} \gets E_{x,[i]} + v_{k_y}B_0 + v_{k_z}B_{y,[i]}$ \label{alg:l:avx}
+        \State $a_{v_y} \gets E_{y,[i]} + v_{k_x}B_0 + v_{k_z}B_{x,[i]}$ \label{alg:l:avy}
+        \State $a_{v_z} \gets v_{k_x}B_{y,[i]} + v_{k_y}B_{x,[i]}$       \label{alg:l:avz}
         \State $\begin{aligned}\partial_vf_{h,[i,k_x,k_y,k_z]} \gets &\text{WENO}(a_{v_x},f_{h,[i,k_x-3:k_x+3,k_y,k_z]})+\text{WENO}(a_{v_y},f_{h,[i,k_x,k_y-3:k_y+3,k_z]})\\
        &+ \text{WENO}(a_{v_z},f_{h,[i,k_x,k_y,k_z-3:k_z+3]})\end{aligned}$
       \EndFor
@@ -414,12 +418,40 @@ Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les 
     \ForAll{ $(k_x,k_y,k_z)\in [\![0,N_x]\!] \times [\![0,N_y]\!] \times [\![0,N_z]\!]$ }
       \State $\left(\widehat{\partial_vf}\right)_i \gets \text{FFT}_z(\partial_vf_{\cdot,k_x,k_y,k_z})$
       \For{$i=0,\dots,N_z$}
-        \State $\hat{f}_h^{(s)} \gets \dots$ \Comment{l'expression ici est donnée par \sympy}
+        \State $\hat{f}_h^{(s)} \gets \dots$ \Comment{l'expression ici est donnée par \sympy} \label{alg:l:sp6}
       \EndFor
     \EndFor
   \end{algorithmic}
 \end{algorithm}
 
+La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squeltte} nécessite seulement de modifier le calcul des variables de courants chauds $\left(\hat{j}_{h,x}\right)_i$, $\left(\hat{j}_{h,y}\right)_i$ (lignes~\ref{alg:l:jhx} et~\ref{alg:l:jhy}) et des vitesses d'advection $a_{v_x}$, $a_{v_y}$ et $a_{v_z}$ (lignes~\ref{alg:l:avx} à~\ref{alg:l:avz}). L'opération est présentée dans l'extrait d'algorithme~\ref{alg:modif}.
+% $$
+%   \begin{aligned}
+%     \hat{j}_{h,x,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
+%     \hat{j}_{h,y,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
+%     a_{v_x} &\gets E_{x,[i]}\cos(B_0\tau^{n,s}) + E_{y,[i]}\sin(B_0\tau^{n,s}) + v_zB_{x,[i]}\sin(B_0\tau^{n,s}) - v_zB_{y,[i]}\cos(B_0\tau^{n,s})\\
+%     a_{v_y} &\gets -E_{x,[i]}\sin(B_0\tau^{n,s}) + E_{y,[i]}\cos(B_0\tau^{n,s}) + v_zB_{x,[i]}\cos(B_0\tau^{n,s}) + v_zB_{y,[i]}\sin(B_0\tau^{n,s})\\
+%     a_{v_z} &\gets -B_{x,[i]}(w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s})) + B_{y,[i]}(w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) )\\
+%   \end{aligned}
+% $$
+% où $\tau^{n,s}=t^n+c_s\Delta t$.
 
-
-
+\begin{algorithm}
+  \caption{Modifications pour faire le filtrage dans l'algorithme~\ref{alg:squeltte}}
+  \label{alg:modif}
+  \begin{algorithmic}
+    \State $\tau^{n,s} \gets t^n+c_s\Delta t$
+  \end{algorithmic}
+  \begin{algorithmic}[1]
+  \setlineref{alg:l:jhx}
+    \State $\hat{j}_{h,x,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
+    \State $\hat{j}_{h,y,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
+  \end{algorithmic}
+  \vspace{0.1cm}
+  \begin{algorithmic}[1]
+  \setlineref{alg:l:avx}
+    \State $a_{v_x} \gets E_{x,[i]}\cos(B_0\tau^{n,s}) + E_{y,[i]}\sin(B_0\tau^{n,s}) + v_zB_{x,[i]}\sin(B_0\tau^{n,s}) - v_zB_{y,[i]}\cos(B_0\tau^{n,s})$
+    \State $a_{v_y} \gets -E_{x,[i]}\sin(B_0\tau^{n,s}) + E_{y,[i]}\cos(B_0\tau^{n,s}) + v_zB_{x,[i]}\cos(B_0\tau^{n,s}) + v_zB_{y,[i]}\sin(B_0\tau^{n,s})$
+    \State $a_{v_z} \gets -B_{x,[i]}(w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s})) + B_{y,[i]}(w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) )$
+  \end{algorithmic}
+\end{algorithm}
