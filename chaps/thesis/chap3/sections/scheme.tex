@@ -1,8 +1,9 @@
 % !TEX root = ../../main.tex
 
 \section{Schémas numériques}
+\label{sec:3:scheme}
 
-\subsection{Méthode de \emph{splitting} haniltonien}
+\subsection{Méthode de \emph{splitting} hamiltonien}
 % -------------------------------------------------------------------
 
 Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle $1dz -- 3dv$ celui-ci se décompose en 4 étapes, et il s'écrit sous la forme :
@@ -235,6 +236,7 @@ Les autres équations restent inchangées. Les termes impactés sont dans la par
 
 \subsubsection{Calcul de stabilité avec les équations de Maxwell}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\label{ssec:3:cflMaxwell}
 
 L'introduction des équations de Maxwell dans la partie non-linéaire de la méthode de Lawson, comme indiquée dans~\eqref{eq:3:LNsmaxwell}, implique une condition de stabilité provenant de ces termes. \Josselin{Il faut dire à un moment que la CFL de Maxwell risque d'être plus restrictive que celle provenant de la partie non-linéaire, car dans $N(U)$ il y a un peu de monde, entre autre on a jamais regardé si une CFL survenait des termes de couplage $\int v_\star f \,\mathrm{d}v$. En même temps le titre de la sous-sous-section parle uniquement de la CFL provenant des équations de Maxwell, la CFL qu'on est obligé de subir car on ne sait pas mettre les équations de Maxwell dans la partie linéaire de Lawson.}
 
