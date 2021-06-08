@@ -10,6 +10,8 @@
 \usepackage{color}
 \usepackage{tikz}
 
+\usepackage{enumitem}
+
 % figures pas plus loin que la fin de la section
 \usepackage[section]{placeins}
 
@@ -168,6 +170,7 @@
 \newcommand{\sympy}{SymPy}
 
 %%%%%%%%%%%% COMMENTAIRES ! À essayer de virer au fur et à mesure
+\definecolor{mypink}{rgb}{1.0, 0.411, 0.705}
 \newcommand{\commentaire}[2][]{%
   \ifthenelse{\equal{#1}{}}%
     {\textbf{#2}}%
@@ -177,7 +180,7 @@
   {\ifthenelse{\equal{#1}{Nicolas}}%
     {\textcolor{orange}{#2}}%
   {\ifthenelse{\equal{#1}{Josselin}}%
-  {\textcolor{purple}{#2}}%
+  {\textcolor{mypink}{#2}}%
   {\textcolor{teal}{#2}\footnote{Commentaire rédigé par #1}%
   }}}}%
 }
