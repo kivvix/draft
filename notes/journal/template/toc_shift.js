@@ -21,17 +21,30 @@ const argv = require('yargs')
   .argv
 
 JSDOM.fromFile( argv['input'] ,{}).then(dom => {
-  // move #TOC
-  var toc  = dom.window.document.querySelector("#TOC");
-  var main = dom.window.document.querySelector("main");
+  // extract #TOC
+  let toc  = dom.window.document.querySelector("#TOC");
+  let main = dom.window.document.querySelector("main");
 
-  main.parentNode.insertBefore(toc,main);
+  // add checkbox and put #TOC in label
+  let cb_TOC = dom.window.document.createElement('input');
+  cb_TOC.type = 'checkbox';
+  let cb_TOC_id = 'cb_TOC'
+  cb_TOC.name = cb_TOC_id; cb_TOC.id= cb_TOC_id;
+
+  let label = dom.window.document.createElement('label');
+  label.htmlFor = cb_TOC_id;
+  label.appendChild(toc)
+
+  main.parentNode.insertBefore(label,main);
+  main.parentNode.insertBefore(cb_TOC,label);
+
+  // add markdown style to main
   main.classList.add("markdown-body");
 
   // write file
   fs.writeFile(argv['output'], dom.serialize(), (err) => {
     if (err) console.log(err);
-    console.log("Successfully KaTeX rended!");
+    console.log("Successfully TOC shifting!");
   });
 
 });
