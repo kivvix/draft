@@ -17,7 +17,7 @@ Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle
 
 Nous allons nous intéresser au calcul de $\varphi_t^{[j_c]}$, $\varphi_t^{[B]}$, $\varphi_t^{[E]}$ et $\varphi_t^{[f_h]}$ les solutions correspondant à chaque étape de sorte que $\varphi(U_0)$ de~\eqref{eq:hamsplitting} peut être approximé au temps $t$ avec une composition des sous-flux $\varphi_t^{[j_c,B,E,f_h]}$.
 
-\paragraph{Étape $\mathcal{H}_{j_c}$ :\\}
+\paragraph{Étape $\mathcal{H}_{j_c}$ :}
 Pour obtenir $\varphi_t^{[j_c]}$, solution du sous-flux $\mathcal{H}_{j_c}$ :
 $$
   \begin{cases}
@@ -43,7 +43,7 @@ $$
     -1 & 0
   \end{pmatrix}
 $$
-Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait de pseudo-code~\ref{alg:Hjc}. Cette étape a une complexité en $\order{N_z}$.
+Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait de pseudo-code~\ref{alg:Hjc}. Dans les calculs de complexité que nous nous proposons de faire ici, seuls les parcours de tableaux nous intéressent, la complexité des fonctions mathématiques est supposée constante. Cette étape a une complexité de $\order{N_z}$ en temps.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{j_c}$}
   \label{alg:Hjc}
@@ -62,7 +62,7 @@ Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait
 \end{algorithm}
 
 
-\paragraph{Étape $\mathcal{H}_B$ :\\}
+\paragraph{Étape $\mathcal{H}_B$ :}
 Nous souhaitons calculer $\varphi_t^{[B]}$, correspondant à la solution du système :
 $$
   \begin{cases}
@@ -81,7 +81,7 @@ $$
     f_h(0)
   \end{pmatrix}
 $$
-Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité en $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$.
+Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité temporelle de $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$. Pour la complexité spatiale, il est à noter que cette étape nécessite l'allocation de 4 tableaux temporaires de taille $N_z$.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{B}$}
   \label{alg:HB}
@@ -101,13 +101,13 @@ Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme
   \end{algorithmic}
 \end{algorithm}
 
-\paragraph{Étape $\mathcal{H}_E$ :\\}
+\paragraph{Étape $\mathcal{H}_E$ :}
 Pour calculer la solution du sous-flux correspondant à $\mathcal{H}_E$, nous devons résoudre le système suivant :
 $$
   \begin{cases}
-    \partial_t j_{c,\perp} &= \Omega_{pe}^2E_{perp} \\
+    \partial_t j_{c,\perp} &= \Omega_{pe}^2E_{\perp} \\
     \partial_t B_\perp     &= J\partial_zE_\perp \\
-    \partial_t E_\perp     &= (0,0)^\mathsf{T} \\
+    \partial_t E_\perp     &= (0,0)^\top \\
     \partial_t f_h         &= E_\perp\cdot\nabla_{v_\perp}f_h
   \end{cases}
 $$
@@ -115,14 +115,13 @@ $$
 Avec la condition initiale donnée par $U(t=0)=U_0=(j_{c,\perp},B_\perp,E_\perp,f_h)(t=0)$, la solution au temps $t$ est obtenue par :
 $$
   \varphi_t^{[E]}(U_0) = \begin{pmatrix}
-    j_{c,\perp} + t\Omega_{pe}^2E_\perp(0)\\
+    j_{c,\perp} + t\Omega_{pe}^2E_{\perp}(0)\\
     B_\perp(0)+tJ\partial_zE_\perp(0) \\
     E_\perp(0) \\
     f_h(0,z,v_\perp+tE_\perp(0),v_z)
   \end{pmatrix}
 $$
-Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE} avec les deux sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ correspondant aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$.
-
+Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE}. Les sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ sont très similaires et seul la première est détaillée, seul change l'axe d'interpolation et le pied de la caractéristique. Ces sous-étapes correspondent aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Pour ce qui concerne l'utilisation de la mémoire, cette étape nécessite deux tableaux $f^{(a)}$ et $f^{(b)}$ temporaires de taille $N_{v_x}N_{v_y}N_{v_z}$.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{E}$}
   \label{alg:HE}
@@ -133,19 +132,6 @@ Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux int
           \State $v^{\star} \gets v_x + \Delta t E_{x,[i]}$
           \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
           \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,i]}}$
-          \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
-        \EndFor
-      \EndFor
-    \EndFunction
-      
-      \vspace{0.25cm}
-
-    \Function{$\mathcal{H}_{E,{v_y}}$}{$f^{in}$,$f^{out}$,$E_y$}
-      \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
-        \For{$i=0,\dots,N_z-1$}
-          \State $v^{\star} \gets v_y + \Delta t E_{y,[i]}$
-          \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
-          \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,i]}}$
           \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
         \EndFor
       \EndFor
@@ -166,8 +152,7 @@ Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux int
   \end{algorithmic}
 \end{algorithm}
 
-\paragraph{Étape $\mathcal{H}_{f_h}$ :\\}
-
+\paragraph{Étape $\mathcal{H}_{f_h}$ :}
 Pour la dernière étape, nous devons calculer une solution du sous-système :
 $$
   \begin{cases}
@@ -178,6 +163,7 @@ $$
   \end{cases}
 $$
 Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce système ne peut être résolu exactement en temps. Mais en suivant \cite{Li:2020}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela conduit à résoudre les sous-système suivant :
+
 \begin{itemize}
   \item $\mathcal{H}_{f_{h,x}}$ :
     $$
@@ -199,24 +185,11 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
         f_h(0,z,v_x,v_y-tv_xB_0,v_z+tB_yv_x)
       \end{pmatrix}
     $$
-    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx} et ses sous-étapes $\mathcal{H}_{f_{h,x,v_y}}$ et $\mathcal{H}_{f_{h,x,v_z}}$. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$.
+    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx}. La sous-étape $\mathcal{H}_{f_{h,x,v_y}}$ n'est qu'une interpolation polynomiale et ne sera pas détaillée ici. La sous-étape $\mathcal{H}_{f_{h,x,v_z}}$ présente en plus la résolution de l'équation d'Ampère, que nous détaillons ici. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Pour la complexité spatiale, on remarque la nécessité d'un tableau temporaire $f^{(a)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$.
     \begin{algorithm}
       \caption{Calcul de l'étape $\mathcal{H}_{f_{h,x}}$}
       \label{alg:Hfx}
       \begin{algorithmic}[1]
-        \Function{$\mathcal{H}_{f_{h,x,v_y}}$}{$f^{in}$,$f^{out}$}
-          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
-            \For{$i=0,\dots,N_z-1$}
-              \State $v^{\star} \gets v_y - \Delta t v_x B_0$
-              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
-              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,i]}}$
-              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
-            \EndFor
-          \EndFor
-        \EndFunction
-
-          \vspace{0.25cm}
-
         \Function{$\mathcal{H}_{f_{h,x,v_z}}$}{$f^{in}$,$f^{out}$,$B_y$,$E_x$}
           \State $j_{h,x} \gets 0$ \Comment{Initialisation d'un tableau de taille $N_z$ à 0}
           \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
@@ -264,50 +237,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
         f_h(0,z,v_x-tv_yB_0,v_y,v_z-tB_xv_y)
       \end{pmatrix}
     $$
-    De la même façon, nous utiliserons dans l'algorithme~\ref{alg:Hfy}, deux interpolations de dimension 1, interpolation d'ordre 5 à l'aide de polynômes de Lagrange. Nous obtenons la même complexité que l'étape $\mathcal{H}_{f_{h,x}}$, c'est-à-dire : $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$
-    \begin{algorithm}
-      \caption{Calcul de l'étape $\mathcal{H}_{f_{h,y}}$}
-      \label{alg:Hfy}
-      \begin{algorithmic}[1]
-        \Function{$\mathcal{H}_{f_{h,y,v_x}}$}{$f^{in}$,$f^{out}$}
-          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
-            \For{$i=0,\dots,N_z-1$}
-              \State $v^{\star} \gets v_x + \Delta t v_y B_0$
-              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
-              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,i]}}$
-              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
-            \EndFor
-          \EndFor
-        \EndFunction
-
-          \vspace{0.25cm}
-        
-        \Function{$\mathcal{H}_{f_{h,y,v_z}}$}{$f^{in}$,$f^{out}$,$E_y$,$B_x$}
-          \State $j_{h,y} \gets 0$ \Comment{Initialisation d'un tableau de taille $N_z$ à 0}
-          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
-            \For{$i=0,\dots,N_z-1$}
-              \State $v^{\star} \gets v_z - \Delta t v_y B_{x,[i]}$
-              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{z,\text{min}} }{ \Delta v_z }}$
-              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k_y,k^\star-3:k^\star+2,i]}}$
-              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
-              \State $j_{h,y,[i]} \gets j_{h,y,[i]} + v_y f^{out}_{[k_x,k_y,k_z,i]} \Delta\vb{v}$
-            \EndFor
-          \EndFor
-
-          \State $mean \gets \frac{1}{N_z}\sum_i j_{h,x,[i]}$
-          \For{$i=0,\dots,N_z-1$}
-            \State $E_{y,[i]} \gets E_{y,[i]} + \Delta t(j_{h,y,[i]}-mean)$
-          \EndFor
-        \EndFunction
-
-          \vspace{0.25cm}
-        
-        \Function{$\mathcal{H}_{f_{h,y}}$}{$f^{in}$,$f^{out}$,$E_y$,$B_x$}
-          \State \Call{ $\mathcal{H}_{f_{h,y,v_x}}$ }{ $f^{in}$  , $f^{(a)}$ }
-          \State \Call{ $\mathcal{H}_{f_{h,y,v_z}}$ }{ $f^{(a)}$ , $f^{out}$ , $E_y$ , $B_x$ }
-        \EndFunction
-      \end{algorithmic}
-    \end{algorithm}
+    De la même façon, nous utiliserons pour la résolution deux interpolations de dimension 1, interpolation d'ordre 5 à l'aide de polynômes de Lagrange. Nous obtenons les même complexités temporelle et spatiale que l'étape $\mathcal{H}_{f_{h,x}}$.
 
   \item $\mathcal{H}_{f_{h,z}}$ :
     $$
@@ -361,7 +291,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
     $$
       f(t,z,\vb{v}) = g(t,z-tv_z,\vb{v}).
     $$
-    Ces différentes étapes permette de construire l'algorithme~\ref{alg:Hfz} permettant la résolution de ce sous-système. Pour le calcul de complexité, remarquons que les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ sont très similaires et vont posséder la même complexité. Chacune de ces étapes consiste en une transformée de Fourier suivant l'axe $z$ (de complexité $\order{N_z\log(N_z)}$), puis pour toute valeur de $(k_x,k_y,k_z,j)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$, une somme sur $N_z$ et une interpolation polynomiale que l'on a supposé de complexité constante. On obtient une complexité algorithmique pour les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ de $\order{N_z\log(N_z)+N_{v_x}N_{v_y}N_{v_z}N_z^2}$. La sous-étape $\mathcal{H}_{f_{h,z,z}}$, consiste en une transformée de Fourier dans la direction $z$ (de complexité $\order{N_z\log(N_z)}$) et un parcours dans la direction $z$, pour toute valeur d'indices du quadruplet $(k_x,k_y,k_z,j)$, ce qui correspond à une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)}$. On obtient une complexité algorithmique de l'étape $\mathcal{H}_{f_{h,z}}$ de :
+    Ces différentes étapes permette de construire l'algorithme~\ref{alg:Hfz} permettant la résolution de ce sous-système. Deux sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$, effectuent les interpolations polynomiales d'ordre 5, respectivement dans les directions $v_x$ et $v_y$, nous de détaillerons ici que la première. La complexité algorithmique de l'étape correspond à deux fois celle de la sous-étape $\mathcal{H}_{f_{h,z,v_x}}$ (la sous-étape $\mathcal{H}_{f_{h,z,v_y}}$ étant très similaire). Cette étape consiste une transformée de Fourier suivant l'axe $z$ (de complexité $\order{N_z\log(N_z)}$), puis pour toute valeur de $(k_x,k_y,k_z,j)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$, une somme sur $N_z$ et une interpolation polynomiale que l'on a supposé de complexité constante. On obtient une complexité algorithmique pour les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ de $\order{N_z\log(N_z)+N_{v_x}N_{v_y}N_{v_z}N_z^2}$. La sous-étape $\mathcal{H}_{f_{h,z,z}}$, consiste en une transformée de Fourier dans la direction $z$ (de complexité $\order{N_z\log(N_z)}$) et un parcours dans la direction $z$, pour toute valeur d'indices du quadruplet $(k_x,k_y,k_z,j)$, ce qui correspond à une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)}$. On obtient une complexité algorithmique de l'étape $\mathcal{H}_{f_{h,z}}$ de :
     $$
       \order{2N_z\log(N_z) + N_{v_x}N_{v_y}N_{v_z}N_z(N_z + \log(N_z) + 1)}=\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}.
     $$
@@ -378,22 +308,6 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
               \State $v^{\star} \gets v_x - \Re(s)$
               \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
               \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,j]}}$
-              \State $f^{out}_{[k_x,k_y,k_z,j]} \gets \mathcal{L}_{[5]}( v^{\star} )$
-            \EndFor
-          \EndFor
-        \EndFunction
-
-          \vspace{0.25cm}
-
-        \Function{ $\mathcal{H}_{f_{h,z,v_y}}$ }{ $f^{in}$ , $f^{out}$ , $B_x$ }
-          \State $\hat{B}_x \gets \text{FFT}_z(B_x)$
-          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
-            \For{$j=0,\dots,N_z-1$}
-              \State $s \gets -\sum_{\ell=-N_z/2}^{N_z/2} i\frac{\hat{B}_{x,[\ell]}}{\kappa_{[\ell]}}\exp(i\kappa_{[\ell]}z_{[j]})(\exp(i\kappa_{[\ell]}v_z\Delta t) - 1)$
-
-              \State $v^{\star} \gets v_y + \Re(s)$
-              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
-              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,j]}}$
               \State $f^{out}_{[k_x,k_y,k_z,j]} \gets \mathcal{L}_{[5]}( v^{\star} )$
             \EndFor
           \EndFor
@@ -421,7 +335,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
     \end{algorithm}
 \end{itemize}
 
-Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$.
+Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$. On note cependant la nécessité d'avoir des au moins 2 tableaux temporaires $f^{(a)}$ et $f^{(b)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$, la variable $f^{(c)}$ peut être remplacée par $f^{(a)}$. Cette étape est la plus coûteuse en temps de calcul, elle sera donc placer au milieu de la méthode \emph{splitting} pour former la méthode de Strang.
 
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{f_h}$}
@@ -435,7 +349,6 @@ Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -575,7 +488,11 @@ Les autres équations restent inchangées. Les termes impactés sont dans la par
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \label{ssec:3:cflMaxwell}
 
-L'introduction des équations de Maxwell dans la partie non-linéaire de la méthode de Lawson, comme indiquée dans~\eqref{eq:3:LNsmaxwell}, implique une condition de stabilité provenant de ces termes. \Josselin{Il faut dire à un moment que la CFL de Maxwell risque d'être plus restrictive que celle provenant de la partie non-linéaire, car dans $N(U)$ il y a un peu de monde, entre autre on a jamais regardé si une CFL survenait des termes de couplage $\int v_\star f \,\mathrm{d}v$. En même temps le titre de la sous-sous-section parle uniquement de la CFL provenant des équations de Maxwell, la CFL qu'on est obligé de subir car on ne sait pas mettre les équations de Maxwell dans la partie linéaire de Lawson.}
+Dans la méthode de Lawson explicite que nous souhaitons mettre en place, nous proposons de placer les équations de Maxwell, équations linéaires, dans la partie non-linéaire (voir~\eqref{eq:3:LNsmaxwell}), entrainant par conséquent une condition de stabilité. Puisque nous résolvons de manière explicite des équations linéaires, il est possible d'effectuer un calcul de cette condition CFL de stabilité induite par les équations de Maxwell. Les termes non-linéaires de l'équation de Vlasov sur les particules chaudes, imposent également une condition de stabilité, que l'on se propose de se restreindre à la condition suivante :
+$$
+  \left\|\vb{E}+\vb{v}\times \vb{B}\right\|_{\infty} \Delta t \leq \Delta v,
+$$
+condition que l'on peut estimer numériquement par une première simulation.
 
 \paragraph{Estimation de la condition de stabilité à partir d'une méthode Runge-Kutta :\\}
 Il est possible de faire une première estimation de la condition de stabilité en ne considérant que l'équation :
