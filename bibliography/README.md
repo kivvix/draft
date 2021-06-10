@@ -30,7 +30,7 @@
 - [[Dormand:1980](pdf/1980-Dormand.pdf)] **A family of embedded Runge-Kutta formulae** (*1980*)
 	J. Dormand, P. Prince
 	*Journal of Computational and Applied Mathematics*
-- [[Canuto:1988](http://doi.org/10.1007/978-3-642-84108-8)] **Spectral Methods in Fluid Dynamics** (*1988*)
+- [[Canuto:1988](https://doi.org/10.1007/978-3-642-84108-8)] **Spectral Methods in Fluid Dynamics** (*1988*)
 	C. Canuto, M. Hussaini, A. Quarteroni, J. Zang Thomas A.
 	 
 - [[Gustafsson:1988](https://doi.org/10.1007/BF01934091)] **API stepsize control for the numerical solution of ordinary differential equations** (*1988*)
@@ -63,6 +63,9 @@
 - [[Liu:1994](pdf/1994-Liu.pdf)] **Weighted Essentially Non-oscillatory Schemes** (*1994*)
 	X. Liu, S. Osher, T. Chan
 	*Journal of Computational Physics*
+- [[Evans:1996](pdf/1996-Evans.pdf)] **A new fifth order weighted runge kutta formula** (*1996*)
+	D. Evans, A. Yaakub
+	*International Journal of Computer Mathematics*
 - [[Hairer:1996](pdf/1996-Hairer.pdf)] **Solving Ordinary Differential Equations II: Stiff and Differential-Algebraic Problems (Springer Series in Computational Mathematics)** (*1996*)
 	E. Hairer, G. Wanner
 	 
@@ -87,7 +90,7 @@
 - [[Shu:1999](pdf/1999-Barth.pdf)] **High Order ENO and WENO Schemes for Computational Fluid Dynamics** (*1999*)
 	C. Shu
 	 
-- [[Trefethen:2000](http://doi.org/10.1137/1.9780898719598)] **Spectral Methods in MATLAB** (*2000*)
+- [[Trefethen:2000](https://doi.org/10.1137/1.9780898719598)] **Spectral Methods in MATLAB** (*2000*)
 	L. N. Trefethen
 	 
 - [[Villani:2001](pdf/2001-Villani.pdf)] **A review of mathematical topics in collisional kinetic theory** (*2001*)
@@ -99,7 +102,7 @@
 - [[Cox:2002](https://www.sciencedirect.com/science/article/pii/S0021999102969950)] **Exponential Time Differencing for Stiff Systems** (*2002*)
 	S. Cox, P. Matthews
 	*Journal of Computational Physics*
-- [[Soderlind:2002](http://doi.org/10.1023/A:1021160023092)] **Automatic Control and Adaptive Time-Stepping** (*2002*)
+- [[Soderlind:2002](https://doi.org/10.1023/A:1021160023092)] **Automatic Control and Adaptive Time-Stepping** (*2002*)
 	G. Söderlind
 	*Numerical Algorithms*
 - [[Spiteri:2002](pdf/2002-Spiteri.pdf)] **A New Class of Optimal High-Order Strong-Stability-Preserving Time Discretization Methods** (*2002*)
@@ -126,7 +129,7 @@
 - [[Minchev:2005]()] **A review of exponential integrators for first order semi-linear problems** (*2005*)
 	B. Minchev, W. Wright
 	 
-- [[Verboncoeur:2005](http://doi.org/10.1088/0741-3335/47/5a/017)] **Particle simulation of plasmas: review and advances** (*2005*)
+- [[Verboncoeur:2005](https://doi.org/10.1088/0741-3335/47/5a/017)] **Particle simulation of plasmas: review and advances** (*2005*)
 	J. P Verboncoeur
 	*Plasma Physics and Controlled Fusion*
 - [[Hochbruck:2005](pdf/2005-Hochbruck.pdf)] **Explicit Exponential Runge–Kutta Methods for Semilinear Parabolic Problems** (*2005*)
@@ -141,7 +144,7 @@
 - [[Grandgirard:2006](https://www.sciencedirect.com/science/article/pii/S0021999106000155)] **A drift-kinetic Semi-Lagrangian 4D code for ion turbulence simulation** (*2006*)
 	V. Grandgirard, M. Brunetti, P. Bertrand, N. Besse, X. Garbet, P. Ghendrih, G. Manfredi, Y. Sarazin, O. Sauter, E. Sonnendrücker, J. Vaclavik, L. Villard
 	*Journal of Computational Physics*
-- [[Soderlind:2006](http://doi.org/10.1016/j.apnum.2005.04.026)] **Time-step selection algorithms: Adaptivity, control, and signal processing** (*2006*)
+- [[Soderlind:2006](https://doi.org/10.1016/j.apnum.2005.04.026)] **Time-step selection algorithms: Adaptivity, control, and signal processing** (*2006*)
 	G. Söderlind
 	*Applied Numerical Mathematics*
 - [[Hairer:2006]()] **Geometric numerical integration : structure-preserving algorithms for ordinary differential equations** (*2006*)
@@ -189,7 +192,7 @@
 - [[Martinez:2009](https://www.sciencedirect.com/science/article/pii/S0377042709000429)] **A massively parallel exponential integrator for advection-diffusion models** (*2009*)
 	A. Martínez, L. Bergamaschi, M. Caliari, M. Vianello
 	*Journal of Computational and Applied Mathematics*
-- [[Sircombe:2009](http://doi.org/10.1016/j.jcp.2009.03.029)] **VALIS: A split-conservative scheme for the relativistic 2D Vlasov–Maxwell system** (*2009*)
+- [[Sircombe:2009](https://doi.org/10.1016/j.jcp.2009.03.029)] **VALIS: A split-conservative scheme for the relativistic 2D Vlasov–Maxwell system** (*2009*)
 	N. Sircombe, T. Arber
 	*Journal of Computational Physics*
 - [[Belaouar:2009](pdf/2009-Belaouar.pdf)] **An asymptotically stable semi-Lagrangian scheme in the quasi-neutral limit** (*2009*)
@@ -198,7 +201,7 @@
 - [[Despres:2009](pdf/2009-Despres.pdf)] **Uniform asymptotic stability of Strang's explicit compact schemes for linear advection** (*2009*)
 	B. Després
 	*Journal on Numerical Analysis*
-- [[Tambue:2010](http://doi.org/10.1016/j.jcp.2010.01.037)] **An exponential integrator for advection-dominated reactive transport in heterogeneous porous media** (*2010*)
+- [[Tambue:2010](https://doi.org/10.1016/j.jcp.2010.01.037)] **An exponential integrator for advection-dominated reactive transport in heterogeneous porous media** (*2010*)
 	A. Tambue, G. Lord, S. Geiger
 	*Journal of Computational Physics*
 - [[Tronci:2010](https://doi.org/10.1088%2F1751-8113%2F43%2F37%2F375501)] **Hamiltonian approach to hybrid plasma models** (*2010*)
@@ -417,9 +420,6 @@
 - [[Li:2019]()] **Solving the Vlasov–Maxwell equations using Hamiltonian splitting** (*2019*)
 	Y. Li, Y. He, Y. Sun, J. Niesen, H. Qin, J. Liu
 	*Journal of Computational Physics*
-- [[Crouseilles:2019b](pdf/2019-Crouseilles(b).pdf)] **Exponential methods for solving hyperbolic problems with application to kinetic equations** (*2019*)
-	N. Crouseilles, L. Einkemmer, J. Massot
-	 
 - [[Blanes:2019](pdf/2019-Blanes.pdf)] **Splitting and composition methods with embedded error estimators** (*2019*)
 	S. Blanes, F. Casas, M. Thalhammer
 	*Applied Numerical Mathematics*
@@ -447,9 +447,15 @@
 - [[Li:2020](https://doi.org/10.1016/j.jcp.2019.109172)] **Numerical simulations of Vlasov-Maxwell equations for laser plasmas based on Poisson structure** (*2020*)
 	Y. Li, N. Crouseilles, Y. Sun
 	*Journal of Computational Physics*
+- [[Crouseilles:2019b](pdf/2019-Crouseilles(b).pdf)] **Exponential methods for solving hyperbolic problems with application to kinetic equations** (*2020*)
+	N. Crouseilles, L. Einkemmer, J. Massot
+	*Journal of Computational Physics*
 - [[Crouseilles:2020](pdf/2020-Crouseilles.pdf)] **Poisson bracket for one electron hybrid model** (*2020*)
 	N. Crouseilles
 	 
+- [[Kormann:2021](https://www.sciencedirect.com/science/article/pii/S0021999120306641)] **Energy-conserving time propagation for a structure-preserving particle-in-cell Vlasov–Maxwell solver** (*2021*)
+	K. Kormann, E. Sonnendrücker
+	*Journal of Computational Physics*
 - [[Wu:2021](pdf/2021-Wu.pdf)] **Very high order WENO schemes using efficient smoothness indicators** (*2021*)
 	C. Wu, L. Wu, H. Li, S. Zhang
 	*Journal of Computational Physics*
