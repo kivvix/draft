@@ -26,6 +26,9 @@ min: $(TARGET).min.pdf
 %.min.pdf: %.pdf
 	 gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dQUIET -dBATCH -dPrinted=false -sOutputFile=$@ $<
 
+one : $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
+	pdflatex -jobname=$(TARGET) $(SOURCE_FILES)
+
 $(TARGET).pdf: $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
 	#pdflatex -interaction=nonstopmode -jobname=$(TARGET) $(SOURCE_FILES)
 	pdflatex -jobname=$(TARGET) $(SOURCE_FILES)
