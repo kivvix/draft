@@ -31,12 +31,36 @@ nous calculons :
 $$
   \varphi_t^{[j_c]}(U_0) = \begin{pmatrix}
     e^{-tJ}j_{c,\perp}(0)B_0 \\
-    E_\perp(0) - J\left(e^{-tJ}-I\right)j_{c,\perp}(0) \\
     B_\perp(0) \\
+    E_\perp(0) - J\left(e^{-tJ}-I\right)j_{c,\perp}(0) \\
     f_h(0)
   \end{pmatrix}
 $$
-Cela s'obtient car $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$.
+Cela s'obtient car $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$, où l'on rappelle que $J$ est la matrice donnée par :
+$$
+  J = \begin{pmatrix}
+     0 & 1 \\
+    -1 & 0
+  \end{pmatrix}
+$$
+Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait de pseudo-code~\ref{alg:Hjc}. Cette étape a une complexité en $\order{N_z}$.
+\begin{algorithm}
+  \caption{Calcul de l'étape $\mathcal{H}_{j_c}$}
+  \label{alg:Hjc}
+  \begin{algorithmic}[1]
+    \Function{$\mathcal{H}_{j_c}$}{$j_{c,x}$,$j_{c,y}$,$B_x$,$B_y$,$E_x$,$E_y$,$\hat{f}_h$}
+      \For{$i=0,\dots,N_z-1$}
+        \State $\bar{j}_{c,x} \gets j_{c,x,[i]}\cos(\Delta t) - j_{c,y,[i]}\sin(\Delta t) $
+        \State $\bar{j}_{c,y} \gets j_{c,x,[i]}\sin(\Delta t) + j_{c,y,[i]}\cos(\Delta t) $
+        \State $E_{x,[i]}\gets -j_{c,x,[i]}\sin(\Delta t)     + j_{c,y,[i]}(1-\cos(\Delta t))$
+        \State $E_{y,[i]}\gets  j_{c,x,[i]}(\cos(\Delta t)-1) - j_{c,y,[i]}\sin(\Delta t)$
+        \State $j_{c,x,[i]} \gets \bar{j}_{c,x}$
+        \State $j_{c,y,[i]} \gets \bar{j}_{c,y}$
+      \EndFor
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
 
 \paragraph{Étape $\mathcal{H}_B$ :\\}
 Nous souhaitons calculer $\varphi_t^{[B]}$, correspondant à la solution du système :
@@ -52,12 +76,30 @@ qui s'obtient de la manière suivante :
 $$
   \varphi_t^{[B]}(U_0) = \begin{pmatrix}
     j_{c,\perp}(0) \\
-    E_\perp(0) - tJ\partial_zB_\perp(0) \\
     B_\perp(0) \\
+    E_\perp(0) - tJ\partial_zB_\perp(0) \\
     f_h(0)
   \end{pmatrix}
 $$
-
+Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité en $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$.
+\begin{algorithm}
+  \caption{Calcul de l'étape $\mathcal{H}_{B}$}
+  \label{alg:HB}
+  \begin{algorithmic}[1]
+    \Function{$\mathcal{H}_{B}$}{$j_{c,x}$,$j_{c,y}$,$B_x$,$B_y$,$E_x$,$E_y$,$\hat{f}_h$}
+      \State $\hat{B}_x \gets \text{FFT}_z(B_x)$
+      \State $\hat{B}_y \gets \text{FFT}_z(B_y)$
+      \State $\hat{E}_x \gets \text{FFT}_z(E_x)$
+      \State $\hat{E}_y \gets \text{FFT}_z(E_y)$
+      \For{$j=0,\dots,N_z-1$}
+        \State $\hat{E}_{x,[j]} \gets \hat{E}_{x,[j]} - i\Delta t \kappa_{[j]} \hat{B}_{y,[j]}$
+        \State $\hat{E}_{y,[j]} \gets \hat{E}_{y,[j]} + i\Delta t \kappa_{[j]} \hat{B}_{x,[j]}$
+      \EndFor
+      \State $E_x \gets i\text{FFT}_z(\hat{E}_x)$
+      \State $E_y \gets i\text{FFT}_z(\hat{E}_y)$
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
 
 \paragraph{Étape $\mathcal{H}_E$ :\\}
 Pour calculer la solution du sous-flux correspondant à $\mathcal{H}_E$, nous devons résoudre le système suivant :
@@ -70,7 +112,7 @@ $$
   \end{cases}
 $$
 
-Avec la conition initiale donnée par $U(t=0)=U_0=(j_{c,\perp},B_\perp,E_\perp,f_h)(t=0)$, la solution au temps $t$ est obtenue par :
+Avec la condition initiale donnée par $U(t=0)=U_0=(j_{c,\perp},B_\perp,E_\perp,f_h)(t=0)$, la solution au temps $t$ est obtenue par :
 $$
   \varphi_t^{[E]}(U_0) = \begin{pmatrix}
     j_{c,\perp} + t\Omega_{pe}^2E_\perp(0)\\
@@ -79,7 +121,50 @@ $$
     f_h(0,z,v_\perp+tE_\perp(0),v_z)
   \end{pmatrix}
 $$
-Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$).
+Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE} avec les deux sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ correspondant aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$.
+
+\begin{algorithm}
+  \caption{Calcul de l'étape $\mathcal{H}_{E}$}
+  \label{alg:HE}
+  \begin{algorithmic}[1]
+    \Function{$\mathcal{H}_{E,{v_x}}$}{$f^{in}$,$f^{out}$,$E_x$}
+      \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+        \For{$i=0,\dots,N_z-1$}
+          \State $v^{\star} \gets v_x + \Delta t E_{x,[i]}$
+          \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
+          \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,i]}}$
+          \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+        \EndFor
+      \EndFor
+    \EndFunction
+      
+      \vspace{0.25cm}
+
+    \Function{$\mathcal{H}_{E,{v_y}}$}{$f^{in}$,$f^{out}$,$E_y$}
+      \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+        \For{$i=0,\dots,N_z-1$}
+          \State $v^{\star} \gets v_y + \Delta t E_{y,[i]}$
+          \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
+          \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,i]}}$
+          \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+        \EndFor
+      \EndFor
+    \EndFunction
+      
+      \vspace{0.25cm}
+
+    \Function{$\mathcal{H}_{E}$}{$j_{c,x}$,$j_{c,y}$,$B_x$,$B_y$,$E_x$,$E_y$,$\hat{f}_h$}
+      \For{$i=0,\dots,N_z-1$}
+        \State $j_{c,x,[i]} \gets j_{c,x,[i]} + \Omega_{pe}^2\Delta t E_{x,[i]}$
+        \State $j_{c,y,[i]} \gets j_{c,y,[i]} + \Omega_{pe}^2\Delta t E_{y,[i]}$
+      \EndFor
+      \State $f^{(a)} \gets i\text{FFT}_z(\hat{f}_h)$ \Comment{La transformée de Fourier inverse s'effectue $\forall v_x,v_y,v_z$}\label{alg:HE:l:ifft}
+      \State \Call{$\mathcal{H}_{E,{v_x}}$}{$f^{(a)}$,$f^{(b)}$,$E_x$}
+      \State \Call{$\mathcal{H}_{E,{v_y}}$}{$f^{(b)}$,$f^{(a)}$,$E_y$}
+      \State $\hat{f}_h \gets \text{FFT}_z(f^{(a)})$ \Comment{La transformée de Fourier s'effectue $\forall v_x,v_y,v_z$} \label{alg:HE:l:fft}
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
 
 \paragraph{Étape $\mathcal{H}_{f_h}$ :\\}
 
@@ -88,21 +173,273 @@ $$
   \begin{cases}
     \partial_t  j_{c,\perp} &= 0 \\
     \partial_t B_\perp      &= 0 \\
-    \partial_t E_\perp      &= \int v_\perp f_h\,\mathrm{d}v\\
+    \partial_t E_\perp      &= \int v_\perp f_h\,\mathrm{d}v \\
     \partial_t f_h          &= -v_z\partial_zf_h + (v_yB_0-v_zB_y)\partial_{v_x}f_h + (-v_xB_0+v_zB_x)\partial_{v_y}f_h + (v_xB_y - v_yB_x)\partial_{v_z}f_h
   \end{cases}
 $$
-Comme pour la résolution de l'équation de Vlasov-Maxwell (\ref{Li:2019}), ce système ne peut être résolu exactement en temps. Mais en suivant \ref{Li:2019}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela condtuit à résoudre des sous-système suivant :
+Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce système ne peut être résolu exactement en temps. Mais en suivant \cite{Li:2020}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela conduit à résoudre les sous-système suivant :
 \begin{itemize}
   \item $\mathcal{H}_{f_{h,x}}$ :
+    $$
+      \begin{cases}
+        \partial_t j_{c,\perp} = 0 \\
+        \partial_t B_{\perp} = 0 \\
+        \partial_t E_{x} = \int v_xf_h\dd{\vb{v}} \\
+        \partial_t E_{y} = 0 \\
+        \partial_t f_h - (-v_xB_0\partial_{v_y}f_h + v_xB_y\partial_{v_z}f_h) = 0
+      \end{cases}
+    $$
+    On remarque tout d'abord que dans ce sous-système, $\int v_xf_h\dd{\vb{v}}$ est constant en temps, donc l'équation d'Ampère peut être résolue aisément. L'équation de transport sur $f_h$, peut être résolue exactement en utilisant un \emph{splitting} directionnel puisque les deux opérateurs commutent, on obtient alors :
+    $$
+      \varphi_t^{[f_{h,x}]}(U_0) = \begin{pmatrix}
+        j_{c,\perp}(0) \\
+        B_{\perp}(0) \\
+        E_x(0) + t\int v_xf_h(0)\dd{\vb{v}} \\
+        E_y(0) \\
+        f_h(0,z,v_x,v_y-tv_xB_0,v_z+tB_yv_x)
+      \end{pmatrix}
+    $$
+    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx} et ses sous-étapes $\mathcal{H}_{f_{h,x,v_y}}$ et $\mathcal{H}_{f_{h,x,v_z}}$. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$.
+    \begin{algorithm}
+      \caption{Calcul de l'étape $\mathcal{H}_{f_{h,x}}$}
+      \label{alg:Hfx}
+      \begin{algorithmic}[1]
+        \Function{$\mathcal{H}_{f_{h,x,v_y}}$}{$f^{in}$,$f^{out}$}
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$i=0,\dots,N_z-1$}
+              \State $v^{\star} \gets v_y - \Delta t v_x B_0$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,i]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+            \EndFor
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+
+        \Function{$\mathcal{H}_{f_{h,x,v_z}}$}{$f^{in}$,$f^{out}$,$B_y$,$E_x$}
+          \State $j_{h,x} \gets 0$ \Comment{Initialisation d'un tableau de taille $N_z$ à 0}
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$i=0,\dots,N_z-1$}
+              \State $v^{\star} \gets v_z + \Delta t v_x B_{y,[i]}$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{z,\text{min}} }{ \Delta v_z }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k_y,k^\star-3:k^\star+2,i]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+              \State $j_{h,x,[i]} \gets j_{h,x,[i]} + v_x f^{out}_{[k_x,k_y,k_z,i]} \Delta\vb{v}$
+            \EndFor
+          \EndFor
+
+          \State $mean \gets \frac{1}{N_z}\sum_i j_{h,x,[i]}$
+          \For{$i=0,\dots,N_z-1$}
+            \State $E_{x,[i]} \gets E_{x,[i]} + \Delta t(j_{h,x,[i]}-mean)$
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+
+        \Function{$\mathcal{H}_{f_{h,x}}$}{$f^{in}$,$f^{out}$,$B_y$,$E_x$}
+          \State \Call{ $\mathcal{H}_{f_{h,x,v_y}}$ }{ $f^{in}$  , $f^{(a)}$ }
+          \State \Call{ $\mathcal{H}_{f_{h,x,v_z}}$ }{ $f^{(a)}$ , $f^{out}$ , $B_y$ , $E_x$ }
+        \EndFunction
+      \end{algorithmic}
+    \end{algorithm}
+
   \item $\mathcal{H}_{f_{h,y}}$ :
+    $$
+      \begin{cases}
+        \partial_t j_{c,\perp} = 0 \\
+        \partial_t B_{\perp} = 0 \\
+        \partial_t E_{x} = 0 \\
+        \partial_t E_{y} = \int v_yf_h\dd{\vb{v}} \\
+        \partial_t f_h - (v_yB_0\partial_{v_x}f_h + v_yB_x\partial_{v_z}f_h) = 0
+      \end{cases}
+    $$
+    Cette étape est très similaire à la précédente, le courant des particules chaudes $\int v_yf_h\dd{\vb{v}}$ y est une constante, et l'équation de transport est résolue en utilisant un \emph{splitting} directionnel. On a :
+    $$
+      \varphi_t^{[f_{h,x}]}(U_0) = \begin{pmatrix}
+        j_{c,\perp}(0) \\
+        B_{\perp}(0) \\
+        E_x(0) \\
+        E_y(0) + t\int v_yf_h(0)\dd{\vb{v}} \\
+        f_h(0,z,v_x-tv_yB_0,v_y,v_z-tB_xv_y)
+      \end{pmatrix}
+    $$
+    De la même façon, nous utiliserons dans l'algorithme~\ref{alg:Hfy}, deux interpolations de dimension 1, interpolation d'ordre 5 à l'aide de polynômes de Lagrange. Nous obtenons la même complexité que l'étape $\mathcal{H}_{f_{h,x}}$, c'est-à-dire : $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$
+    \begin{algorithm}
+      \caption{Calcul de l'étape $\mathcal{H}_{f_{h,y}}$}
+      \label{alg:Hfy}
+      \begin{algorithmic}[1]
+        \Function{$\mathcal{H}_{f_{h,y,v_x}}$}{$f^{in}$,$f^{out}$}
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$i=0,\dots,N_z-1$}
+              \State $v^{\star} \gets v_x + \Delta t v_y B_0$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,i]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+            \EndFor
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+        
+        \Function{$\mathcal{H}_{f_{h,y,v_z}}$}{$f^{in}$,$f^{out}$,$E_y$,$B_x$}
+          \State $j_{h,y} \gets 0$ \Comment{Initialisation d'un tableau de taille $N_z$ à 0}
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$i=0,\dots,N_z-1$}
+              \State $v^{\star} \gets v_z - \Delta t v_y B_{x,[i]}$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{z,\text{min}} }{ \Delta v_z }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k_y,k^\star-3:k^\star+2,i]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,i]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+              \State $j_{h,y,[i]} \gets j_{h,y,[i]} + v_y f^{out}_{[k_x,k_y,k_z,i]} \Delta\vb{v}$
+            \EndFor
+          \EndFor
+
+          \State $mean \gets \frac{1}{N_z}\sum_i j_{h,x,[i]}$
+          \For{$i=0,\dots,N_z-1$}
+            \State $E_{y,[i]} \gets E_{y,[i]} + \Delta t(j_{h,y,[i]}-mean)$
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+        
+        \Function{$\mathcal{H}_{f_{h,y}}$}{$f^{in}$,$f^{out}$,$E_y$,$B_x$}
+          \State \Call{ $\mathcal{H}_{f_{h,y,v_x}}$ }{ $f^{in}$  , $f^{(a)}$ }
+          \State \Call{ $\mathcal{H}_{f_{h,y,v_z}}$ }{ $f^{(a)}$ , $f^{out}$ , $E_y$ , $B_x$ }
+        \EndFunction
+      \end{algorithmic}
+    \end{algorithm}
+
   \item $\mathcal{H}_{f_{h,z}}$ :
+    $$
+      \begin{cases}
+        \partial_t j_{c,\perp} = 0 \\
+        \partial_t B_{\perp} = 0 \\
+        \partial_t E_{\perp} = 0 \\
+        \partial_t f_h + v_z\partial_{z}f_h - (-v_zB_y\partial_{v_x}f_h + v_zB_x\partial_{v_y}f_h) = 0
+      \end{cases}
+    $$
+    Le calcul de l'étape $\mathcal{H}_{f_{h,z}}$ nécessite plus de travail. Tout d'abord nous introduisons la fonction $g(t,z,\vb{v}) := f(t,z+tv_z,\vb{v})$ qui satisfait :
+    \begin{equation}
+      \label{eq:ong}
+      \partial_t g + B_y(0,z+tv_z)v_z\partial_{v_x}g - v_zB_x(0,z+tv_z)\partial_{v_y}g = 0
+    \end{equation}
+    Cette équation de transport peut être résolue exactement en temps. Pour cela, dans un premier temps on regarde les caractéristiques de~\eqref{eq:ong} :
+    \begin{equation}
+      \dot{v}_x(t) = B_y(0,z(0)+tv_z(0))v_z(0)\ ,\qquad \dot{v}_y(t) = -B_x(0,z(0)+tv_z(0))v_z(0),
+    \end{equation}
+    celles-ci peuvent être résolues exactement. Les variables $z$, $v_z$, $B_x$ et $B_y$ sont constantes en temps dans cette sous-étape, mais le changement de variable introduit une dépendance en temps. Cela peut être résolu en développant le champ magnétique $B_{\perp}$ en série de Fourier dans la direction $z$, ce qui nous donne :
+    $$
+      B_{\perp}(t,z) = B_\perp(0,z) = \sum_k \hat{B}_\perp(0,k)e^{ikz},
+    $$
+    on a alors :
+    $$
+      B_\perp(0,z+tv_z) = \sum_k\hat{B}_\perp(0,k)e^{ik(z+tv_z)}.
+    $$
+    On obtient alors, en intégrant l'équation~\eqref{eq:ong} en temps :
+    $$
+      \begin{aligned}
+        v_x(t)  &= v_x(0) + v_z(0) \int_0^t \sum_k \hat{B}_{y}(0, k) e^{ik (z(0)+sv_z(0))} \dd{s}  \\
+                &= v_x(0) + v_z(0)  \sum_k \hat{B}_{y}(0, k) e^{ik z(0)} \int_0^t e^{ik s v_z(0)} \dd{s} \\
+                &= v_x(0) + \sum_k \hat{B}_{y}(0, k) \frac{1}{ik} e^{ik z(0)} (e^{ikt v_z(0)} -1),
+      \end{aligned}
+    $$
+    tandis que pour l'équation sur $v_y$, nous obtenons :
+    $$
+      \begin{aligned}
+        v_y(t) &= v_y(0) - v_z(0) \int_0^t \sum_k \hat{B}_{x}(0, k) e^{ik (z(0) + s v_z(0))}\,\dd{s} \\
+               &= v_y(0) - \sum_k \hat{B}_{x} (0, k)\frac{1}{ik}e^{ik z(0)} (e^{ikt v_z(0)} -1).
+      \end{aligned}
+    $$
+    En remontant les caractéristiques, on peut calculer $g(t,z,\vb{v})$ comme :
+    $$
+      \begin{aligned}
+        g(t, z, \vb{v}) = g\left(0, z, v_x - \sum_k \hat{B}_{y}(0, k) \frac{1}{ik} e^{ik z}(e^{ikt v_z} -1), \right.\\
+                                \left.v_y +   \sum_k \hat{B}_{x} (0, k)\frac{1}{ik} e^{ik z}(e^{ikt v_z} -1), v_z\right).  
+      \end{aligned}
+    $$
+    Cela nous permet d'obtenir $f_h(t)$ en effectuant le changement de variable inverse :
+    $$
+      f(t,z,\vb{v}) = g(t,z-tv_z,\vb{v}).
+    $$
+    Ces différentes étapes permette de construire l'algorithme~\ref{alg:Hfz} permettant la résolution de ce sous-système. Pour le calcul de complexité, remarquons que les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ sont très similaires et vont posséder la même complexité. Chacune de ces étapes consiste en une transformée de Fourier suivant l'axe $z$ (de complexité $\order{N_z\log(N_z)}$), puis pour toute valeur de $(k_x,k_y,k_z,j)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$, une somme sur $N_z$ et une interpolation polynomiale que l'on a supposé de complexité constante. On obtient une complexité algorithmique pour les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ de $\order{N_z\log(N_z)+N_{v_x}N_{v_y}N_{v_z}N_z^2}$. La sous-étape $\mathcal{H}_{f_{h,z,z}}$, consiste en une transformée de Fourier dans la direction $z$ (de complexité $\order{N_z\log(N_z)}$) et un parcours dans la direction $z$, pour toute valeur d'indices du quadruplet $(k_x,k_y,k_z,j)$, ce qui correspond à une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)}$. On obtient une complexité algorithmique de l'étape $\mathcal{H}_{f_{h,z}}$ de :
+    $$
+      \order{2N_z\log(N_z) + N_{v_x}N_{v_y}N_{v_z}N_z(N_z + \log(N_z) + 1)}=\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}.
+    $$
+    \begin{algorithm}
+      \caption{Calcul de l'étape $\mathcal{H}_{f_{h,z}}$}
+      \label{alg:Hfz}
+      \begin{algorithmic}[1]
+        \Function{ $\mathcal{H}_{f_{h,z,v_x}}$ }{ $f^{in}$ , $f^{out}$ , $B_y$ }
+          \State $\hat{B}_y \gets \text{FFT}_z(B_y)$
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$j=0,\dots,N_z-1$}
+              \State $s \gets -\sum_{\ell=-N_z/2}^{N_z/2} i\frac{\hat{B}_{y,[\ell]}}{\kappa_{[\ell]}}\exp(i\kappa_{[\ell]}z_{[j]})(\exp(i\kappa_{[\ell]}v_z\Delta t) - 1)$
+
+              \State $v^{\star} \gets v_x - \Re(s)$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{x,\text{min}} }{ \Delta v_x }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k^\star-3:k^\star+2,k_y,k_z,j]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,j]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+            \EndFor
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+
+        \Function{ $\mathcal{H}_{f_{h,z,v_y}}$ }{ $f^{in}$ , $f^{out}$ , $B_x$ }
+          \State $\hat{B}_x \gets \text{FFT}_z(B_x)$
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \For{$j=0,\dots,N_z-1$}
+              \State $s \gets -\sum_{\ell=-N_z/2}^{N_z/2} i\frac{\hat{B}_{x,[\ell]}}{\kappa_{[\ell]}}\exp(i\kappa_{[\ell]}z_{[j]})(\exp(i\kappa_{[\ell]}v_z\Delta t) - 1)$
+
+              \State $v^{\star} \gets v_y + \Re(s)$
+              \State $k^{\star} \gets \ceil{\frac{ v^{\star}-v_{y,\text{min}} }{ \Delta v_y }}$
+              \State $\mathcal{L}_{[5]} \gets \Call{lagrange\_generator}{f^{in}_{[k_x,k^\star-3:k^\star+2,k_z,j]}}$
+              \State $f^{out}_{[k_x,k_y,k_z,j]} \gets \mathcal{L}_{[5]}( v^{\star} )$
+            \EndFor
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+
+        \Function{ $\mathcal{H}_{f_{h,z,z}}$   }{ $f^{in}$ , $\hat{f}^{out}$ }
+          \ForAll{$(k_x,k_y,k_z)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$}
+            \State $\hat{f}_{\vb{v}} \gets \text{FFT}_z(f^{in}_{[k_x,k_y,k_z,\cdot]})$
+            \For{$j=0,\dots,N_z-1$}
+              \State $\hat{f}^{out}_{[k_x,k_y,k_z,j]} \gets \hat{f}_{\vb{v},[j]}\exp(-iv_x\kappa_{[j]}\Delta t)$
+            \EndFor
+          \EndFor
+        \EndFunction
+
+          \vspace{0.25cm}
+
+        \Function{ $\mathcal{H}_{f_{h,z}}$ }{ $f^{in}$ , $B_x$ , $B_y$ , $\hat{f}^{out}$ }
+          \State \Call{ $\mathcal{H}_{f_{h,z,v_x}}$ }{ $f^{in}$  , $f^{(a)}$       , $B_y$ }
+          \State \Call{ $\mathcal{H}_{f_{h,z,v_y}}$ }{ $f^{(a)}$ , $f^{(b)}$       , $B_x$ }
+          \State \Call{ $\mathcal{H}_{f_{h,z,z}}$   }{ $f^{(b)}$ , $\hat{f}^{out}$ }
+        \EndFunction
+      \end{algorithmic}
+    \end{algorithm}
 \end{itemize}
- 
+
+Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$.
+
+\begin{algorithm}
+  \caption{Calcul de l'étape $\mathcal{H}_{f_h}$}
+  \label{alg:Hfh}
+  \begin{algorithmic}[1]
+    \Function{$\mathcal{H}_{f_h}$}{$j_{c,x}$,$j_{c,y}$,$B_x$,$B_y$,$E_x$,$E_y$,$\hat{f}_h$}
+      \State $f^{(a)} \gets i\text{FFT}_z(\hat{f})$
+      \State \Call{ $\mathcal{H}_{f_{h,x}}$ }{ $f^{(a)}$ , $f^{(b)}$   , $B_y$ , $E_x$ }
+      \State \Call{ $\mathcal{H}_{f_{h,y}}$ }{ $f^{(b)}$ , $f^{(c)}$   , $B_x$ , $E_y$ }
+      \State \Call{ $\mathcal{H}_{f_{h,z}}$ }{ $f^{(c)}$ , $\hat{f}_h$ , $B_x$ , $B_y$ }
+    \EndFunction
+  \end{algorithmic}
+\end{algorithm}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+\FloatBarrier
 \subsection{Méthode de Lawson sur le modèle hybride}
 % -------------------------------------------------------------------
 
