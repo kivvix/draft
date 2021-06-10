@@ -54,27 +54,17 @@ $(BUILD_dir)/$(JOURNAL_raw): $(SRC_MD) template/before.html template/after.html
 		--include-after-body=template/after.html \
 		--katex=https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/ \
 		--highlight-style=breezeDark \
-		--table-of-contents --toc-depth=2 \
+		--table-of-contents --toc-depth=3 \
 		$(filter %.md,$^) \
 		-o $@
 
-tmp:
-	@echo "\033[32m+ $@/\033[0m"
-	mkdir -p $@
-
-tmp/%.katex.html : $(BUILD_dir)/%.raw.html
+$(BUILD_dir)/%.katex.html : $(BUILD_dir)/%.raw.html
 	@echo "\033[92m+ $@\033[0m"
 	./template/katex_serial.js --input $< --output $@
 
-$(BUILD_dir)/%.html : tmp/%.katex.html
+$(BUILD_dir)/%.html : $(BUILD_dir)/%.katex.html
 	@echo "\033[92m+ $@\033[0m"
 	./template/toc_shift.js --input $< --output $@
-
-
-
-#$(BUILD_dir)/$(JOURNAL_file): $(BUILD_dir)/$(JOURNAL_tmp)
-#	@echo "\033[92m+ $@\033[0m"
-#	./template/katex_serial.js --input $< --output $@
 
 # copy css files from template directory
 $(BUILD_dir)/style/%.css: template/style/%.css $(BUILD_dir)/style
