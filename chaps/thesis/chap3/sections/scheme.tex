@@ -676,11 +676,15 @@ L'algorithme d'un étage se comporte en deux grandes sections. La première part
       \For{$i=0,\dots,N_z$}
         \State $\hat{f}_h^{(s)} \gets \dots$ \Comment{l'expression ici est donnée par \sympy} \label{alg:l:sp6}
       \EndFor
-    \EndFor
+    \EndFor \label{alg:l:29}
   \end{algorithmic}
 \end{algorithm}
 
-La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squeltte} nécessite seulement de modifier le calcul des variables de courants chauds $\left(\hat{j}_{h,x}\right)_i$, $\left(\hat{j}_{h,y}\right)_i$ (lignes~\ref{alg:l:jhx} et~\ref{alg:l:jhy}) et des vitesses d'advection $a_{v_x}$, $a_{v_y}$ et $a_{v_z}$ (lignes~\ref{alg:l:avx} à~\ref{alg:l:avz}). L'opération est présentée dans l'extrait d'algorithme~\ref{alg:modif}.
+Étudions maintenant la complexité de l'algorithme~\ref{alg:squeltte}. La première partie de l'algorithme (ligne~\ref{alg:l:0} à~\ref{alg:l:15}) possède une complexité temporelle de $\order{2N_z}$ et nécessite la sauvegarde de deux tableaux, $\hat{j}_{j,x}$, $\hat{j}_{h,y}$, de taille $N_z$ (tableaux de complexes). La deuxième partie de l'algorithme (ligne~\ref{alg:l:15} à~\ref{alg:l:29}) nécessite tout d'abord le calcul de la transformée de Fourier inverse de tout $\hat{f}_h$, étape d'une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Il est ensuite nécessaire d'effectuer une boucle dans tout l'espace des phases pour calculer l'approximation $\partial_vf_h$, la méthode WENO peut se résumer à un calcul arithmétique à partir des 7 valeurs en entré et est donc considéré de complexité constante, ce calcul a donc une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Cette partie se termine par la mise à jour de $\hat{f}_h$ de l'étage, il est possible de n'effectuer la transformée de Fourier pour une tranche de données au triplet $(k_x,k_y,k_z)$ fixé, on obtient une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Un étage de la méthode de Lawson possède donc une complexité temporelle de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$ et nécessite 3 tableaux de taille $N_z$ de valeurs complexes ($\hat{j}_{h,x}$, $\hat{j}_{h,y}$ et $\widehat{\partial_vf}$), et 2 tableaux de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ ($f_h$ de réels et $\partial_vf_h$ de complexes), ces tableaux temporaires peuvent être réutilisés par l'étage suivant sans nécessité de nouvelle allocation de mémoire.
+
+Les résultats de chaque étage de la méthode de Lawson nécessitent d'être sauvegarder pour le calcul des étages suivants, ainsi chaque étage nécessite la sauvegarde de 6 tableaux de taille $N_z$ de complexes et d'un tableau de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ aussi de complexes. Ainsi pour une méthode de Lawson induite par une méthode RK($s$,$n$) il sera nécessaire de multiplier l'espace mémoire nécessaire par le nombre d'étages $s$. Il est possible de minimiser l'espace mémoire nécessaire en utilisant des méthodes de type Runge-Kutta dites \emph{low storage}, qui permettent de ne pas conserver les données de chaque étage pour calculer les suivants (voir~\cite{Ketcheson:2015}).
+
+La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squeltte} nécessite seulement de modifier le calcul des variables de courants chauds $\left(\hat{j}_{h,x}\right)_i$, $\left(\hat{\jmath}_{h,y}\right)_i$ (lignes~\ref{alg:l:jhx} et~\ref{alg:l:jhy}) et des vitesses d'advection $a_{v_x}$, $a_{v_y}$ et $a_{v_z}$ (lignes~\ref{alg:l:avx} à~\ref{alg:l:avz}). L'opération est présentée dans l'extrait d'algorithme~\ref{alg:modif}. \Josselin{$\hat{j}$ ou $\hat{\jmath}$ ? telle est la question\dots (\texttt{\textbackslash jmath} ou non)}
 % $$
 %   \begin{aligned}
 %     \hat{j}_{h,x,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
@@ -700,7 +704,7 @@ La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squelt
   \end{algorithmic}
   \begin{algorithmic}[1]
   \setlineref{alg:l:jhx}
-    \State $\hat{j}_{h,x,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
+    \State $\hat{\jmath}_{h,x,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
     \State $\hat{j}_{h,y,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
   \end{algorithmic}
   \vspace{0.1cm}
@@ -711,3 +715,4 @@ La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squelt
     \State $a_{v_z} \gets -B_{x,[i]}(w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s})) + B_{y,[i]}(w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) )$
   \end{algorithmic}
 \end{algorithm}
+
