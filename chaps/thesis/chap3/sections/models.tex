@@ -19,3 +19,49 @@
   &\pdv{f_{h  }}{t} +  v_z\partial_z f_h - \left(E_x + v_y B_0 - v_zB_y\right)\partial_{v_x} f_h\\
   &\hspace{2cm}- \left(E_y - v_x B_0 + v_z B_x\right)\partial_{v_y} f_h- \left(v_x B_y- v_y B_x\right)\partial_{v_z} f_h = 0.\nonumber
 \end{align}
+Cela nous permet de définir l'hamiltonien :
+\begin{equation}
+  \mathcal{H} = {}
+      \underbrace{\frac{1}{2}\int_{\mathbb{R}}(E_x^2+E_y^2) \dd{z}}_{\mathcal{H}_E}
+    + \underbrace{\frac{1}{2}\int_{\mathbb{R}}(B_x^2+B_y^2) \dd{z}}_{\mathcal{H}_B}
+    + \underbrace{\frac{1}{2}\int_{\mathbb{R}}\frac{1}{\Omega_{pe}^2}(j_{c,x}^2+j_{c,y}^2) \dd{z}}_{\mathcal{H}_{j_c}}
+    + \underbrace{\frac{1}{2}\int_{\mathbb{R}}\int_{\mathbb{R}^2}|\vb{v}|^2 f_h \dd{\vb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
+  \label{eq:ham1dz3dv}
+\end{equation}
+
+On définit le crouchet suivant, définit pour deux fonctionnelles $\mathcal{F}$ et $\mathcal{G}$ :
+\begin{equation}
+  \begin{aligned}
+    \{ \mathcal{F},\mathcal{G} \}[ j_{c,x}, j_{c,y}, B_x, B_y, E_x, E_y, f_h] &=
+                       \int_{\mathbb{R}}\int_{\mathbb{R}^3} f_h \left( \partial_z\fdv{\mathcal{F}}{f_h}\partial_{v_z}\fdv{\mathcal{G}}{f_h} - \partial_{v_z}\fdv{\mathcal{F}}{f_h}\partial_z\fdv{\mathcal{G}}{f_h} \right) \dd{\vb{v}}\dd{z} \\
+      &\hspace{-4cm} + \int_{\mathbb{R}}\int_{\mathbb{R}^3} f_h \left(
+            \partial_{v_x}\fdv{\mathcal{F}}{f_h}\fdv{\mathcal{G}}{E_x} + \partial_{v_y}\fdv{\mathcal{F}}{f_h}\fdv{\mathcal{G}}{E_y}
+          - \partial_{v_x}\fdv{\mathcal{G}}{f_h}\fdv{\mathcal{F}}{E_x} - \partial_{v_y}\fdv{\mathcal{G}}{f_h}\fdv{\mathcal{F}}{E_y}
+          \right) \dd{\vb{v}}\dd{z} \\
+      &\hspace{-4cm} + \int_{\mathbb{R}}\int_{\mathbb{R}^3} f_h(\vb{B}+\vb{B}_0)\cdot\left( \nabla_{\vb{v}}\fdv{\mathcal{F}}{f_h}\times\nabla_{\vb{v}}\fdv{\mathcal{G}}{f_h} \right) \dd{\vb{v}}\dd{z} \\
+      &\hspace{-4cm} + \int_{\mathbb{R}} \left(
+          - \partial_z\fdv{\mathcal{F}}{E_y}\fdv{\mathcal{G}}{B_x} + \partial_z\fdv{\mathcal{F}}{E_x}\fdv{\mathcal{G}}{B_y}
+          + \partial_z\fdv{\mathcal{G}}{E_y}\fdv{\mathcal{F}}{B_x} - \partial_z\fdv{\mathcal{G}}{E_x}\fdv{\mathcal{F}}{B_y}
+          \right) \dd{z} \\
+      &\hspace{-4cm} + \int_{\mathbb{R}} \Omega_{pe}^2 \left(
+            \fdv{\mathcal{F}}{j_{c,x}}\fdv{\mathcal{G}}{E_x} + \fdv{\mathcal{F}}{j_{c,y}}\fdv{\mathcal{G}}{E_y}
+          - \fdv{\mathcal{G}}{j_{c,x}}\fdv{\mathcal{F}}{E_x} - \fdv{\mathcal{G}}{j_{c,y}}\fdv{\mathcal{F}}{E_y}
+          \right) \dd{z} \\
+      &\hspace{-4cm} + \int_{\mathbb{R}} \Omega_{pe}^2B_0 \left(
+            \fdv{\mathcal{F}}{j_{c,x}}\fdv{\mathcal{G}}{j_{c,y}}
+          - \fdv{\mathcal{F}}{j_{c,y}}\fdv{\mathcal{G}}{j_{c,x}}
+          \right) \dd{z}.
+  \end{aligned}
+  \label{bracket}
+\end{equation}
+Cela nous permet de réécrire le système~\eqref{eq:VHM:jx}-\eqref{eq:VHM:fh} comme 
+$$
+  \partial_t U = \{ U,\mathcal{H} \}
+$$
+où $U(t,z,\vb{v}) = ( j_{c,\perp}(t,z) , B_\perp(t,z) , E_\perp(t,z) , f)h(t,z,\vb{v}) )^\top$ où $\mathcal{H}$ est donné par~\eqref{eq:ham1dz3dv} et $j_{c,\perp}=(j_{c,x},j_{c,y})^\top$, $B_{\perp}=(B_{x},B_{y})^\top$ et $E_{\perp}=(E_{x},E_{y})^\top$. Par la suite, nous utiliserons également les notations $v_\perp = (v_x,v_y)^\top\in\mathbb{R}^2$ ainsi que $\vb{v} = (v_\perp,v_z)^\top\in\mathbb{R}^3$ et nous définissions la matrice symplectique 
+$$
+  J = \begin{pmatrix}
+     0 & 1 \\
+    -1 & 0
+  \end{pmatrix}.
+$$

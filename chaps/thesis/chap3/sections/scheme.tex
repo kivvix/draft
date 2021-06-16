@@ -6,7 +6,7 @@
 \subsection{Méthode de \emph{splitting} hamiltonien}
 % -------------------------------------------------------------------
 
-Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle $1dz -- 3dv$ celui-ci se décompose en 4 étapes, et il s'écrit sous la forme :
+Nous utilisons ici une méthode de \emph{splitting} hamiltonien. Pour le modèle $1dz-3dv$ celui-ci se décompose en 4 étapes, et il s'écrit sous la forme :
 \begin{equation}
   \begin{aligned}
     & \partial_t U = \{ U,\mathcal{H}_{j_c}\} + \{ U,\mathcal{H}_B\} + \{ U,\mathcal{H}_E\} + \{ U,\mathcal{H}_{f_h}\} \\
@@ -36,13 +36,8 @@ $$
     f_h(0)
   \end{pmatrix}
 $$
-Cela s'obtient car $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$, où l'on rappelle que $J$ est la matrice donnée par :
-$$
-  J = \begin{pmatrix}
-     0 & 1 \\
-    -1 & 0
-  \end{pmatrix}
-$$
+Ce résultat s'obtient grâce à $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$.
+
 Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait de pseudo-code~\ref{alg:Hjc}. Dans les calculs de complexité que nous nous proposons de faire ici, seuls les parcours de tableaux nous intéressent, la complexité des fonctions mathématiques est supposée constante. Cette étape a une complexité de $\order{N_z}$ en temps.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{j_c}$}
@@ -81,7 +76,7 @@ $$
     f_h(0)
   \end{pmatrix}
 $$
-Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité temporelle de $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$. Pour la complexité spatiale, il est à noter que cette étape nécessite l'allocation de 4 tableaux temporaires de taille $N_z$.
+Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité temporelle de $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$. Pour la complexité spatiale, il est à noter que cette étape nécessite l'allocation de 4 tableaux temporaires de taille $N_z$ pour le stockage des transformée de Fourier, donc contenant des valeurs complexes (chaque nombre complexe nécessite le stockage de deux réels à virgule flottante).
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{B}$}
   \label{alg:HB}
@@ -121,7 +116,7 @@ $$
     f_h(0,z,v_\perp+tE_\perp(0),v_z)
   \end{pmatrix}
 $$
-Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE}. Les sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ sont très similaires et seul la première est détaillée, seul change l'axe d'interpolation et le pied de la caractéristique. Ces sous-étapes correspondent aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Pour ce qui concerne l'utilisation de la mémoire, cette étape nécessite deux tableaux $f^{(a)}$ et $f^{(b)}$ temporaires de taille $N_{v_x}N_{v_y}N_{v_z}$.
+Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE}. Les sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ sont très similaires et seul la première est détaillée, seul change l'axe d'interpolation et le pied de la caractéristique. Ces sous-étapes correspondent aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Pour ce qui concerne l'utilisation de la mémoire, cette étape nécessite deux tableaux de valeurs réelles $f^{(a)}$ et $f^{(b)}$ temporaires de taille $N_{v_x}N_{v_y}N_{v_z}$.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{E}$}
   \label{alg:HE}
@@ -185,7 +180,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
         f_h(0,z,v_x,v_y-tv_xB_0,v_z+tB_yv_x)
       \end{pmatrix}
     $$
-    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx}. La sous-étape $\mathcal{H}_{f_{h,x,v_y}}$ n'est qu'une interpolation polynomiale et ne sera pas détaillée ici. La sous-étape $\mathcal{H}_{f_{h,x,v_z}}$ présente en plus la résolution de l'équation d'Ampère, que nous détaillons ici. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Pour la complexité spatiale, on remarque la nécessité d'un tableau temporaire $f^{(a)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$.
+    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx}. La sous-étape $\mathcal{H}_{f_{h,x,v_y}}$ n'est qu'une interpolation polynomiale et ne sera pas détaillée ici. La sous-étape $\mathcal{H}_{f_{h,x,v_z}}$ présente en plus la résolution de l'équation d'Ampère, que nous détaillons ici. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Pour la complexité spatiale, on remarque la nécessité d'un tableau temporaire de réels $f^{(a)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$.
     \begin{algorithm}
       \caption{Calcul de l'étape $\mathcal{H}_{f_{h,x}}$}
       \label{alg:Hfx}
@@ -335,7 +330,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
     \end{algorithm}
 \end{itemize}
 
-Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$. On note cependant la nécessité d'avoir des au moins 2 tableaux temporaires $f^{(a)}$ et $f^{(b)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$, la variable $f^{(c)}$ peut être remplacée par $f^{(a)}$. Cette étape est la plus coûteuse en temps de calcul, elle sera donc placer au milieu de la méthode \emph{splitting} pour former la méthode de Strang.
+Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$. On note cependant la nécessité d'avoir des au moins 2 tableaux temporaires $f^{(a)}$ et $f^{(b)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$ de réels, la variable $f^{(c)}$ peut être remplacée par $f^{(a)}$. Cette étape est la plus coûteuse en temps de calcul, elle sera donc placer au milieu de la méthode \emph{splitting} pour former la méthode de Strang.
 
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{f_h}$}
@@ -349,6 +344,9 @@ Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
+
+Il est par la suite nécessaire de concaténer les étapes $\mathcal{H}_{j_c}$, $\mathcal{H}_{B}$, $\mathcal{H}_{E}$ et $\mathcal{H}_{f_h}$ pour construire une méthode de Lie, de Strang ou de Suzuki (voir section~\ref{ssec:2:suzuki} ou~\cite{Suzuki:1990} et~\cite{Blanes:2019}). Il est à noter que la méthode Lie possède déjà 4 étapes (11 sous-étapes) et la méthode de Strang 7 (avec 15 sous-étapes, les sous-étapes de $\mathcal{H}_{f_h}$ n'ayant pas besoin d'être concaténées en palindrome). Pour des raisons de temps de calcul, la méthode de Suzuki, avec 35 étapes (soit 75 sous-étapes) ne sera pas considérée comme alternative valable aux méthodes de Lawson d'ordre élevé.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
