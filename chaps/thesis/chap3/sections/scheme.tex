@@ -592,6 +592,22 @@ La matrice d'amplification n'est plus un polynôme, nous nous proposons donc de 
   \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(3,3) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
   \label{fig:3:vplrk33}
 \end{figure}
+On peut regarder, sur la figure~\ref{fig:3:vpMrk33_k15}, pour le seul mode $\kappa=15$, la valeur absolue des différentes valeurs propres de la matrice d'amplification. On remarque la présence d'une valeur propre égale à 1 ainsi que d'autres valeurs propres, qui sont strictement inférieur à 1 pour des petites valeurs de $\Delta t$ (jusqu'à $0.11$ environ). Pour estimer une condition de stabilité pour $\kappa=15$, il est nécessaire de connaître la valeur de $\Delta t$ telle que la plus grande valeur propre soit de module suppérieur à 1. On trace sur la figure~\ref{fig:3:vpMrk33}, le module de la plus grande valeur propre de la matrice d'amplification, pour différents mode de Fourier $\kappa\in[\![0,27]\!]$. On remarque que plus la discrétisation en $x$ est fine (grande valeur des modes de Fourier) la valeur de $\Delta t$ permettant d'assurer la stabilité diminue.
+\begin{figure}[h]
+  \centering
+  \setbox9=\hbox{\includegraphics[width=0.45\linewidth]{\localPath/figures/vpMrk33.png}}
+  \begin{subfigure}[b]{.45\linewidth}
+    \raisebox{\dimexpr\ht9-\height}{\includegraphics[width=\textwidth]{\localPath/figures/vpMrk33_k15.png}}
+    \caption{Module des valeurs propres de la matrice d'amplification de LRK(3,3) pour le mode de Fourier $\kappa=15$, $\Delta t\in[0,0.12]$.\\ }
+    \label{fig:3:vpMrk33_k15}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45\linewidth}
+    \includegraphics[width=\textwidth]{\localPath/figures/vpMrk33.png}
+    \caption{Module de la plus grande valeur propre de la matrice d'amplification de LRK(3,3) pour différents modes de Fourier $\kappa\in[\![0,27]\!]$ et $\Delta t\in[0,0.12]$.}
+    \label{fig:3:vpMrk33}
+  \end{subfigure}
+  \caption{Étude des valeurs propres de la matrice d'amplification de la méthode LRK(3,3) en fonction de $\Delta t$.}
+\end{figure}
 On peut ainsi estimer une condition de stabilité pour $N_z = 15,27$ et on obtient : pour $N_z = 15$, $\Delta t <0.115 \approx \frac{\sqrt{3}}{15}$, et pour $N_z = 27$, $\Delta t <0.066 \approx \frac{\sqrt{3}}{27}$.
 
 On effectue une analyse similaire pour la méthode de Lawson LRK(4,4) suivante :
@@ -613,15 +629,23 @@ $$
               & + \frac{\Delta t^4}{24}Ne^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L}N \Big]U^n
   \end{aligned}
 $$
-Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de tracer la figure~\ref{fig:3:vplrk44} qui représente la plus grande valeur propre en valeur absolue en chaque point $(\kappa,\Delta t)$ de la discrétisation. Cela nous permet d'obtenir les conditions de stabilité pour différentes discrétisation en espace, et par exemple pour $N_z = 15$ on trouve $\Delta t<0.188 \approx \frac{2\sqrt{2}}{15}$ et pour $N_z = 27$ on trouve $\Delta t < 0.104 \approx \frac{2\sqrt{2}}{27}$.
+Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de tracer les mêmes diagnostics que précédemment sur la figure~\ref{fig:3:vplrk44}. On représente ainsi à gauche le module des différentes valeurs propres de la matrice d'amplification de la méthode LRK(4,4) pour $\kappa=15$, et à droite on ne s'intéresse qu'à la plus grande valeur propre pour différents modes de Fourier $\kappa\in[\![0,27]\!]$. Cela nous permet d'obtenir les conditions de stabilité pour différentes discrétisation en espace, et par exemple pour $N_z = 15$ on trouve $\Delta t<0.188 \approx \frac{2\sqrt{2}}{15}$ et pour $N_z = 27$ on trouve $\Delta t < 0.104 \approx \frac{2\sqrt{2}}{27}$.
 \begin{figure}[h]
   \centering
-  \includegraphics[height=0.49\textheight]{\localPath/figures/vplrk44.png}
-  \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(4,4) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
+  \setbox9=\hbox{\includegraphics[width=0.45\linewidth]{\localPath/figures/vpMrk33.png}}
+  \begin{subfigure}[b]{.45\linewidth}
+    \raisebox{\dimexpr\ht9-\height}{\includegraphics[width=\textwidth]{\localPath/figures/vpMrk44_k15.png}}
+    \caption{Module des valeurs propres de la matrice d'amplification de LRK(4,4) pour le mode de Fourier $\kappa=15$, $\Delta t\in[0,0.25]$.\\ }
+    \label{fig:3:vpMrk44_k15}
+  \end{subfigure}
+  \begin{subfigure}[b]{.45\linewidth}
+    \includegraphics[width=\textwidth]{\localPath/figures/vpMrk44.png}
+    \caption{Module de la plus grande valeur propre de la matrice d'amplification de LRK(4,4) pour différents modes de Fourier $\kappa\in[\![0,27]\!]$ et $\Delta t\in[0,0.25]$.}
+    \label{fig:3:vpMrk44}
+  \end{subfigure}
+  \caption{Étude des valeurs propres de la matrice d'amplification de la méthode LRK(4,4) en fonction de $\Delta t$.}
   \label{fig:3:vplrk44}
 \end{figure}
-\Josselin{Je ne suis pas nécessairement convaincu par ces 2 figures, qui en plus d'être très similaire visuellement, ne sont pas très lisible. J'ai également tracé la valeur absolue de la plus grande valeur propre en fonction de $\Delta t$ pour différentes valeurs de $\kappa$, j'ai aussi pour un $\kappa$ donné les différentes valeurs propres (et pas que la plus grande). Ce sont des graphiques 2d, sans doute plus lisible, en tout ça ici je trouve ça redondant mais j'attends vos retours pour discuter et savoir ce qui serait mieux}
-
 
 Cela conclu l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condition de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(B_x,B_y,E_x,E_y)^\top$.
 
