@@ -1,7 +1,8 @@
-% !TEX root = ../chap3.tex
+% !TEX root = ../../main.tex
 
 \section{Présentation du modèle}
 
+Nous nous intéressons au modèle~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} adimensionné, qui se réécrit au cadre $1dz-3dv$, avec comme inconnues $j_{c,x}$, $j_{c,y}$, $B_{x}$, $B_{y}$, $E_{x}$, $E_{y}$, et $f_h$ comme :
 \begin{align}
   \label{eq:VHM:jx}
   &\pdv{j_{c,x}}{t} = \Omega_{pe}^2 { E}_x - { j}_{c,y}B_0,\\
@@ -19,7 +20,7 @@
   &\pdv{f_{h  }}{t} +  v_z\partial_z f_h - \left(E_x + v_y B_0 - v_zB_y\right)\partial_{v_x} f_h\\
   &\hspace{2cm}- \left(E_y - v_x B_0 + v_z B_x\right)\partial_{v_y} f_h- \left(v_x B_y- v_y B_x\right)\partial_{v_z} f_h = 0.\nonumber
 \end{align}
-Cela nous permet de définir l'hamiltonien :
+où les variables $j_{c,x}$ et $j_{c,y}$ représentent les courants induits par les particules froides dans les directions $x$ et $y$, et les champs $B_x$, $B_y$, $E_x$ et $E_y$ représentent les champs électromagnétiques dans les directions $x$ et $y$, le champ externe $\vb{B}_0=(0,0,B_0)^\top$ privilégie un déplacement longitudinal des particules en espace, ce qui permet de négliger les champs électromagnétiques dans la direction $z$. La densité de particules chaudes dans l'espace des phases est représentée par la variable $f_h$. Ce système nous permet de calculer l'hamiltonien :
 \begin{equation}
   \mathcal{H} = {}
       \underbrace{\frac{1}{2}\int_{\mathbb{R}}(E_x^2+E_y^2) \dd{z}}_{\mathcal{H}_E}
@@ -28,8 +29,7 @@ Cela nous permet de définir l'hamiltonien :
     + \underbrace{\frac{1}{2}\int_{\mathbb{R}}\int_{\mathbb{R}^2}|\vb{v}|^2 f_h \dd{\vb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
   \label{eq:ham1dz3dv}
 \end{equation}
-
-On définit le crouchet suivant, définit pour deux fonctionnelles $\mathcal{F}$ et $\mathcal{G}$ :
+On définit le crochet suivant, définit pour deux fonctionnelles $\mathcal{F}$ et $\mathcal{G}$ :
 \begin{equation}
   \begin{aligned}
     \{ \mathcal{F},\mathcal{G} \}[ j_{c,x}, j_{c,y}, B_x, B_y, E_x, E_y, f_h] &=
@@ -58,7 +58,7 @@ Cela nous permet de réécrire le système~\eqref{eq:VHM:jx}-\eqref{eq:VHM:fh} c
 $$
   \partial_t U = \{ U,\mathcal{H} \}
 $$
-où $U(t,z,\vb{v}) = ( j_{c,\perp}(t,z) , B_\perp(t,z) , E_\perp(t,z) , f)h(t,z,\vb{v}) )^\top$ où $\mathcal{H}$ est donné par~\eqref{eq:ham1dz3dv} et $j_{c,\perp}=(j_{c,x},j_{c,y})^\top$, $B_{\perp}=(B_{x},B_{y})^\top$ et $E_{\perp}=(E_{x},E_{y})^\top$. Par la suite, nous utiliserons également les notations $v_\perp = (v_x,v_y)^\top\in\mathbb{R}^2$ ainsi que $\vb{v} = (v_\perp,v_z)^\top\in\mathbb{R}^3$ et nous définissions la matrice symplectique 
+où $U(t,z,\vb{v}) = ( j_{c,\perp}(t,z) , B_\perp(t,z) , E_\perp(t,z) , f_h(t,z,\vb{v}) )^\top$ où $\mathcal{H}$ est donné par~\eqref{eq:ham1dz3dv} et $j_{c,\perp}=(j_{c,x},j_{c,y})^\top$, $B_{\perp}=(B_{x},B_{y})^\top$ et $E_{\perp}=(E_{x},E_{y})^\top$. Par la suite, nous utiliserons également les notations $v_\perp = (v_x,v_y)^\top\in\mathbb{R}^2$ ainsi que $\vb{v} = (v_\perp,v_z)^\top\in\mathbb{R}^3$ et nous définissons la matrice symplectique 
 $$
   J = \begin{pmatrix}
      0 & 1 \\

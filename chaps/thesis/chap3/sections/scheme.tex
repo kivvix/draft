@@ -3,6 +3,8 @@
 \section{Schémas numériques}
 \label{sec:3:scheme}
 
+Nous allons maintenant présenter dans le cadre $1dz-3dv$ les deux schémas numériques que nous souhaitons comparer. Comme dans le cas $1dx-1dv$, il s'agit d'une méthode basée sur le \emph{splitting} hamiltonien et d'une méthode de Lawson. Nous détaillons ces méthodes en vue de leur implémentation information, ainsi, à la manière de~\cite{Saramito:2013}, nous calculerons la complexité temporelle, qui permet d'estimer l'ordre de grandeur du temps de calcul, et la complexité spatiale, qui permet d'estimer l'espace mémoire nécessaire pour le déroulement des calculs.
+
 \subsection{Méthode de \emph{splitting} hamiltonien}
 % -------------------------------------------------------------------
 
@@ -36,7 +38,13 @@ $$
     f_h(0)
   \end{pmatrix}
 $$
-Ce résultat s'obtient grâce à $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$.
+Ce résultat s'obtient grâce à $\int_0^t \exp(-sJ)j_{c,\perp}(0)\,\mathrm{d}s = J\left(\exp(-tJ)-I\right)j_{c,\perp}(0)$ où l'on rappelle :
+$$
+  \exp(-tJ) = \begin{pmatrix}
+    \cos(t) & -\sin(t) \\
+    \sin(t) &  \cos(t)
+  \end{pmatrix}.
+$$
 
 Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait de pseudo-code~\ref{alg:Hjc}. Dans les calculs de complexité que nous nous proposons de faire ici, seuls les parcours de tableaux nous intéressent, la complexité des fonctions mathématiques est supposée constante. Cette étape a une complexité de $\order{N_z}$ en temps.
 \begin{algorithm}
@@ -47,8 +55,8 @@ Nous présentons l'algorithme permettant d'effectuer cette étape dans l'extrait
       \For{$i=0,\dots,N_z-1$}
         \State $\bar{j}_{c,x} \gets j_{c,x,[i]}\cos(\Delta t) - j_{c,y,[i]}\sin(\Delta t) $
         \State $\bar{j}_{c,y} \gets j_{c,x,[i]}\sin(\Delta t) + j_{c,y,[i]}\cos(\Delta t) $
-        \State $E_{x,[i]}\gets -j_{c,x,[i]}\sin(\Delta t)     + j_{c,y,[i]}(1-\cos(\Delta t))$
-        \State $E_{y,[i]}\gets  j_{c,x,[i]}(\cos(\Delta t)-1) - j_{c,y,[i]}\sin(\Delta t)$
+        \State $E_{x,[i]}\gets E_{x,[i]} - j_{c,x,[i]}\sin(\Delta t)     + j_{c,y,[i]}(1-\cos(\Delta t))$
+        \State $E_{y,[i]}\gets E_{y,[i]} + j_{c,x,[i]}(\cos(\Delta t)-1) - j_{c,y,[i]}\sin(\Delta t)$
         \State $j_{c,x,[i]} \gets \bar{j}_{c,x}$
         \State $j_{c,y,[i]} \gets \bar{j}_{c,y}$
       \EndFor
@@ -76,7 +84,7 @@ $$
     f_h(0)
   \end{pmatrix}
 $$
-Cette étape est résolu dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité temporelle de $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$. Pour la complexité spatiale, il est à noter que cette étape nécessite l'allocation de 4 tableaux temporaires de taille $N_z$ pour le stockage des transformée de Fourier, donc contenant des valeurs complexes (chaque nombre complexe nécessite le stockage de deux réels à virgule flottante).
+Cette étape est résolue dans l'espace de Fourier, on obtient alors l'algorithme~\ref{alg:HB}. Pour obtenir la complexité de cette étape il faut connaître la complexité de l'algorithme de transformée de Fourier rapide : $\text{FFT}$ que l'on effectue selon l'axe $z$. L'implémentation naïve de cet algorithme est en $\order{N_z^2}$, mais il est possible de descendre à une complexité de $\order{N_z\log(N_z)}$ qui est la valeur que nous considèrerons. La complexité de la transformée de Fourier inverse, $i\text{FFT}$, est la même. On obtient ainsi une complexité temporelle de $\order{6N_z\log(N_z)+N_z}=\order{N_z\log(N_z)}$. Pour la complexité spatiale, il est à noter que cette étape nécessite l'allocation de 4 tableaux temporaires de taille $N_z$ pour le stockage des transformées de Fourier, donc contenant des valeurs complexes (chaque nombre complexe nécessite le stockage de deux réels à virgule flottante).
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{B}$}
   \label{alg:HB}
@@ -116,7 +124,7 @@ $$
     f_h(0,z,v_\perp+tE_\perp(0),v_z)
   \end{pmatrix}
 $$
-Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE}. Les sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ sont très similaires et seul la première est détaillée, seul change l'axe d'interpolation et le pied de la caractéristique. Ces sous-étapes correspondent aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Pour ce qui concerne l'utilisation de la mémoire, cette étape nécessite deux tableaux de valeurs réelles $f^{(a)}$ et $f^{(b)}$ temporaires de taille $N_{v_x}N_{v_y}N_{v_z}$.
+Le calcul de $f_h(0,z,v_\perp+tE_\perp(0),v_z)$ s'effectue en utilisant deux interpolations polynomiale de Lagrange d'ordre 5 à une dimension (une dans la direction $v_x$ et une autre dans la direction $v_y$). L'algorithme permettant de résoudre cette étape est présenté dans l'algorithme~\ref{alg:HE}. Les sous-étapes $\mathcal{H}_{E,v_x}$ et $\mathcal{H}_{E,v_y}$ sont très similaires et seule la première est détaillée, seul change l'axe d'interpolation et le pied de la caractéristique. Ces sous-étapes correspondent aux deux interpolations avec un polynôme de Lagrange, faisant appel à la fonction, que l'on ne définit pas ici, $\Call{lagrange\_generator}$ qui permet d'obtenir un polynôme de Lagrange, de degré 5, à partir des 6 points d'interpolations donnés en argument. On considère comme constante la complexité du calcul d'un polynôme d'interpolation, on obtient alors une complexité algorithmique en $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$ pour les sous-étapes $\mathcal{H}_{E,{v_x}}$ et $\mathcal{H}_{E,{v_y}}$. Le calcul de de la transformée de Fourier inverse de $\hat{f}_h$, à la ligne~\ref{alg:HE:l:ifft}, nécessite $N_{v_x}\times N_{v_y}\times N_{v_z}$ transformées de Fourier selon l'axe $z$, soit une complexité totale de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$, de même pour la transformée de Fourier à la ligne~\ref{alg:HE:l:fft}. L'étape $\mathcal{H}_{E}$ possède donc une complexité algorithmique de $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + 2N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z) + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Pour ce qui concerne l'utilisation de la mémoire, cette étape nécessite deux tableaux de valeurs réelles $f^{(a)}$ et $f^{(b)}$ temporaires de taille $N_{v_x}N_{v_y}N_{v_z}$.
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{E}$}
   \label{alg:HE}
@@ -157,7 +165,7 @@ $$
     \partial_t f_h          &= -v_z\partial_zf_h + (v_yB_0-v_zB_y)\partial_{v_x}f_h + (-v_xB_0+v_zB_x)\partial_{v_y}f_h + (v_xB_y - v_yB_x)\partial_{v_z}f_h
   \end{cases}
 $$
-Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce système ne peut être résolu exactement en temps. Mais en suivant \cite{Li:2020}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela conduit à résoudre les sous-système suivant :
+Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce système ne peut être résolu exactement en temps. Mais en suivant \cite{Li:2020}, nous pouvons subdiviser encore l'hamiltonien $\mathcal{H}_{f_h}$ en $\mathcal{H}_{f_h}=\mathcal{H}_{f_{h,x}}+\mathcal{H}_{f_{h,y}}\mathcal{H}_{f_{h,z}}$, où $\mathcal{H}_{f_{h,\star}}=\frac{1}{2}\int v_{\star}^2 f_h\,\mathrm{d}\textbf{v}$, où $\star=x,y,z$. Cela conduit à résoudre les sous-systèmes suivants :
 
 \begin{itemize}
   \item $\mathcal{H}_{f_{h,x}}$ :
@@ -180,7 +188,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
         f_h(0,z,v_x,v_y-tv_xB_0,v_z+tB_yv_x)
       \end{pmatrix}
     $$
-    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx}. La sous-étape $\mathcal{H}_{f_{h,x,v_y}}$ n'est qu'une interpolation polynomiale et ne sera pas détaillée ici. La sous-étape $\mathcal{H}_{f_{h,x,v_z}}$ présente en plus la résolution de l'équation d'Ampère, que nous détaillons ici. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Pour la complexité spatiale, on remarque la nécessité d'un tableau temporaire de réels $f^{(a)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$.
+    En pratique, nous utiliserons deux interpolations d'ordre 5 avec des polynômes de Lagrange de dimension 1 dans les directions $v_y$ et $v_z$, comme présenté dans l'algorithme~\ref{alg:Hfx}. La sous-étape $\mathcal{H}_{f_{h,x,v_y}}$ n'est qu'une interpolation polynomiale et ne sera pas détaillée ici. La sous-étape $\mathcal{H}_{f_{h,x,v_z}}$ présente en plus la résolution de l'équation d'Ampère, que nous détaillons ici. La complexité de cette étape est $\order{2N_{v_x}N_{v_y}N_{v_z}N_z + N_z} = \order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Pour la complexité spatiale, on remarque la nécessité d'un tableau temporaire de réels $f^{(a)}$ (lignes~\ref{alg:l:Hfhx:18} et~\ref{alg:l:Hfhx:19}) de taille $N_{v_x}N_{v_y}N_{v_z}$.
     \begin{algorithm}
       \caption{Calcul de l'étape $\mathcal{H}_{f_{h,x}}$}
       \label{alg:Hfx}
@@ -206,8 +214,8 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
           \vspace{0.25cm}
 
         \Function{$\mathcal{H}_{f_{h,x}}$}{$f^{in}$,$f^{out}$,$B_y$,$E_x$}
-          \State \Call{ $\mathcal{H}_{f_{h,x,v_y}}$ }{ $f^{in}$  , $f^{(a)}$ }
-          \State \Call{ $\mathcal{H}_{f_{h,x,v_z}}$ }{ $f^{(a)}$ , $f^{out}$ , $B_y$ , $E_x$ }
+          \State \Call{ $\mathcal{H}_{f_{h,x,v_y}}$ }{ $f^{in}$  , $f^{(a)}$ }\label{alg:l:Hfhx:18}
+          \State \Call{ $\mathcal{H}_{f_{h,x,v_z}}$ }{ $f^{(a)}$ , $f^{out}$ , $B_y$ , $E_x$ }\label{alg:l:Hfhx:19}
         \EndFunction
       \end{algorithmic}
     \end{algorithm}
@@ -232,7 +240,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
         f_h(0,z,v_x-tv_yB_0,v_y,v_z-tB_xv_y)
       \end{pmatrix}
     $$
-    De la même façon, nous utiliserons pour la résolution deux interpolations de dimension 1, interpolation d'ordre 5 à l'aide de polynômes de Lagrange. Nous obtenons les même complexités temporelle et spatiale que l'étape $\mathcal{H}_{f_{h,x}}$.
+    De la même façon, nous utiliserons pour la résolution deux interpolations (d'ordre 5) de dimension 1, à l'aide de polynômes de Lagrange. Nous obtenons les même complexités temporelle et spatiale que l'étape $\mathcal{H}_{f_{h,x}}$.
 
   \item $\mathcal{H}_{f_{h,z}}$ :
     $$
@@ -286,7 +294,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
     $$
       f(t,z,\vb{v}) = g(t,z-tv_z,\vb{v}).
     $$
-    Ces différentes étapes permette de construire l'algorithme~\ref{alg:Hfz} permettant la résolution de ce sous-système. Deux sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$, effectuent les interpolations polynomiales d'ordre 5, respectivement dans les directions $v_x$ et $v_y$, nous de détaillerons ici que la première. La complexité algorithmique de l'étape correspond à deux fois celle de la sous-étape $\mathcal{H}_{f_{h,z,v_x}}$ (la sous-étape $\mathcal{H}_{f_{h,z,v_y}}$ étant très similaire). Cette étape consiste une transformée de Fourier suivant l'axe $z$ (de complexité $\order{N_z\log(N_z)}$), puis pour toute valeur de $(k_x,k_y,k_z,j)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$, une somme sur $N_z$ et une interpolation polynomiale que l'on a supposé de complexité constante. On obtient une complexité algorithmique pour les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ de $\order{N_z\log(N_z)+N_{v_x}N_{v_y}N_{v_z}N_z^2}$. La sous-étape $\mathcal{H}_{f_{h,z,z}}$, consiste en une transformée de Fourier dans la direction $z$ (de complexité $\order{N_z\log(N_z)}$) et un parcours dans la direction $z$, pour toute valeur d'indices du quadruplet $(k_x,k_y,k_z,j)$, ce qui correspond à une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)}$. On obtient une complexité algorithmique de l'étape $\mathcal{H}_{f_{h,z}}$ de :
+    Ces différentes étapes permettent de construire l'algorithme~\ref{alg:Hfz} permettant la résolution de ce sous-système. Deux sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$, effectuent les interpolations polynomiales d'ordre 5, respectivement dans les directions $v_x$ et $v_y$, nous détaillerons ici que la première. La complexité algorithmique de l'étape correspond à deux fois celle de la sous-étape $\mathcal{H}_{f_{h,z,v_x}}$ (la sous-étape $\mathcal{H}_{f_{h,z,v_y}}$ étant très similaire). Cette étape consiste en une transformée de Fourier suivant l'axe $z$ (de complexité $\order{N_z\log(N_z)}$), puis pour toute valeur de $(k_x,k_y,k_z,j)\in[\![0,N_{v_x}[\![\times[\![0,N_{v_y}[\![\times[\![0,N_{v_z}[\![$, une somme sur $N_z$ et une interpolation polynomiale que l'on a supposé de complexité constante. On obtient une complexité algorithmique pour les sous-étapes $\mathcal{H}_{f_{h,z,v_x}}$ et $\mathcal{H}_{f_{h,z,v_y}}$ de $\order{N_z\log(N_z)+N_{v_x}N_{v_y}N_{v_z}N_z^2}$. La sous-étape $\mathcal{H}_{f_{h,z,z}}$, consiste en une transformée de Fourier dans la direction $z$ (de complexité $\order{N_z\log(N_z)}$) et un parcours dans la direction $z$, pour toute valeur d'indices du quadruplet $(k_x,k_y,k_z,j)$, ce qui correspond à une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)}$. On obtient une complexité algorithmique de l'étape $\mathcal{H}_{f_{h,z}}$ de :
     $$
       \order{2N_z\log(N_z) + N_{v_x}N_{v_y}N_{v_z}N_z(N_z + \log(N_z) + 1)}=\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}.
     $$
@@ -330,7 +338,7 @@ Comme pour la résolution de l'équation de Vlasov-Maxwell (\cite{Li:2020}), ce 
     \end{algorithm}
 \end{itemize}
 
-Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$. On note cependant la nécessité d'avoir des au moins 2 tableaux temporaires $f^{(a)}$ et $f^{(b)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$ de réels, la variable $f^{(c)}$ peut être remplacée par $f^{(a)}$. Cette étape est la plus coûteuse en temps de calcul, elle sera donc placer au milieu de la méthode \emph{splitting} pour former la méthode de Strang.
+Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\ref{alg:Hfh}, qui est une simple composition des sous-étapes $\mathcal{H}_{f_{h,x}}$, $\mathcal{H}_{f_{h,y}}$ et $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique est donc la somme des complexités de chaque sous-étape, ce qui revient, de manière asymptotique, à la complexité de la sous-partie la plus coûteuse, c'est-à-dire $\mathcal{H}_{f_{h,z}}$. La complexité algorithmique de $\mathcal{H}_{f_h}$ est $\order{N_{v_x}N_{v_y}N_{v_z}N_z^2}$. On note cependant la nécessité d'avoir au moins 2 tableaux temporaires $f^{(a)}$ et $f^{(b)}$ de taille $N_{v_x}N_{v_y}N_{v_z}$ de réels, la variable $f^{(c)}$ peut être remplacée par $f^{(a)}$. Cette étape est la plus coûteuse en temps de calcul, elle sera donc placé au milieu de la méthode de \emph{splitting} pour former la méthode de Strang.
 
 \begin{algorithm}
   \caption{Calcul de l'étape $\mathcal{H}_{f_h}$}
@@ -345,7 +353,7 @@ Finalement, la solution de $\mathcal{H}_{f_h}$ est calculée dans l'algorithme~\
   \end{algorithmic}
 \end{algorithm}
 
-Il est par la suite nécessaire de concaténer les étapes $\mathcal{H}_{j_c}$, $\mathcal{H}_{B}$, $\mathcal{H}_{E}$ et $\mathcal{H}_{f_h}$ pour construire une méthode de Lie, de Strang ou de Suzuki (voir section~\ref{ssec:2:suzuki} ou~\cite{Suzuki:1990} et~\cite{Blanes:2019}). Il est à noter que la méthode Lie possède déjà 4 étapes (11 sous-étapes) et la méthode de Strang 7 (avec 15 sous-étapes, les sous-étapes de $\mathcal{H}_{f_h}$ n'ayant pas besoin d'être concaténées en palindrome). Pour des raisons de temps de calcul, la méthode de Suzuki, avec 35 étapes (soit 75 sous-étapes) ne sera pas considérée comme alternative valable aux méthodes de Lawson d'ordre élevé.
+Il est par la suite nécessaire de concaténer les étapes $\mathcal{H}_{j_c}$, $\mathcal{H}_{B}$, $\mathcal{H}_{E}$ et $\mathcal{H}_{f_h}$ pour construire une méthode de Lie, de Strang ou de Suzuki (voir section~\ref{ssec:2:suzuki} ou~\cite{Suzuki:1990} et~\cite{Blanes:2019}). Il est à noter que la méthode de Lie possède déjà 4 étapes (11 sous-étapes) et la méthode de Strang 7 (avec 15 sous-étapes, les sous-étapes de $\mathcal{H}_{f_h}$ n'ayant pas besoin d'être concaténées en palindrome). Pour des raisons de temps de calcul, la méthode de Suzuki, avec 35 étapes (soit 75 sous-étapes) ne sera pas considérée comme alternative valable aux méthodes de Lawson d'ordre élevé.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -358,7 +366,7 @@ Dans cette section nous allons présenter la méthode d'intégration exponentiel
 $$
   \partial_t U = LU + N(t,U)
 $$
-où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ représente les modes de Fourier et avec :
+avec $U=\left( \hatj_{c,x},\hatj_{c,y},\hat{B}_x,\hat{B}_y,\hat{E}_x,\hat{E}_y,\hat{f}_h\right)^\top$ et où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ représente les modes de Fourier et :
 \begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\
@@ -367,7 +375,7 @@ où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ repr�
     0   &  0   & 0          &  0          & -i\kappa       & 0             & 0 \\
    -1   &  0   & 0          & -i\kappa    &  0             & 0             & 0 \\
     0   & -1   & i\kappa    &  0          &  0             & 0             & 0 \\
-    0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\
+    0   &  0   & 0          &  0          &  0             & 0             & -iv_z\kappa \\
   \end{pmatrix},
   \quad
   N:t,U\mapsto \begin{pmatrix}
@@ -377,11 +385,11 @@ où $\kappa=\frac{2j\pi}{N_z}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$ repr�
     0 \\
     \int v_x f \,\mathrm{d}v \\
     \int v_y f \,\mathrm{d}v \\
-    E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\nabla_v f
+    E_{\perp}\cdot\nabla_{v_\perp} f - v\times B\cdot\nabla_v f
   \end{pmatrix}
   \label{eq:3:LNmaxwell}
 \end{equation}
-Mais le calcul de la partie linéaire $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\kappa\in\left\{\frac{2\pi j}{L},j\in[\![-N_z,N_z]\!]\right\}$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
+Mais le calcul de la partie linéaire $e^{\tau L}$ nécessaire pour l'écriture du schéma de la méthode LRK (méthode de Lawson induite par une méthode de Runge-Kutta) n'est pas réalisable avec \sympy{} ou un autre logiciel de calcul formel. Cela vient de l'expression des valeurs propres, dépendant du temps ($\tau$) et de la discrétisation dans l'espace de Fourier des dérivées spatiales ($\kappa\in\left\{\frac{2\pi j}{L},j\in[\![-N_z,N_z]\!]\right\}$). Pour résoudre ce problème, il est décidé dans un premier temps d'intégrer la partie provenant des équations de Maxwell de $L$ dans la partie non-linéaire $N$. Ce qui nous mène à redéfinir $L$ et $N$ comme :
 \begin{equation}
   L = \begin{pmatrix}
     0   & -B_0 & 0 &  0 &  \Omega_{pe}^2 & 0             & 0 \\
@@ -390,7 +398,7 @@ Mais le calcul de la partie linéaire $e^{\tau L}$ nécessaire pour l'écriture 
     0   &  0   & 0 &  0 &  0             & 0             & 0 \\
    -1   &  0   & 0 &  0 &  0             & 0             & 0 \\
     0   & -1   & 0 &  0 &  0             & 0             & 0 \\
-    0   &  0   & 0 &  0 &  0             & 0             & -v_z\partial_z \\
+    0   &  0   & 0 &  0 &  0             & 0             & -iv_z\kappa \\
   \end{pmatrix},
   \ 
   N:t,U\mapsto \begin{pmatrix}
@@ -420,10 +428,11 @@ $}
 \end{equation}
 avec $\alpha = 0.378732187481834$, $\beta = 0.621267812518167$, $\gamma = 0.970142500145332$, $\delta = 0.242535625036333$, et $\theta^\pm = \frac{\sqrt{2}}{2}\tau\sqrt{9\pm\sqrt{17}}$.
 
-C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $k$ données est élevé et ne peut être effectuer en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace donnée, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
+C'est donc à partir de la matrice $L$ sans les termes provenant des équations de Maxwell, et avec le terme non-linéaire $N$, contenant les termes des équations de Maxwell, définis dans~\eqref{eq:3:LNsmaxwell}, que nous allons construire notre premier schéma de Lawson. Il est important d'avoir une formulation explicite de l'exponentielle de la partie linéaire pour construire un schéma en temps efficace. En effet le calcul numérique de l'exponentielle d'une matrice pour une valeur de $\tau$ et de $\kappa$ données est élevé et ne peut être effectué en amont de la simulation. Le calcul en amont de ces quantités impose une discrétisation en espace donnée, et empêche la mise en place de méthodes à pas de temps adaptatif. Nous verrons par la suite, dans la section~\ref{s3:approx}, une méthode permettant d'intégrer les termes des équations de Maxwell dans la partie linéaire de la méthode de Lawson.
 
 \subsubsection{Filtrage de l'équation de Vlasov}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\label{ssec:3:filtrage}
 
 L'équation de Vlasov contient le terme $(\vb{v}\times\vb{B}_0)$ qui introduit une condition de CFL restrictive qui peut être outrepassé en utilisant le changement de variable $w=e^{tB_0J}v$, avec $w=(w_x,w_y)^\top$ et $v=(v_x,v_y)^\top$, pour filtrer ce terme en influençant le moins possible le reste du système. Nous introduisons $g(t,z,w,v_z) = f_h(t,z,\exp(-tB_0J)w,v_z)$ avec :
 $$
@@ -486,7 +495,7 @@ Les autres équations restent inchangées. Les termes impactés sont dans la par
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \label{ssec:3:cflMaxwell}
 
-Dans la méthode de Lawson explicite que nous souhaitons mettre en place, nous proposons de placer les équations de Maxwell, équations linéaires, dans la partie non-linéaire (voir~\eqref{eq:3:LNsmaxwell}), entrainant par conséquent une condition de stabilité. Puisque nous résolvons de manière explicite des équations linéaires, il est possible d'effectuer un calcul de cette condition CFL de stabilité induite par les équations de Maxwell. Les termes non-linéaires de l'équation de Vlasov sur les particules chaudes, imposent également une condition de stabilité, que l'on se propose de se restreindre à la condition suivante :
+Dans la méthode de Lawson explicite que nous souhaitons mettre en place, nous proposons de placer les équations de Maxwell, équations linéaires, dans la partie non-linéaire (voir~\eqref{eq:3:LNsmaxwell}), entrainant par conséquent une condition de stabilité. Puisque nous résolvons de manière explicite des équations linéaires, il est possible d'effectuer un calcul de cette condition CFL de stabilité induite par les équations de Maxwell. Les termes non-linéaires de l'équation de Vlasov sur les particules chaudes, imposent également une condition de stabilité, que l'on se propose de restreindre à la condition suivante :
 $$
   \left\|\vb{E}+\vb{v}\times \vb{B}\right\|_{\infty} \Delta t \leq \Delta v,
 $$
@@ -495,7 +504,7 @@ condition que l'on peut estimer numériquement par une première simulation.
 \paragraph{Estimation de la condition de stabilité à partir d'une méthode Runge-Kutta :\\}
 Il est possible de faire une première estimation de la condition de stabilité en ne considérant que l'équation :
 \begin{equation}\label{eq:3:maxeq}
-  \dot{U} = A\cdot U
+  \dot{U} = A U
 \end{equation}
 avec $U = (B_x,B_y,E_x,E_y)^\top$ le vecteur des seules variables impliquées dans les équations de Maxwell, et $A$ la matrice :
 $$
@@ -506,7 +515,7 @@ $$
     i\kappa &  0       &  0       & 0 
   \end{pmatrix}
 $$
-On souhaite résoudre ce problème avec une méthode de type Runge-Kutta, en effet notre choix de partie linéaire dans la méthode de Lawson pour résoudre le système VMHL nous impose de résoudre les équations de Maxwell via une méthode de type Runge-Kutta. La fonction à intégrer en temps par la méthode Runge-Kutta étant linéaire en $U$, on sait que calculer $U^{n+1}$ par une méthode Runge-Kutta revient à multiplier $U^n$ par la fonction de stabilité de la méthode Runge-Kutta choisie, évaluée en $\Delta tA$. On a donc pour une méthode RK(3,3) :
+On souhaite résoudre ce problème avec une méthode de type Runge-Kutta, en effet notre choix de partie linéaire dans la méthode de Lawson pour résoudre le système VHL~\eqref{eq:VHM:jx}-\eqref{eq:VHM:fh} nous impose de résoudre les équations de Maxwell via une méthode de type Runge-Kutta. La fonction à intégrer en temps par la méthode Runge-Kutta étant linéaire en $U$, on sait que calculer $U^{n+1}$ par une méthode Runge-Kutta revient à multiplier $U^n$ par la fonction de stabilité de la méthode Runge-Kutta choisie, évaluée en $\Delta tA$. On a donc pour une méthode RK(3,3) :
 $$
   U^{n+1} = \left(I + \Delta t A + \frac{\Delta t^2}{2}A^2 + \frac{\Delta t^3}{6}A^3 \right)U^n,
 $$
@@ -514,11 +523,11 @@ et pour une méthode RK(4,4) :
 $$
   U^{n+1} = \left(I + \Delta t A + \frac{\Delta t^2}{2}A^2 + \frac{\Delta t^3}{6}A^3 + \frac{\Delta t^4}{24}A^4 \right)U^n.
 $$
-On note $p_{(s,n)}$ la fonction de stabilité de la méthode Runge-Kutta à $s$ étages et d'ordre $n$ RK($s$,$n$). On appellera par la suite \emph{matrice d'amplification}, la matrice correspondant à l'évaluation de la fonction de stabilité de la méthode RK($s$,$n$) évaluée en $\Delta t A$. Pour des méthodes de type Runge-Kutta à $s$ étages et d'ordre $n$ explicite on a :
+On note $p_{(s,n)}$ la fonction de stabilité de la méthode Runge-Kutta à $s$ étages et d'ordre $n$ RK($s$,$n$). On appellera par la suite \emph{matrice d'amplification}, la matrice correspondant à l'évaluation de la fonction de stabilité de la méthode RK($s$,$n$) évaluée en $\Delta t A$. Pour des méthodes de type Runge-Kutta explicites à $s$ étages et d'ordre $n$ on a :
 $$
   p_{(s,n)}(\Delta t A) = \sum_{k=0}^n \frac{\Delta t^k}{k!}A^k + \sum_{k=n+1}^s c_k\Delta t^kA^k
 $$
-Ce qui correspond au développement de l'exponentielle jusqu'à l'ordre $n$, plus des termes supplémentaires si $n\neq s$. Pour estimer la CFL de l'équation~\eqref{eq:3:maxeq}, il faut rechercher les valeurs propres de la matrice d'amplification $p_{(s,n)}(\Delta t A)$ de la méthode choisie. Celles-ci dépendent de $\Delta t$ et de $\kappa$, avec les modes de Fourier $\kappa$ qui dépendent directement de la discrétisation en espace choisie, car $\kappa=\frac{2\pi j}{L}$ avec $j \in[\![-\frac{N_z}{2},\frac{N_z}{2} ]\!]$. Pour trouver la condition de stabilité de cette équation il faut donc trouver le couple $(\Delta t,\kappa)$ permettant de garantir que les valeurs propres de $p_{(s,n)}(\Delta t A)$ soient inférieure à 1.
+Ce qui correspond au développement de l'exponentielle jusqu'à l'ordre $n$, plus des termes supplémentaires si $n\neq s$. Pour estimer la CFL de l'équation~\eqref{eq:3:maxeq}, il faut rechercher les valeurs propres de la matrice d'amplification $p_{(s,n)}(\Delta t A)$ de la méthode choisie. Celles-ci dépendent de $\Delta t$ et de $\kappa$, avec les modes de Fourier $\kappa$ qui dépendent directement de la discrétisation en espace choisie, car $\kappa=\frac{2\pi j}{L}$ avec $j \in[\![-\frac{N_z}{2},\frac{N_z}{2} ]\!]$. Pour trouver la condition de stabilité de cette équation il faut donc trouver le couple $(\Delta t,\kappa)$ permettant de garantir que les valeurs propres de $p_{(s,n)}(\Delta t A)$ soient inférieures à 1.
 
 On rappelle que les valeurs propres de $A$ sont : $i\kappa$ et $-i\kappa$, chacune de multiplicité 2, cela nous permet de déterminer les valeurs propres de $p_{(s,n)}(\Delta t A)$ qui sont :
 $$
@@ -540,11 +549,11 @@ $$
                                        - i\sum_{k=\floor{\frac{n}{2}}  }^{ \floor{\frac{s}{2}}-1 } (-1)^k c_{2k+1}\Delta t^{2k+1}\kappa^{2k+1} \\
   \end{aligned}
 $$
-où l'on remarque que $p_{(s,n)}(-i\kappa\Delta t) = \widebar{p_{(s,n)}(i\kappa\Delta t)}$, donc $\left|p_{(s,n)}(-i\kappa\Delta t)\right|=\left|p_{(s,n)}(i\kappa\Delta t)\right|$. On peut déterminer la condition de stabilité pourles méthodes RK(3,3) et RK(4,4), c'est-à-dire la valeur de $\Delta t\kappa$ telle que $|p_{(n,n)}(i\kappa\Delta t)|=1$, on obtient ainsi respectivement les valeurs $\frac{\sqrt{3}}{\kappa}$ et $\frac{2\sqrt{2}}{\kappa}$ avec $\kappa = \frac{2j\pi}{L}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$.
+où l'on remarque que $p_{(s,n)}(-i\kappa\Delta t) = \widebar{p_{(s,n)}(i\kappa\Delta t)}$, donc $\left|p_{(s,n)}(-i\kappa\Delta t)\right|=\left|p_{(s,n)}(i\kappa\Delta t)\right|$. On peut déterminer la condition de stabilité pour les méthodes RK(3,3) et RK(4,4), c'est-à-dire la valeur de $\Delta t\kappa$ telle que $|p_{(n,n)}(i\kappa\Delta t)|=1$, on obtient ainsi respectivement les valeurs $\frac{\sqrt{3}}{\kappa}$ et $\frac{2\sqrt{2}}{\kappa}$ avec $\kappa = \frac{2j\pi}{L}$, $j\in[\![-\frac{N_z}{2},\frac{N_z}{2}]\!]$.
 
 
 \paragraph{Estimation de la condition de stabilité à partir d'une méthode de Lawson complète :\\}
-Une estimation plus précise de la condition de stabilité dû aux équations de Maxwell peut être calculée en résolvant avec une méthode de Lawson le système :
+Une estimation plus précise de la condition de stabilité due aux équations de Maxwell peut être calculée en résolvant avec une méthode de Lawson le système :
 $$
   \dot{U} = LU + NU
 $$
@@ -567,7 +576,7 @@ $$  L = \begin{pmatrix}
     0 & 0 & ik &  0  &  0  & 0  \\
   \end{pmatrix}
 $$
-On ne s'intéresse ici qu'à la condition de stabilité provenant des équations de Maxwell, dû à l'impossibilité de calculer formellement $e^{\tau L}$ avec les équations de Maxwell. La densité de particules $f_h$ n'est donc pas considérée ici. De plus la condition de stabilité que nous cherchons est celle provenant des équations de Maxwell, donc une condition sur la discrétisation spatiale, la condition de stabilité induite par $f_h$ ne porte que sur la discrétisation en vitesse et ne sera pas étudié ici car le terme est fortement non-linéaire. Les matrices $L$ et $N$ ne commutent pas, donc la fonction de stabilité de la méthode de Lawson ne peut pas être obtenu comme dans le cas scalaire du chapitre~\ref{chap1}. Il est nécessaire pour chaque méthode de calculer sa fonction de stabilité. Nous n'étudierons ici que les méthodes de Lawson induites par la méthode RK(3,3) de Shu-Osher et celle induite par la méthode RK(4,4) dites classique.
+On ne s'intéresse ici qu'à la condition de stabilité provenant des équations de Maxwell, due à l'impossibilité de calculer formellement $e^{\tau L}$ avec les équations de Maxwell. La densité de particules $f_h$ n'est donc pas considérée ici. De plus la condition de stabilité que nous cherchons est celle provenant des équations de Maxwell, donc une condition sur la discrétisation spatiale, la condition de stabilité induite par $f_h$ ne porte que sur la discrétisation en vitesse et ne sera pas étudiée ici car le terme est fortement non-linéaire. Les matrices $L$ et $N$ ne commutent pas, donc la fonction de stabilité de la méthode de Lawson ne peut pas être obtenue comme dans le cas scalaire du chapitre~\ref{chap1}. Il est nécessaire pour chaque méthode de calculer sa fonction de stabilité. Nous n'étudierons ici que les méthodes de Lawson induites par la méthode RK(3,3) de Shu-Osher et celle induite par la méthode RK(4,4) dite classique.
 
 Nous allons commencer l'étude par la méthode RK(3,3) définie par :
 $$
@@ -585,14 +594,9 @@ $$
     & + \frac{\Delta t^3}{6}e^{\frac{\Delta t}{2}L}Ne^{-\frac{\Delta t}{2}L}Ne^{\Delta tL}N \Big]U^n
   \end{aligned}
 $$
-La matrice d'amplification n'est plus un polynôme, nous nous proposons donc de faire une étude numérique. Pour cela on choisit une discrétisation des modes de Fourier $\kappa\in[\![-27,27]\!]$, et pour les pas de temps $\Delta t\in[0,0.125]$. Pour tout couple de cette discrétisation on calcule numériquement les valeurs propres de la matrice d'amplification, qui sont au nombre de 5, sans compter la multiplicité, que l'on tri par valeur absolue. Cela nous permet de représenter graphiquement, sur la figure~\ref{fig:3:vplrk33}, la plus grande valeur propre en chaque point $(\kappa,\Delta t)$ de la discrétisation. On remarque une symétrie, attendue, entre les modes de Fourier positifs et négatifs, et c'est le mode le plus élevé qui va contraindre le plus notre condition de stabilité entre $\kappa$ et $\Delta t$.
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=0.49\textheight]{\localPath/figures/vplrk33.png}
-  \caption{Plus grande valeur propre en valeur absolue de la matrice d'amplification de la méthode LRK(3,3) sur l'espace discrétisé de $(\kappa,\Delta t)\in[\![-27,27]\!]\times[0,0.125]$}
-  \label{fig:3:vplrk33}
-\end{figure}
-On peut regarder, sur la figure~\ref{fig:3:vpMrk33_k15}, pour le seul mode $\kappa=15$, la valeur absolue des différentes valeurs propres de la matrice d'amplification. On remarque la présence d'une valeur propre égale à 1 ainsi que d'autres valeurs propres, qui sont strictement inférieur à 1 pour des petites valeurs de $\Delta t$ (jusqu'à $0.11$ environ). Pour estimer une condition de stabilité pour $\kappa=15$, il est nécessaire de connaître la valeur de $\Delta t$ telle que la plus grande valeur propre soit de module suppérieur à 1. On trace sur la figure~\ref{fig:3:vpMrk33}, le module de la plus grande valeur propre de la matrice d'amplification, pour différents mode de Fourier $\kappa\in[\![0,27]\!]$. On remarque que plus la discrétisation en $x$ est fine (grande valeur des modes de Fourier) la valeur de $\Delta t$ permettant d'assurer la stabilité diminue.
+La matrice d'amplification n'est plus un polynôme, nous nous proposons donc de faire une étude numérique. Pour cela on choisit une discrétisation des modes de Fourier $\kappa\in[\![-27,27]\!]$, et pour les pas de temps $\Delta t\in[0,0.125]$. Pour tout couple de cette discrétisation on calcule numériquement les valeurs propres de la matrice d'amplification, qui sont au nombre de 5, sans compter la multiplicité, que l'on tri par valeur absolue. On s'attend à que ce soit les plus grands modes de Fourier qui contraignent la condition de stabilité, effet pour le cas $\kappa=0$, la matrice de la partie non-linéaire $N$ est nulle.
+
+On peut regarder, sur la figure~\ref{fig:3:vpMrk33_k15}, pour le seul mode $\kappa=15$, la valeur absolue des différentes valeurs propres de la matrice d'amplification. On remarque la présence d'une valeur propre égale à 1 ainsi que d'autres valeurs propres, qui sont strictement inférieur à 1 pour des petites valeurs de $\Delta t$ (jusqu'à $0.11$ environ). Pour estimer une condition de stabilité pour $\kappa=15$, il est nécessaire de connaître la valeur de $\Delta t$ pour laquelle le rayon spectral dépasse 1. On trace sur la figure~\ref{fig:3:vpMrk33}, le rayon spectral de la matrice d'amplification en fonction de $\Delta t$, pour différents modes de Fourier $\kappa\in[\![0,27]\!]$. On remarque que plus la discrétisation en $z$ est fine (grande valeur des modes de Fourier) plus la valeur de $\Delta t$ permettant d'assurer la stabilité diminue.
 \begin{figure}[h]
   \centering
   \setbox9=\hbox{\includegraphics[width=0.45\linewidth]{\localPath/figures/vpMrk33.png}}
@@ -608,7 +612,7 @@ On peut regarder, sur la figure~\ref{fig:3:vpMrk33_k15}, pour le seul mode $\kap
   \end{subfigure}
   \caption{Étude des valeurs propres de la matrice d'amplification de la méthode LRK(3,3) en fonction de $\Delta t$.}
 \end{figure}
-On peut ainsi estimer une condition de stabilité pour $N_z = 15,27$ et on obtient : pour $N_z = 15$, $\Delta t <0.115 \approx \frac{\sqrt{3}}{15}$, et pour $N_z = 27$, $\Delta t <0.066 \approx \frac{\sqrt{3}}{27}$.
+On peut ainsi estimer une condition de stabilité pour $N_z = 15$ et $27$ et on obtient : pour $N_z = 15$, $\Delta t <0.115 \approx \frac{\sqrt{3}}{15}$, et pour $N_z = 27$, $\Delta t <0.066 \approx \frac{\sqrt{3}}{27}$.
 
 On effectue une analyse similaire pour la méthode de Lawson LRK(4,4) suivante :
 $$
@@ -619,7 +623,7 @@ $$
     U^{n+1} &= -\frac{1}{3}e^{\Delta tL}U^n + \frac{1}{3}e^{\frac{\Delta t}{2}L}U^{(1)} + \frac{2}{3}e^{\frac{\Delta t}{2}L}U^{(2)} + \frac{1}{3}U^{(3)} \frac{\Delta t}{6}NU^{(3)} \\
   \end{aligned}
 $$
-Où l'on peut également calculer sa matrice d'amplification :
+On peut également calculer sa matrice d'amplification :
 $$
   \begin{aligned}
     U^{n+1} = \Big[ e^{\Delta t} 
@@ -629,7 +633,7 @@ $$
               & + \frac{\Delta t^4}{24}Ne^{\frac{\Delta t}{2}L}N^2e^{\frac{\Delta t}{2}L}N \Big]U^n
   \end{aligned}
 $$
-Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de tracer les mêmes diagnostics que précédemment sur la figure~\ref{fig:3:vplrk44}. On représente ainsi à gauche le module des différentes valeurs propres de la matrice d'amplification de la méthode LRK(4,4) pour $\kappa=15$, et à droite on ne s'intéresse qu'à la plus grande valeur propre pour différents modes de Fourier $\kappa\in[\![0,27]\!]$. Cela nous permet d'obtenir les conditions de stabilité pour différentes discrétisation en espace, et par exemple pour $N_z = 15$ on trouve $\Delta t<0.188 \approx \frac{2\sqrt{2}}{15}$ et pour $N_z = 27$ on trouve $\Delta t < 0.104 \approx \frac{2\sqrt{2}}{27}$.
+Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de tracer les mêmes diagnostics que précédemment sur la figure~\ref{fig:3:vplrk44}. On représente ainsi à gauche le module des différentes valeurs propres de la matrice d'amplification de la méthode LRK(4,4) pour $\kappa=15$, et à droite on ne s'intéresse qu'à la plus grande valeur propre pour différents modes de Fourier $\kappa\in[\![0,27]\!]$. Cela nous permet d'obtenir les conditions de stabilité pour différentes discrétisations en espace, et par exemple pour $N_z = 15$ on trouve $\Delta t<0.188 \approx \frac{2\sqrt{2}}{15}$ et pour $N_z = 27$ on trouve $\Delta t < 0.104 \approx \frac{2\sqrt{2}}{27}$.
 \begin{figure}[h]
   \centering
   \setbox9=\hbox{\includegraphics[width=0.45\linewidth]{\localPath/figures/vpMrk33.png}}
@@ -647,16 +651,16 @@ Ce qui nous permet, avec la même discrétisation de $\kappa$ et $\Delta t$ de t
   \label{fig:3:vplrk44}
 \end{figure}
 
-Cela conclu l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condition de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(B_x,B_y,E_x,E_y)^\top$.
+Cela conclut l'estimation de condition de stabilité en espace. On remarque que l'estimation numérique de la condition de stabilité de la méthode de Lawson est très proche de la condition de stabilité obtenue à l'aide de la restriction à la résolution de la méthode Runge-Kutta sur $(B_x,B_y,E_x,E_y)^\top$.
 
 
 \subsubsection{Synthèse d'un étage}
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 \label{ssec:3:stage}
 
-Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les méthodes de type Runge-Kutta s'écrivent comme une succession d'étage et chaque étage possède des expressions différentes mais une structure similaire. Ces premières sont générées à l'aide d'outils de méta-programmation, présentés dans la sous-section~\ref{ssec:3:codegen}, basés sur la bibliothèque \Python{} de calcul symbolique \sympy{}. Le squelette d'un étage est présent dans l'algorithme~\ref{alg:squeltte}. La résolution numérique des dérivées en espace $z$ se font dans l'espace de Fourier, pour cette raison, les variables transmises entres étages ou itérations, sont des tableaux de complexes, correspondant aux modes de Fourier des différentes variables.
+Intéressons nous maintenant à l'implémentation de la méthode de Lawson. Les méthodes de type Runge-Kutta s'écrivent comme une succession d'étages et chaque étage possède des expressions différentes mais une structure similaire. Ces premières sont générées à l'aide d'outils de méta-programmation, présentés dans la sous-section~\ref{ssec:3:codegen}, basés sur la bibliothèque \Python{} de calcul symbolique \sympy{}. Le squelette d'un étage est présenté dans l'algorithme~\ref{alg:squeltte}. La résolution numérique des dérivées en espace $z$ se font dans l'espace de Fourier, pour cette raison, les variables transmises entres étages ou itérations, sont des tableaux de complexes, correspondant aux modes de Fourier des différentes variables.
 
-L'algorithme d'un étage se comporte en deux grandes sections. La première partie permet de mettre à jour les variables spatiales $(j_{c,x},j_{c,y},B_x,B_y,E_x,E_y)$ dans l'espace de Fourier, qui commence à la ligne~\ref{alg:l:0}, qui commence par le calcul des courants induits par les particules chaudes $\int v_\star f_h\dd{\vb{v}}$ où $\star\in\{x,y\}$ dans l'espace de Fourier. Les lignes~\ref{alg:l:sp0} à~\ref{alg:l:sp5}, sont générées à l'aide d'outils présentés dans la sous-section~\ref{ssec:3:codegen}. La seconde partie permet la mise à jour de $f_h$ dans l'espace de Fourier et commence à la lignes~\ref{alg:l:15}. Cette partie commence par le calcul de $\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h$ à l'aide de la méthode WENO, puis continue par la mise à jour de $f_h$ dans l'espace de Fourier en effectuant la transformée de Fourier en $z$ de $\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h$ pour une vitesse $\vb{v}$ donnée. La ligne~\ref{alg:l:sp6} est également générée automatiquement.
+L'algorithme d'un étage se comporte en deux grandes sections. La première partie permet de mettre à jour les variables spatiales $(j_{c,x}^{(s)},j_{c,y}^{(s)},B_x^{(s)},B_y^{(s)},E_x^{(s)},E_y^{(s)})$ dans l'espace de Fourier, qui commence à la ligne~\ref{alg:l:0}, par le calcul des courants induits par les particules chaudes $\int v_\star f_h^{(s-1)}\dd{\vb{v}}$ où $\star\in\{x,y\}$ dans l'espace de Fourier. Les lignes~\ref{alg:l:sp0} à~\ref{alg:l:sp5}, sont générées à l'aide d'outils présentés dans la sous-section~\ref{ssec:3:codegen}. La seconde partie permet la mise à jour de $f_h^{(s)}$ dans l'espace de Fourier et commence à la ligne~\ref{alg:l:15}. Cette partie commence par le calcul de $\left(\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h\right)^{(s-1)}$ à l'aide de la méthode WENO, puis continue par la mise à jour de $f_h^{(s)}$ dans l'espace de Fourier en effectuant la transformée de Fourier en $z$ de $\left(\vb{E}+(\vb{v}\times\vb{B})\cdot\nabla_{\vb{v}}f_h\right)^{(s-1)}$ pour une vitesse $\vb{v}$ donnée. La ligne~\ref{alg:l:sp6} est également générée automatiquement.
 
 %\Josselin{je ne sais pas si le détail de l'algorithme est très convainquant, je peux aussi ajouter un peu plus de commentaires dans l'algorithme, donc peut-être à voir selon vos retours car j'ai peut-être un peu trop bosser dessus et j'ai un regard moins matheux. Je présume en plus qu'il sera nécessaire d'expliquer les notations où j'ai mis entre crochets les indices dont dépendent les variables, et j'ai utilisé la notation de MATLAB et de \Python{} pour indiquer un ensemble de valeurs entre 2 indices de tableau. Mais je pense que dans la partie \emph{splitting} j'ajouterai aussi des algorithmes pour $\mathcal{H}_{j_c}$, $\mathcal{H}_{B}$, $\mathcal{H}_{E}$, $\mathcal{H}_{f_h}$ donc j'expliquerais les notations à ce moment là.}
 
@@ -664,21 +668,21 @@ L'algorithme d'un étage se comporte en deux grandes sections. La première part
   \caption{Squelette de l'algorithme d'un étage $s$ d'une méthode LRK}
   \label{alg:squeltte}
   \begin{algorithmic}[1]
-    \State{$\triangleright$ Calcul des variables $\hat{j}_{c,x}^{(s)}$, $\hat{j}_{c,y}^{(s)}$, $\hat{B}_{x}^{(s)}$, $\hat{B}_{y}^{(s)}$, $\hat{E}_{x}^{(s)}$ et $\hat{E}_{y}^{(s)}$} \label{alg:l:0}
+    \State{$\triangleright$ Calcul des variables $\hatj_{c,x}^{(s)}$, $\hatj_{c,y}^{(s)}$, $\hat{B}_{x}^{(s)}$, $\hat{B}_{y}^{(s)}$, $\hat{E}_{x}^{(s)}$ et $\hat{E}_{y}^{(s)}$} \label{alg:l:0}
 
     \For{$i=0,\dots,N_z$}
-      \State $\hat{j}_{h,x,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_x}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhx}
-      \State $\hat{j}_{h,y,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_y}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhy}
+      \State $\hatj_{h,x,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_x}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhx}
+      \State $\hatj_{h,y,[i]} \gets \sum_{k_x,k_y,k_z} v_{k_y}\,\hat{f}_{h,[i,k_x,k_y,k_z]}^{(s-1)}\,\Delta v$ \label{alg:l:jhy}
     \EndFor
 
     \For{$i=0,\dots,N_z$}
-      \State $\hat{j}_{c,x,[i]}^{(s)} \gets \dots$ \Comment{les expressions ici sont données par \sympy}\label{alg:l:sp0}
-      \State $\hat{j}_{c,y,[i]}^{(s)} \gets \dots$
-      \State $\hat{B}_{x,[i]}^{(s)}   \gets \dots$
-      \State $\hat{B}_{y,[i]}^{(s)}   \gets \dots$
-      \State $\hat{E}_{x,[i]}^{(s)}   \gets \dots$
-      \State $\hat{E}_{y,[i]}^{(s)}   \gets \dots$ \label{alg:l:sp5}
-    \EndFor
+      \State $\hatj_{c,x,[i]}^{(s)} \gets \dots$ \Comment{les expressions ici sont données par \sympy}\label{alg:l:sp0}
+      \State $\hatj_{c,y,[i]}^{(s)} \gets \dots$
+      \State $\hat{B}_{x,[i]}^{(s)} \gets \dots$
+      \State $\hat{B}_{y,[i]}^{(s)} \gets \dots$
+      \State $\hat{E}_{x,[i]}^{(s)} \gets \dots$
+      \State $\hat{E}_{y,[i]}^{(s)} \gets \dots$ \label{alg:l:sp5}
+    \EndFor \label{alg:l:14}
 
     \State{$\triangleright$ Calcul de la variable $\hat{f}_h^{(s)}$} \label{alg:l:15}
 
@@ -702,15 +706,15 @@ L'algorithme d'un étage se comporte en deux grandes sections. La première part
   \end{algorithmic}
 \end{algorithm}
 
-Étudions maintenant la complexité de l'algorithme~\ref{alg:squeltte}. La première partie de l'algorithme (ligne~\ref{alg:l:0} à~\ref{alg:l:15}) possède une complexité temporelle de $\order{2N_z}$ et nécessite la sauvegarde de deux tableaux, $\hat{j}_{j,x}$, $\hat{j}_{h,y}$, de taille $N_z$ (tableaux de complexes). La deuxième partie de l'algorithme (ligne~\ref{alg:l:15} à~\ref{alg:l:29}) nécessite tout d'abord le calcul de la transformée de Fourier inverse de tout $\hat{f}_h$, étape d'une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Il est ensuite nécessaire d'effectuer une boucle dans tout l'espace des phases pour calculer l'approximation $\partial_vf_h$, la méthode WENO peut se résumer à un calcul arithmétique à partir des 7 valeurs en entré et est donc considéré de complexité constante, ce calcul a donc une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Cette partie se termine par la mise à jour de $\hat{f}_h$ de l'étage, il est possible de n'effectuer la transformée de Fourier pour une tranche de données au triplet $(k_x,k_y,k_z)$ fixé, on obtient une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Un étage de la méthode de Lawson possède donc une complexité temporelle de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$ et nécessite 3 tableaux de taille $N_z$ de valeurs complexes ($\hat{j}_{h,x}$, $\hat{j}_{h,y}$ et $\widehat{\partial_vf}$), et 2 tableaux de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ ($f_h$ de réels et $\partial_vf_h$ de complexes), ces tableaux temporaires peuvent être réutilisés par l'étage suivant sans nécessité de nouvelle allocation de mémoire.
+Étudions maintenant la complexité de l'algorithme~\ref{alg:squeltte}. La première partie de l'algorithme (ligne~\ref{alg:l:0} à~\ref{alg:l:14}) possède une complexité temporelle de $\order{2N_z}$ et nécessite la sauvegarde de deux tableaux, $\hatj_{j,x}$, $\hatj_{h,y}$, de taille $N_z$ (tableaux de complexes). La deuxième partie de l'algorithme (lignes~\ref{alg:l:15} à~\ref{alg:l:29}) nécessite tout d'abord le calcul de la transformée de Fourier inverse de tout $\hat{f}_h^{(s-1)}$, étape d'une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Il est ensuite nécessaire d'effectuer une boucle dans tout l'espace des phases pour calculer l'approximation $\partial_vf_h$, la méthode WENO peut se résumer à un calcul arithmétique à partir des 7 valeurs en entrées et est donc considéré de complexité constante, ce calcul a donc une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}N_z}$. Cette partie se termine par la mise à jour de $\hat{f}_h^{(s)}$, il est possible de n'effectuer la transformée de Fourier pour une tranche de données au triplet $(k_x,k_y,k_z)$ fixé, on obtient une complexité de $\order{N_{v_x}N_{v_y}N_{v_z}(N_z\log(N_z)+N_z)} = \order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$. Un étage de la méthode de Lawson possède donc une complexité temporelle de $\order{N_{v_x}N_{v_y}N_{v_z}N_z\log(N_z)}$ et nécessite 3 tableaux de taille $N_z$ de valeurs complexes ($\hatj_{h,x}$, $\hatj_{h,y}$ et $\widehat{\partial_vf}$), et 2 tableaux de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ ($f_h$ de réels et $\partial_vf_h$ de complexes), ces tableaux temporaires peuvent être réutilisés par l'étage suivant sans nécessité de nouvelle allocation de mémoire.
 
-Les résultats de chaque étage de la méthode de Lawson nécessitent d'être sauvegarder pour le calcul des étages suivants, ainsi chaque étage nécessite la sauvegarde de 6 tableaux de taille $N_z$ de complexes et d'un tableau de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ aussi de complexes. Ainsi pour une méthode de Lawson induite par une méthode RK($s$,$n$) il sera nécessaire de multiplier l'espace mémoire nécessaire par le nombre d'étages $s$. Il est possible de minimiser l'espace mémoire nécessaire en utilisant des méthodes de type Runge-Kutta dites \emph{low storage}, qui permettent de ne pas conserver les données de chaque étage pour calculer les suivants (voir~\cite{Ketcheson:2015}).
+Les résultats de chaque étage de la méthode de Lawson nécessitent d'être sauvegardés pour le calcul des étages suivants, ainsi chaque étage nécessite la sauvegarde de 6 tableaux de taille $N_z$ de complexes et d'un tableau de taille $N_{v_x}N_{v_y}N_{v_z}N_z$ aussi de complexes. Ainsi pour une méthode de Lawson induite par une méthode RK($s$,$n$) il sera nécessaire de multiplier l'espace mémoire nécessaire par le nombre d'étages $s$. Il est possible de minimiser l'espace mémoire nécessaire en utilisant des méthodes de type Runge-Kutta dites \emph{low storage}, qui permettent de ne pas conserver les données de chaque étage pour calculer les suivants (voir~\cite{Ketcheson:2015}).
 
-La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squeltte} nécessite seulement de modifier le calcul des variables de courants chauds $\left(\hat{j}_{h,x}\right)_i$, $\left(\hat{\jmath}_{h,y}\right)_i$ (lignes~\ref{alg:l:jhx} et~\ref{alg:l:jhy}) et des vitesses d'advection $a_{v_x}$, $a_{v_y}$ et $a_{v_z}$ (lignes~\ref{alg:l:avx} à~\ref{alg:l:avz}). L'opération est présentée dans l'extrait d'algorithme~\ref{alg:modif}. \Josselin{$\hat{j}$ ou $\hat{\jmath}$ ? telle est la question\dots (\texttt{\textbackslash jmath} ou non)}
+La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squeltte} nécessite seulement de modifier le calcul des variables de courants chauds $\left(\hatj_{h,x}\right)_i$, $\left(\hatj_{h,y}\right)_i$ (lignes~\ref{alg:l:jhx} et~\ref{alg:l:jhy}) et des vitesses d'advection $a_{v_x}$, $a_{v_y}$ et $a_{v_z}$ (lignes~\ref{alg:l:avx} à~\ref{alg:l:avz}). L'opération est présentée dans l'extrait d'algorithme~\ref{alg:modif}.
 % $$
 %   \begin{aligned}
-%     \hat{j}_{h,x,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
-%     \hat{j}_{h,y,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
+%     \hatj_{h,x,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
+%     \hatj_{h,y,[i]} &\gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z\\
 %     a_{v_x} &\gets E_{x,[i]}\cos(B_0\tau^{n,s}) + E_{y,[i]}\sin(B_0\tau^{n,s}) + v_zB_{x,[i]}\sin(B_0\tau^{n,s}) - v_zB_{y,[i]}\cos(B_0\tau^{n,s})\\
 %     a_{v_y} &\gets -E_{x,[i]}\sin(B_0\tau^{n,s}) + E_{y,[i]}\cos(B_0\tau^{n,s}) + v_zB_{x,[i]}\cos(B_0\tau^{n,s}) + v_zB_{y,[i]}\sin(B_0\tau^{n,s})\\
 %     a_{v_z} &\gets -B_{x,[i]}(w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s})) + B_{y,[i]}(w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) )\\
@@ -726,8 +730,8 @@ La mise en place de l'opération de filtrage dans le pseudo-code~\ref{alg:squelt
   \end{algorithmic}
   \begin{algorithmic}[1]
   \setlineref{alg:l:jhx}
-    \State $\hat{\jmath}_{h,x,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
-    \State $\hat{j}_{h,y,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
+    \State $\hatj_{h,x,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\cos(B_0\tau^{n,s}) - w_2\sin(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
+    \State $\hatj_{h,y,[i]} \gets \sum_{k_1,k_2,k_z} ( w_1\sin(B_0\tau^{n,s}) + w_2\cos(B_0\tau^{n,s}) ) \hat{g}_{[i,k_1,k_2,k_z]} \Delta w\Delta v_z$
   \end{algorithmic}
   \vspace{0.1cm}
   \begin{algorithmic}[1]

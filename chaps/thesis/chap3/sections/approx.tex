@@ -15,7 +15,7 @@ $$
     0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\
   \end{pmatrix}
 $$
-Cette matrice est de la forme :
+où on rappelle que $\Omega_{pe}=2$. Cette matrice est de la forme :
 $$
   L = \begin{pmatrix}
     A & 0 \\
@@ -25,15 +25,24 @@ $$
 matrice diagonale par blocs, dont seul le bloc $A$ pose problème pour calculer formellement l'exponentielle. Ainsi on s'intéressera surtout à la sous-matrice $A$ obtenue après une transformée de Fourier en $z$ du système :
 $$
   A = \begin{pmatrix}
-    0 & -1 & 0  &  0  &  4  & 0  \\
-    1 &  0 & 0  &  0  &  0  & 4  \\
-    0 &  0 & 0  &  0  &  0  & ik \\
-    0 &  0 & 0  &  0  & -ik & 0  \\
-   -1 &  0 & 0  & -ik &  0  & 0  \\
-    0 & -1 & ik &  0  &  0  & 0  \\
+    0 & -1 & 0  &  0  &  \Omega_{pe}^2  & 0             \\
+    1 &  0 & 0  &  0  &  0              & \Omega_{pe}^2 \\
+    0 &  0 & 0  &  0  &  0              & ik            \\
+    0 &  0 & 0  &  0  & -ik             & 0             \\
+   -1 &  0 & 0  & -ik &  0              & 0             \\
+    0 & -1 & ik &  0  &  0              & 0             \\
   \end{pmatrix}
 $$
 Par abus de notation, nous noterons $A_0$, la matrice $A$ pour $k=0$, ce qui revient à une partie linéaire sans les équations de Maxwell, ceci sera utile lors de la comparaison des résultats entre les méthodes.
+
+La matrice $A$ est telle que toutes ses valeurs propres sont imaginaires pures, $\texttt{sp}(A)\subset i\mathbb{R}$. De plus, $A$ est presque anti-hermitienne, on peut trouver une matrice de passage $Q$ permettant de transformer notre matrice $A$ en une matrice anti-hermitienne :
+$$
+  Q = 
+  \begin{pmatrix}
+    \dmat[0]{\Omega_{pe}^{-1/2},\Omega_{pe}^{-1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2}}
+  \end{pmatrix},
+$$
+où $Q$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a $\tilde{A}=QAQ^{-1}$ anti-hermitienne.
 
 \Josselin{Mettre ici le calcul de Benjamin et Nicolas pour démontrer que les valeurs propres de $e^{tA}$ sont de module 1 $\forall t$. Mais je n'arrive pas à trouver une source sur un théorème utilisé au début permettant de transformer $A$ en matrice antihermitienne. La semaine prochaine (semaine du 21 juin) je vais regarder ça et peut-être voir Benjamin si j'ai besoin de plus de détails.}
 
