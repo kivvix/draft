@@ -108,13 +108,13 @@ $$
 $$
 
 $$
-  p_{p,q}(x) = \frac{h_{p,q}(x)}{k_{p,q}(x)} \approx e^x
+  P_{p,q}(x) = \frac{h_{p,q}(x)}{k_{p,q}(x)} \approx e^x
 $$
 
 Pour utiliser cet approximant de Padé, qui est une fraction rationnelle, avec des matrices il faut utiliser la définition suivante :
 
 $$
-  e^M \approx \textrm{P}_{p,q}(M) = h_{p,q}(M)\cdot\left(k_{p,q}(M)\right)^{-1}
+  e^M \approx P_{p,q}(M) = h_{p,q}(M)\cdot\left(k_{p,q}(M)\right)^{-1}
 $$
 
 On effectue la même étude qu'avec une troncature de la série de Taylor. On regarde donc dans un premier temps sur la figure~\ref{fig:evAP22} les valeurs propres dans le cas $k=0$ et pour différentes valeurs de $k$.
@@ -155,3 +155,64 @@ On effectue la même étude qu'avec une troncature de la série de Taylor. On re
 \end{figure}
 
 
+\subsection{Test sur un modèle jouet}
+%--------------------------------------------------------------------
+
+Nous souhaitons mettre en place cette stratégie d'approximation de la partie linéaire d'une méthode de Lawson sur une première équation qui nous servira de \emph{toy model} :
+$$
+  \partial_t u = a\partial_x u + b\partial_y u
+$$
+où $u(t,x,y)$ est une fonction à valeurs scalaires, $(x,y)\in[-2,2]\times[-2,2]$, $t\geq0$, $a,b\in\mathbb{R}$ donnés, et $u(t=0,x,y)=u_0(x,y)$ donné. On sait que la solution au temps $t$ est donnée par :
+$$
+  u(t,x,y) = u_0(x-at,y-bt).
+$$
+On souhaite résoudre cette équation par une méthode spectrale dans la direction $y$ (partie linéaire de la méthode de Lawson), une méthode WENO5 dans la direction $x$ (partie non-linéaire), et une méthode LRK(3,3) en temps. Nous obtenons donc l'équation :
+$$
+  \partial_t \hat{u} = L\hat{u} + N(\hat{u}),\quad u(t=0,x,y) = u_0(x,y)
+$$
+avec $L = i\kappa b$ et, $N:\hat{u}\mapsto\widehat{a\partial_xu}$. À partir des résultats du chapitre~\ref{chap1}, on peut calculer l'erreur du schéma en linéarisant la partie non-linéaire :
+$$
+  u^{n+1} = e^{\Delta tL}\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n = e^{\Delta t (L+N)}u^n + \order{\Delta t^4}
+$$
+ce qui nous permet de dire que la partie linéaire est résolue exactement, et que la partie non-linéaire est d'ordre 3. Il est également possible de vouloir approcher l'exponentielle de la partie linéaire $e^{\Delta tL}$ avec une troncature de la série de Taylor ou un approximant de Padé :
+$$
+  \begin{aligned}
+    u^{n+1} =& T_m(\Delta tL)\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n     & & \text{pour la série de Taylor d'ordre $m$} \\
+    u^{n+1} =& P_{p,q}(\Delta tL)\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n & & \text{pour l'approximant de Padé d'ordre $(p,q)$}
+  \end{aligned}
+$$
+avec $T_m(\Delta tL) = e^{\Delta tL}+\order{\Delta t^m}$ et $P_{p,q}(\Delta tL) = e^{\Delta tL}+\order{\Delta t^{p+q}}$. Ce qui nous permet d'écrire :
+$$
+  u^{n+1} = e^{\Delta t (L+N)}u^n + \order{\Delta t^r} + \order{\Delta t^4}
+$$
+avec $r=m$ pour la troncature de la série de Taylor, ou $r=p+q$ pour l'approximant de Padé. Ainsi on remarque l'importance d'avoir une approximation de l'exponentielle de la partie linéaire d'ordre au moins égal à l'ordre de la méthode de Lawson choisie.
+
+Il est possible de retrouver ce résultat numériquement en comparant les différentes méthodes et en mesurant l'erreur effectuée pour différentes valeurs de pas de temps $\Delta t$ et ainsi mesure l'ordre en temps de la méthode. Pour cela on se munit d'une discrétisation de $243$ points par direction, de plusieurs valeurs de pas de temps $\Delta t\in[0.00158,0.02370]$. La simulation s'effectue jusqu'au temps final $T_f=0.07111$ avec les vitesses $a=1.0$ et $b=0.75$. On regarde l'erreur, par rapport à notre solution de référence en norme 1 :
+$$
+  e_1 = \| u(t,x,y) - u_0(x-at,y-bt) \|_1 \approx \sum_{i,j}|u^n_{i,j}-u_0(x_i-at,y_j-bt)|\Delta x\Delta y,
+$$
+ce qui nous permet de tracer, sur la figure~\ref{fig:lrk33ref} l'erreur pour la méthode de référence avec un calcul exact de l'exponentielle de la partie linéaire, ainsi qu'avec une troncature de la série de Taylor d'ordre 4, ordre supérieur à celui de la méthode de Lawson, et un approximant de Padé d'ordre $(2,2)$ (équivalent à un ordre 4), aussi supérieur à l'ordre de la méthode de Lawson, on retrouve bien dans ces cas là l'ordre 3 de la méthode LRK(3,3). La figure~\ref{fig:lrk33taylor} représente l'ordre pour différentes troncatures de la série de Taylor, on remarque que pour des ordres inférieurs à l'ordre de la méthode de Lawson, on mesure l'ordre de la méthode de Taylor. La figure~\ref{fig:lrk33pade} quant à elle, représente l'ordre pour différents approximants de Padé, on retrouve les mêmes résultats avec une constante d'erreur plus faible.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{\localPath/figures/order_lrk33ref.png}
+    \caption{Ordre en temps de la méthode LRK(3,3) associée à exponentielle, la série de Taylor d'ordre 4, et l'approximant Padé d'ordre $(2,2)$.}
+    \label{fig:lrk33ref}
+  \end{subfigure}
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{\localPath/figures/order_lrk33taylor.png}
+    \caption{Ordre en temps de la méthode LRK(3,3) associée à la série de Taylor d'ordre 1 à 4.\\ }
+    \label{fig:lrk33taylor}
+  \end{subfigure}
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{\localPath/figures/order_lrk33pade.png}
+    \caption{Ordre en temps de la méthode LRK(3,3) associée à l'approximant Padé d'ordre $(1,1)$, $(2,1)$, $(1,2)$, et $(2,2)$.}
+    \label{fig:lrk33pade}
+  \end{subfigure}
+  \caption{Ordre en temps de la méthode LRK(3,3) où l'exponentielle de la partie linéaire est approchée par différentes méthodes, série de Taylor ou approximant de Padé de différents ordre. La solution de référence à gauche, le test avec différentes séries de Taylor à droite, et avec différents approximant de Padé en bas.}
+  \label{fig:3:order}
+\end{figure}
