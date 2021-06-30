@@ -40,6 +40,19 @@
 \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
 \usepackage{eufrak}
 
+% for a better \hat{\jmath}
+\usepackage{stackengine}
+\usepackage{scalerel}
+\def\stacktype{L}
+\stackMath
+\def\dyhat{.067ex}
+\newcommand\myhat[1]{\ThisStyle{%
+              \stackon[\dyhat]{\SavedStyle#1}
+                              {\SavedStyle\hat{\phantom{#1}}}}}
+\newcommand\hatj{\def\dyhat{0.35ex}\ThisStyle{%
+    \stackon[\dyhat]{\SavedStyle\jmath}
+                    {\SavedStyle\hat{\phantom{\jmath}}}}\def\dyhat{0.067ex}}
+
 % for widebar
 \makeatletter
 \let\save@mathaccent\mathaccent
@@ -110,6 +123,8 @@
   \endgroup
 }
 \makeatother
+
+
 
 \theoremstyle{plain}\newtheorem{theorem}{Théorème}[section]
 \theoremstyle{plain}\newtheorem{lemma}{Lemme}[section]
