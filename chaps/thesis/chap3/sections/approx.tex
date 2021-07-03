@@ -35,46 +35,66 @@ $$
 $$
 Par abus de notation, nous noterons $A_0$, la matrice $A$ pour $k=0$, ce qui revient à une partie linéaire sans les équations de Maxwell, ceci sera utile lors de la comparaison des résultats entre les méthodes.
 
-La matrice $A$ est telle que toutes ses valeurs propres sont imaginaires pures, $\texttt{sp}(A)\subset i\mathbb{R}$. De plus, $A$ est presque anti-hermitienne, on peut trouver une matrice de passage $Q$ permettant de transformer notre matrice $A$ en une matrice anti-hermitienne :
+La matrice $A$ est telle que toutes ses valeurs propres sont imaginaires pures, $\texttt{sp}(A)\subset i\mathbb{R}$. De plus, $A$ est presque anti-hermitienne, on peut trouver une matrice de passage $\Omega$ permettant de transformer notre matrice $A$ en une matrice anti-hermitienne :
 $$
-  Q = 
+  \Omega = 
   \begin{pmatrix}
     \dmat[0]{\Omega_{pe}^{-1/2},\Omega_{pe}^{-1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2}}
   \end{pmatrix},
 $$
-où $Q$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a $\tilde{A}=QAQ^{-1}$ anti-hermitienne.
+où $\Omega$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a $H=\Omega A \Omega^{-1}$ anti-hermitienne. Le spectre de $H$ est imaginaire pur, et $H$ est diagonalisable dans une base orthonormale, c'est-à-dire :
+$$
+  \exists Q \in GL_6(\mathbb{C}) / H = QDQ^{-1}, \|Q\|=1
+$$
+où $D$ est une matrice diagonale des valeurs propres de $H$. Ce qui nous permet de déterminer que les valeurs propres de l'exponentielle de $H$ sont sur le cercle unitaire, en effet :
+$$
+  \forall t\in\mathbb{R}, e^{tH} = Qe^{tD}Q^{-1}.
+$$
+Et on a, de même pour la matrice $A$, des valeurs propres distribuées sur le cercle unité, avec la matrice de passage $\Omega Q$, comme l'illustre la figure~\ref{fig:evexpAk}, où les valeurs propres de $A$ sont calculées numériquement pour différents modes de Fourier.
 
-\Josselin{Mettre ici le calcul de Benjamin et Nicolas pour démontrer que les valeurs propres de $e^{tA}$ sont de module 1 $\forall t$. Mais je n'arrive pas à trouver une source sur un théorème utilisé au début permettant de transformer $A$ en matrice antihermitienne. La semaine prochaine (semaine du 21 juin) je vais regarder ça et peut-être voir Benjamin si j'ai besoin de plus de détails.}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{\localPath/figures/evexpAk.png}
+  \caption{Valeurs propres de $e^{A}$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs, sont obtenues par parité.}
+  \label{fig:evexpAk}
+\end{figure}
 
 \subsection{Troncature de la série de Taylor}
 %--------------------------------------------------------------------
 
-On peut définir $e^{tA}$ par la série de Taylor :
+Un manière classique de définir la fonction exponentielle est par sa série de Taylor, ainsi on définit $e^{tA}$ par :
 $$
   e^{tA} = \sum_{n=0}^\infty \frac{t^nA^n}{n!}.
 $$
-Une troncature d'ordre suffisamment élevé permet d'obtenir une approximation de l'exponentielle $e^{tA}$ à un ordre plus élevé que la méthode LRK($s$,$n$) où elle sera utilisé garanti que l'erreur de troncature reste inférieur à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $p$ par :
+Une troncature d'ordre suffisamment élevé permet d'obtenir une approximation de l'exponentielle $e^{tA}$ à un ordre plus élevé que la méthode LRK($s$,$n$) où elle sera utilisé garanti que l'erreur de troncature reste inférieur à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $m$ par :
 $$
-  T_p(A) = \sum_{k=0}^p \frac{A^k}{k!}
+  T_m(A) = \sum_{k=0}^m \frac{A^k}{k!}.
 $$
 
-On sait que les valeurs propres de $A$ sont imaginaires pures, cela signifie que les valeurs propres de $e^{A}$ sont de norme 1.
+Nous savons que les valeurs propres de $e^{A}$ sont sur le cercle unité, préserver cette propriété permet d'assurer la stabilité du schéma. Nous regardons donc les valeurs propres de $T_5(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:T5}. On remarque que le module des valeurs propres à 1 n'est pas préservé.
 
 \begin{figure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_evA0T5.png}
-    \caption{Les valeurs propres de $e^{A_0}$ et de $T_5(A_0)$}
-  \end{subfigure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_evAkT5.png}
-    \caption{Les valeurs propres de $e^{A}$ et de $T_5(A)$ pour différentes valeurs de $k\in[\![0,15]\!]$, par symétrie on obtient aussi celles pour $k<0$}
-  \end{subfigure}
-  \caption{Valeurs propres de $e^{A}$ et de $T_5(A)$ pour $k=0$ (sans les équations de Maxwell) à gauche, et pour différentes valeurs de $k\in[\![0,15]\!]$ à droite.}
+  \centering
+  \includegraphics[width=0.5\textwidth]{\localPath/figures/ev_T5.png}
+  \caption{Valeurs propres de $T_5(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs, sont obtenues par parité.}
+  \label{fig:ev:T5}
 \end{figure}
 
-\Josselin{Je ne sais pas trop quoi dire sur les figures, donc je vais les mettre là un peu en vrac, on pourra discuter de leur intérêt plus tard, mais je pense qu'un petit calcul juste dire que les valeurs propres de $T_p(A)$ ne sont pas de module 1 serait plus intéressant.}
+On peut regarder, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$. C'est ce que l'on trace sur la figure~\ref{fig:taylor:error}.
+
+% \begin{figure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_evA0T5.png}
+%     \caption{Les valeurs propres de $e^{A_0}$ et de $T_5(A_0)$}
+%   \end{subfigure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_evAkT5.png}
+%     \caption{Les valeurs propres de $e^{A}$ et de $T_5(A)$ pour différentes valeurs de $k\in[\![0,15]\!]$, par symétrie on obtient aussi celles pour $k<0$}
+%   \end{subfigure}
+%   \caption{Valeurs propres de $e^{A}$ et de $T_5(A)$ pour $k=0$ (sans les équations de Maxwell) à gauche, et pour différentes valeurs de $k\in[\![0,15]\!]$ à droite.}
+% \end{figure}
 
 \begin{figure}
   \begin{subfigure}{.5\textwidth}
@@ -88,12 +108,7 @@ On sait que les valeurs propres de $A$ sont imaginaires pures, cela signifie que
     \caption{L'erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour le mode de Fourier $k=15$}
   \end{subfigure}
   \caption{Erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour deux modes de Fourier $k=2$ à gauche et $k=15$ à droite.}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.75\textwidth]{\localPath/figures/approx_errortAkT5.png}
-  \caption{L'erreur absolue locale $\|e^{tA}-T_5(tA)\|$ pour différents mode de Fourier}
+  \label{fig:taylor:error}
 \end{figure}
 
 \subsection{Approximant de Padé}
@@ -117,22 +132,29 @@ $$
   e^M \approx P_{p,q}(M) = h_{p,q}(M)\cdot\left(k_{p,q}(M)\right)^{-1}
 $$
 
-On effectue la même étude qu'avec une troncature de la série de Taylor. On regarde donc dans un premier temps sur la figure~\ref{fig:evAP22} les valeurs propres dans le cas $k=0$ et pour différentes valeurs de $k$.
+L'introduction d'une fraction rationnelle permet de préserver certaines propriétés comme le fait que $P_{p,p}(-z) = \frac{1}{P_{p,p}(z)}$. Nous regardons les valeurs propres de $P_{2,2}(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:P22}, et l'on remarque que, contrairement à la troncature de la série de Taylor, le module des valeurs propres est 1.
 
 \begin{figure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_evA0P.png}
-    \caption{Les valeurs propres de $e^{A_0}$ et de $P_{n,n}(A_0)$}
-  \end{subfigure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_evAkP22.png}
-    \caption{Les valeurs propres de $e^{A}$ et de $P_{2,2}(A)$ pour différentes valeurs de $k\in[\![0,15]\!]$, par symétrie on obtient aussi celles pour $k<0$}
-  \end{subfigure}
-  \caption{Valeurs propres de $e^{A}$ et de $P_{n,n}(A)$ pour $k=0$ (sans les équations de Maxwell) à gauche, et pour différentes valeurs de $k\in[\![0,15]\!]$ à droite.}
-  \label{fig:evAP22}
+  \centering
+  \includegraphics[width=0.5\textwidth]{\localPath/figures/ev_P22.png}
+  \caption{Valeurs propres de $P_{2,2}(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs, sont obtenues par parité.}
+  \label{fig:ev:P22}
 \end{figure}
+
+% \begin{figure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_evA0P.png}
+%     \caption{Les valeurs propres de $e^{A_0}$ et de $P_{n,n}(A_0)$}
+%   \end{subfigure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_evAkP22.png}
+%     \caption{Les valeurs propres de $e^{A}$ et de $P_{2,2}(A)$ pour différentes valeurs de $k\in[\![0,15]\!]$, par symétrie on obtient aussi celles pour $k<0$}
+%   \end{subfigure}
+%   \caption{Valeurs propres de $e^{A}$ et de $P_{n,n}(A)$ pour $k=0$ (sans les équations de Maxwell) à gauche, et pour différentes valeurs de $k\in[\![0,15]\!]$ à droite.}
+%   \label{fig:evAP22}
+% \end{figure}
 
 \begin{figure}
   \begin{subfigure}{.5\textwidth}
@@ -162,32 +184,32 @@ Nous souhaitons mettre en place cette stratégie d'approximation de la partie li
 $$
   \partial_t u = a\partial_x u + b\partial_y u
 $$
-où $u(t,x,y)$ est une fonction à valeurs scalaires, $(x,y)\in[-2,2]\times[-2,2]$, $t\geq0$, $a,b\in\mathbb{R}$ donnés, et $u(t=0,x,y)=u_0(x,y)$ donné. On sait que la solution au temps $t$ est donnée par :
+où $u(t,x,y)$ est une fonction à valeurs réelles, $(x,y)\in[-2,2]\times[-2,2]$, $t\geq0$, $a,b\in\mathbb{R}$ donnés, et $u(t=0,x,y)=u_0(x,y)$ donné. On sait que la solution au temps $t$ est donnée par :
 $$
   u(t,x,y) = u_0(x-at,y-bt).
 $$
-On souhaite résoudre cette équation par une méthode spectrale dans la direction $y$ (partie linéaire de la méthode de Lawson), une méthode WENO5 dans la direction $x$ (partie non-linéaire), et une méthode LRK(3,3) en temps. Nous obtenons donc l'équation :
+On souhaite résoudre cette équation par une méthode spectrale dans la direction $y$ (partie linéaire de la méthode de Lawson), une méthode WENO5 dans la direction $x$ (partie non-linéaire), et une méthode LRK($s$,$n$) en temps (méthode de Lawson d'ordre $n$ à $s$ étages). Nous obtenons donc l'équation :
 $$
   \partial_t \hat{u} = L\hat{u} + N(\hat{u}),\quad u(t=0,x,y) = u_0(x,y)
 $$
 avec $L = i\kappa b$ et, $N:\hat{u}\mapsto\widehat{a\partial_xu}$. À partir des résultats du chapitre~\ref{chap1}, on peut calculer l'erreur du schéma en linéarisant la partie non-linéaire :
 $$
-  u^{n+1} = e^{\Delta tL}\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n = e^{\Delta t (L+N)}u^n + \order{\Delta t^4}
+  u^{n+1} = e^{\Delta tL}\sum_{i=0}^{n}\frac{\Delta t^iN^i}{i!}u^n = e^{\Delta t (L+N)}u^n + \order{\Delta t^{n+1}}
 $$
 ce qui nous permet de dire que la partie linéaire est résolue exactement, et que la partie non-linéaire est d'ordre 3. Il est également possible de vouloir approcher l'exponentielle de la partie linéaire $e^{\Delta tL}$ avec une troncature de la série de Taylor ou un approximant de Padé :
 $$
   \begin{aligned}
-    u^{n+1} =& T_m(\Delta tL)\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n     & & \text{pour la série de Taylor d'ordre $m$} \\
-    u^{n+1} =& P_{p,q}(\Delta tL)\left(1+\Delta tN + \frac{\Delta t^2N^2}{2} + \frac{\Delta t^3N^3}{6}\right)u^n & & \text{pour l'approximant de Padé d'ordre $(p,q)$}
+    u^{n+1} =& T_m(\Delta tL)\sum_{i=0}^{n}\frac{\Delta t^iN^i}{i!}u^n     & & \text{pour la série de Taylor d'ordre $m$} \\
+    u^{n+1} =& P_{p,q}(\Delta tL)\sum_{i=0}^{n}\frac{\Delta t^iN^i}{i!}u^n & & \text{pour l'approximant de Padé d'ordre $(p,q)$}
   \end{aligned}
 $$
 avec $T_m(\Delta tL) = e^{\Delta tL}+\order{\Delta t^m}$ et $P_{p,q}(\Delta tL) = e^{\Delta tL}+\order{\Delta t^{p+q}}$. Ce qui nous permet d'écrire :
 $$
-  u^{n+1} = e^{\Delta t (L+N)}u^n + \order{\Delta t^r} + \order{\Delta t^4}
+  u^{n+1} = e^{\Delta t (L+N)}u^n + \order{\Delta t^r} + \order{\Delta t^{n+1}}
 $$
-avec $r=m$ pour la troncature de la série de Taylor, ou $r=p+q$ pour l'approximant de Padé. Ainsi on remarque l'importance d'avoir une approximation de l'exponentielle de la partie linéaire d'ordre au moins égal à l'ordre de la méthode de Lawson choisie.
+avec $r=m$ pour la troncature de la série de Taylor, ou $r=p+q$ pour l'approximant de Padé. Ainsi l'erreur en temps du schéma, approché par une méthode d'interpolation de la partie linéaire, est une contribution de deux termes, et l'ordre en temps de la méthode est $\min(r,n)$.
 
-Il est possible de retrouver ce résultat numériquement en comparant les différentes méthodes et en mesurant l'erreur effectuée pour différentes valeurs de pas de temps $\Delta t$ et ainsi mesure l'ordre en temps de la méthode. Pour cela on se munit d'une discrétisation de $243$ points par direction, de plusieurs valeurs de pas de temps $\Delta t\in[0.00158,0.02370]$. La simulation s'effectue jusqu'au temps final $T_f=0.07111$ avec les vitesses $a=1.0$ et $b=0.75$. On regarde l'erreur, par rapport à notre solution de référence en norme 1 :
+Il est possible de retrouver ce résultat numériquement en comparant les différentes méthodes et en mesurant l'erreur effectuée pour différentes valeurs de pas de temps $\Delta t$ et ainsi mesure l'ordre en temps de la méthode. Pour cela on choisit le schéma LRK(3,3) induit par la méthode SSP RK(3,3) de Shu-Osher, on se munit d'une discrétisation de $243$ points par direction, de plusieurs valeurs de pas de temps $\Delta t\in[0.00158,0.02370]$. La simulation s'effectue jusqu'au temps final $T_f=0.07111$ avec les vitesses $a=1.0$ et $b=0.75$. On regarde l'erreur, par rapport à notre solution de référence en norme 1 :
 $$
   e_1 = \| u(t,x,y) - u_0(x-at,y-bt) \|_1 \approx \sum_{i,j}|u^n_{i,j}-u_0(x_i-at,y_j-bt)|\Delta x\Delta y,
 $$
