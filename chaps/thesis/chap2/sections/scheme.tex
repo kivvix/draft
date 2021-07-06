@@ -3,15 +3,15 @@
 \section{Schémas numériques}
 \label{s:scheme}
 
-Nous allons maintenant présenter les schémas numériques développés pour approcher la solution du modèle hybride linéarisé (\ref{eq:vahl}). Notre but est de comparer deux approches pour la discrétisation temporelle. D'une part, pour profiter de la structure hamiltonienne présentée dans la section \ref{s:geom}, nous proposons une méthode de \emph{splitting} hamiltonien en temps, couplée à une méthode de composition d'ordre élevé, en l’occurrence la méthode de Suzuki (\cite{Suzuki:1990}, \cite{Hairer:2006}, \cite{Blanes:2019}). Concernant la discrétisation en espace, nous utilisons la transformée de Fourier discrète, alors que la discrétisation en vitesse est effectuée par une méthode semi-Lagrangienne d'ordre 5. Nous détaillons cette approche dans la sous-section \ref{ssec:splitting}. D'autre part, le modèle VHL (\ref{eq:vahl}) peut être récrit sous la forme 
+Nous allons maintenant présenter les schémas numériques développés pour approcher la solution du modèle hybride linéarisé (\ref{eq:vahl}). Notre but est de comparer deux approches pour la discrétisation temporelle. D'une part, pour profiter de la structure hamiltonienne présentée dans la section \ref{s:geom}, nous proposons une méthode de \emph{splitting} hamiltonien en temps, couplée à une méthode de composition d'ordre élevé, en l’occurrence la méthode de Suzuki (\cite{Suzuki:1990}, \cite{Hairer:2006}, \cite{Blanes:2019}). Concernant la discrétisation en espace, nous utilisons la transformée de Fourier discrète, alors que la discrétisation en vitesse est effectuée par une méthode semi-lagrangienne d'ordre 5. Nous détaillons cette approche dans la sous-section \ref{ssec:splitting}. D'autre part, le modèle VHL (\ref{eq:vahl}) peut être réécrit sous la forme 
 $$
   \partial_t U = AU + N(U), 
 $$
-avec $A$ une matrice $3\times 3$ et $N$ représente les termes non linéaires. On reconnait une structure particulière qu'un intégrateur exponentiel peut exploiter, en particulier pour éviter une condition CFL trop restrictive induite par le terme de transport en espace (souvent la plus restrictive \cite{Crouseilles:2019b}). Nous présentons dans la sous-section \ref{ssec:lawson} la discrétisation en temps de Lawson d'ordre 4 que nous avons choisi d'implémenter. Celle-ci est couplée à une méthode de transformée de Fourier discrète en espace et à une méthode WENO d'ordre 5 en vitesse. Les deux schémas numériques obtenus sont donc d'ordre élevé dans toutes les variables. Pour optimiser le temps de calcul des deux schémas, nous proposons d'utiliser une méthode de pas de temps adaptatif, présentée dans la sous-section \ref{ssec:dtadapt}. Pour le cas des schémas exponentiels, cette approche de pas de temps adaptatif est motivée par le fait que le terme non linéaire $E\partial_v f$ ne va pas induire de grand déplacement au moins dans la phase linéaire (car $|E|<\!\!< 1$ dans ce régime), ce qui permettra d'utiliser de grands pas de temps ; dans le cas où $E$ est plus grand, cela signifie que le système tente de reproduire des phénomènes complexes non linéaires, ainsi un pas de temps plus petit devra être considéré pour capturer ces  phénomènes. 
+avec $A$ une matrice $3\times 3$ et où $N$ représente les termes non linéaires. On reconnait une structure particulière qu'un intégrateur exponentiel peut exploiter, en particulier pour éviter une condition CFL trop restrictive induite par le terme de transport en espace (souvent la plus restrictive \cite{Crouseilles:2019b}). Nous présentons dans la sous-section \ref{ssec:lawson} la discrétisation en temps de Lawson d'ordre 4 que nous avons choisi d'implémenter. Celle-ci est couplée à une méthode de transformée de Fourier discrète en espace et à une méthode WENO d'ordre 5 en vitesse. Les deux schémas numériques obtenus sont donc d'ordre élevé dans toutes les variables. Pour optimiser le temps de calcul des deux schémas, nous proposons d'utiliser une méthode de pas de temps adaptatif, présentée dans la sous-section \ref{ssec:dtadapt}. Pour le cas des schémas exponentiels, cette approche de pas de temps adaptatif est motivée par le fait que le terme non linéaire $E\partial_v f$ ne va pas induire de grand déplacement au moins dans la phase linéaire (car $|E|<\!\!< 1$ dans ce régime), ce qui permettra d'utiliser de grands pas de temps ; dans le cas où $E$ est plus grand, cela signifie que le système tente de reproduire des phénomènes complexes non linéaires, ainsi un pas de temps plus petit devra être considéré pour capturer ces  phénomènes. 
 
 \subsection{Méthode de \emph{splitting} hamiltonien}\label{ssec:splitting}
 
-On construit une méthode numérique de type \emph{splitting} à partir de la décomposition du Hamiltonien
+On construit une méthode numérique de type \emph{splitting} à partir de la décomposition de l'hamiltonien
 $$
   \mathcal{H} = \mathcal{H}_E +\mathcal{H}_u + \mathcal{H}_f. 
 $$
@@ -20,7 +20,7 @@ Ainsi, avec $U=(u, E, f)$, le \emph{splitting} en temps se déduit de
 \label{dtU}
   \partial_t U = \{ U, \mathcal{H}_E +\mathcal{H}_u + \mathcal{H}_f \} = \{ U, \mathcal{H}_E  \}+\{ U, \mathcal{H}_u  \}+\{ U,  \mathcal{H}_f \}.
 \end{equation}
-Dans la suite, on nnontera les solutions correspondantes aux trois différentes parties $\varphi^{[E]}$, $\varphi^{[u]}$ et $\varphi^{[f]}$. On commence par  $\varphi^{[E]}(U)$ solution de $\partial_t U = \{ U, \mathcal{H}_E  \}$,  
+Dans la suite, on notera les solutions correspondantes aux trois différentes parties $\varphi^{[E]}$, $\varphi^{[u]}$ et $\varphi^{[f]}$. On commence par  $\varphi^{[E]}(U)$ solution de $\partial_t U = \{ U, \mathcal{H}_E  \}$,  
 \begin{equation}
   \begin{aligned}
     \partial_t u = \{ u, \mathcal{H}_E \} &= E \\
@@ -47,11 +47,11 @@ Enfin, on écrit les équations associées à  $\partial_t U = \{ U, \mathcal{H}
   \end{aligned}
   \label{eq:varphi:f}
 \end{equation}
-Ainsi, la solution $\varphi(U)$ de \eqref{dtU} sera approchée par la composition de $\varphi^{[u]}(U)$, $\varphi^{[E]}(U)$ et $\varphi^{[f]}(U)$. Par exemple, un splitting de Lie-Trotter permet d'approcher $\varphi(U)$ grâce à $\varphi(U)\approx \varphi^{[E]}\circ  \varphi^{[u]}\circ  \varphi^{[f]}(U)$. Une remarque importante est que chaque sous-système peut être résolu exactement en temps de sorte que l'erreur en temps ne provient que du splitting.  
+Ainsi, la solution $\varphi(U)$ de \eqref{dtU} sera approchée par la composition de $\varphi^{[u]}(U)$, $\varphi^{[E]}(U)$ et $\varphi^{[f]}(U)$. Par exemple, un \emph{splitting} de Lie-Trotter permet d'approcher $\varphi(U)$ grâce à $\varphi(U)\approx \varphi^{[E]}\circ  \varphi^{[u]}\circ  \varphi^{[f]}(U)$. Une remarque importante est que chaque sous-système peut être résolu exactement en temps de sorte que l'erreur en temps ne provient que du \emph{splitting}.  
 
 \subsubsection{Résolution de chaque sous-système}
 
-Nous nous intéressons à la semi-discrétisation en temps du \emph{splitting} hamiltonien donné par les trois systèmes (\ref{eq:varphi:E})-(\ref{eq:varphi:u})-(\ref{eq:varphi:f}). Soit $\Delta t>0$ un pas de temps, on définit $t^n=n\Delta t$ pour $n\geq 0$ et on note $U^n$ l'approximation de $U(t^n)$. Connaissant $U^n$, nous souhaitons calculer $U^{n+1}$. Pour ne pas multiplier les notations, nous notons dans chaque étape du \emph{splitting} $\tilde{U}^n$ le résultat de l'étape précédente (pour la première étape $\tilde{U}^n=U^n$). Il est important dans une méthode de \emph{splitting} de résoudre exactement chaque sous-système. Nous résolvons chaque système de la manière suivante.
+Nous nous intéressons à la semi-discrétisation en temps du \emph{splitting} hamiltonien donné par les trois systèmes (\ref{eq:varphi:E})-(\ref{eq:varphi:u})-(\ref{eq:varphi:f}). Soit $\Delta t>0$ un pas de temps, on définit $t^n=n\Delta t$ pour $n\geq 0$ et on note $U^n$ l'approximation de $U(t^n)$. Connaissant $U^n$, nous souhaitons calculer $U^{n+1}$. Pour ne pas multiplier les notations, nous relevons dans chaque étape du \emph{splitting} $\tilde{U}^n$ le résultat de l'étape précédente (pour la première étape $\tilde{U}^n=U^n$). Il est important dans une méthode de \emph{splitting} de résoudre exactement chaque sous-système. Nous résolvons chaque système de la manière suivante.
 
 \paragraph{$\bullet\quad U^{[E]}_{\Delta t} = \varphi^{[E]}_{\Delta t}(\tilde{U}^n)$ :} dans cette étape, $E$ est constant, par conséquent l'intégration en temps de l'équation $\partial_t u_c = E$ ne pose pas de problème :
 $$
@@ -61,7 +61,7 @@ La deuxième équation $\partial_t E = 0$ se résout par une simple copie des do
 $$
   E^{[E]}_{\Delta t} = \tilde{E}^n
 $$
-La troisième équation $\partial_t f_h+E\partial_vf_h=0$ est un transport en $v$, on pourrait souhaiter résoudre cette équation par une transformée de Fourier en $v$, mais pour effectuer une comparaison avec la méthode de Lawson que nous verrons par la suite, nous utiliserons ici une méthode semi-lagrangienne, par conséquent le problème se résout en remontant une caractéristique.
+La troisième équation $\partial_t f_h+E\partial_vf_h=0$ est un transport en $v$, on pourrait souhaiter résoudre cette équation par une transformée de Fourier en $v$, mais pour effectuer une comparaison avec la méthode de Lawson que nous verrons par la suite, nous utiliserons ici une méthode semi-lagrangienne ; par conséquent le problème se résout en remontant une caractéristique.
 $$
   {f_h}^{[E]}_{\Delta t} = \tilde{f}_h^n(x,v-\Delta t\tilde{E}^n)
 $$
@@ -133,7 +133,7 @@ $$
         \end{pmatrix}
 $$
 
-On a ainsi chacune de nos 3 étapes qui est résolue de manière exacte. Le pas de temps d'intégration $\Delta t$ est à voir comme un paramètre de la résolution de chaque sous étape, ce qui permet en les réalisant successivement sur un pas de temps $\Delta t$, d'obtenir un \emph{splitting} de Lie :
+On a ainsi chacune de nos 3 étapes qui est résolue de manière exacte. Le pas de temps d'intégration $\Delta t$ est à voir comme un paramètre de la résolution de chaque sous-étape, ce qui permet, en les réalisant successivement sur un pas de temps $\Delta t$, d'obtenir un \emph{splitting} de Lie :
 \begin{equation}
   U^{n+1} = \mathcal{L}_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t} \circ \varphi^{[u]}_{\Delta t} \circ \varphi^{[f]}_{\Delta t}(U^n).
   \label{eq:lie}
@@ -145,7 +145,7 @@ Mais nous pouvons les concaténer différemment, avec des pas d'intégration dif
 
 On s'intéresse à une méthode en temps d'ordre élevé, la méthode de Suzuki \cite{Suzuki:1990}. Celle-ci se construit à partir de la méthode de Strang \cite{Strang:1968} dont la formulation à 3 étapes s'écrit comme suit :
 \begin{equation}
-  U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} \circ \varphi^{[f]}_{\Delta t} \circ \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} (U^n) 
+  U^{n+1} = S_{\Delta t}(U^n) = \varphi^{[E]}_{\Delta t/2} \circ \varphi^{[u]}_{\Delta t/2} \circ \varphi^{[f]}_{\Delta t} \circ \varphi^{[u]}_{\Delta t/2} \circ \varphi^{[E]}_{\Delta t/2} (U^n) 
   \label{eq:strang}
 \end{equation}
 La méthode de Suzuki est une composition de 5 méthodes de Strang, donc un total de 25 étapes. Celle-ci s'écrit :
@@ -169,7 +169,7 @@ Avec les conditions périodiques en espace, il parait naturel d'effectuer la ré
 
 \subsection{Méthode de Lawson sur le modèle hybride}\label{ssec:lawson}
 
-Nous présentons une seconde approche pour la discrétisation en temps du modèle (\ref{eq:vahl}), que nous comparerons à la méthode de splitting présentée dans la sous-section \ref{ssec:splitting}. Il s'agit de la méthode de Lawson \cite{Lawson:1967}, qui fait partie de la classe des méthodes de type exponentielle.
+Nous présentons une seconde approche pour la discrétisation en temps du modèle (\ref{eq:vahl}), que nous comparerons à la méthode de \emph{splitting} présentée dans la sous-section \ref{ssec:splitting}. Il s'agit de la méthode de Lawson \cite{Lawson:1967}, qui fait partie de la classe des méthodes de type exponentielle.
 
 \subsubsection{Présentation de la méthode de Lawson}
 
@@ -326,9 +326,9 @@ $$
 
 \subsection{Méthode de pas de temps adaptatif}\label{ssec:dtadapt}
 
-Nous terminons cette section en présentant des méthodes de pas adaptatifs qui seront incorporées aux intégrateurs en temps précédents. Ce type d'approche est importante lorsqu'on souhaite effectuer des simulations dédiées à la physique des plasmas. En effet, lors d'instabilités, une phase linéaire peut être décrite à l'aide de grands pas de temps alors que dans la phase non linéaire, de petits pas de temps sont nécessaires pour capturer les phénomènes physiques complexes. 
+Nous terminons cette section en présentant des méthodes de pas adaptatifs qui seront incorporées aux intégrateurs en temps précédents. Ce type d'approche est important lorsqu'on souhaite effectuer des simulations dédiées à la physique des plasmas. En effet, lors d'instabilités, une phase linéaire peut être décrite à l'aide de grands pas de temps alors que dans la phase non linéaire, de petits pas de temps sont nécessaires pour capturer les phénomènes physiques complexes. 
 
-Pour une équation différentielle scalaire donnée $du(t)/dt = f(t, u(t)), u(0)=u_0\in$, une méthode à pas de temps adaptatif consiste à effectuer 2 estimations numériques de la solution $u(t^{n+1})$ au temps $t^{n+1}$. On note $\Delta t^n$ le pas de temps utilisé pour calculer $u^{n+1}_{[p]}$ et $u^{n+1}_{[p+1]}$ telles que :
+Pour une équation différentielle scalaire donnée $du(t)/dt = f(t, u(t)), u(0)=u_0$, une méthode à pas de temps adaptatif consiste à effectuer 2 estimations numériques de la solution $u(t^{n+1})$ au temps $t^{n+1}$. On note $\Delta t^n$ le pas de temps utilisé pour calculer $u^{n+1}_{[p]}$ et $u^{n+1}_{[p+1]}$ telles que :
 $$
   u^{n+1}_{[p]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+1}) \qquad u^{n+1}_{[p+1]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+2})
 $$
@@ -388,7 +388,7 @@ La norme que nous utiliserons sur $U^n = (u_c^n,E^n,\hat{f}_h^n)$ pour estimer l
   \end{aligned}
   \label{local_error}
 \end{equation}
-où $\left.u_c\right._i, \left.E\right._i$ et $\left.f_h\right._{i,j}$ sont les inconnues discrètes associés au point $i,j$ de grille de l'espace des phases.
+où $\left.u_c\right._i, \left.E\right._i$ et $\left.f_h\right._{i,j}$ sont les inconnues discrètes associées au point $i,j$ de grille de l'espace des phases.
 
 
 \subsubsection{Méthode de pas de temps adaptatif avec la méthode de Lawson}
