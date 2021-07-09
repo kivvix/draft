@@ -267,6 +267,9 @@
 - [[Crestetto:2012b](pdf/2012-Crestetto(b).pdf)] **Kinetic/Fluid Micro-Macro Numerical Schemes for Vlasov-Poisson-BGK Equation Using Particles** (*2012*)
 	A. Crestetto, N. Crouseilles, M. Lemou
 	*Kinetic and Related Models*
+- [[Saramito:2013](https://cel.archives-ouvertes.fr/cel-00573975)] **Langage C++ et calcul scientifique** (*2013*)
+	P. Saramito
+	 
 - [[Coulette:2013](https://www.sciencedirect.com/science/article/pii/S0021999113002532)] **Numerical comparisons of gyrokinetic multi-water-bag models** (*2013*)
 	D. Coulette, N. Besse
 	*Journal of Computational Physics*
