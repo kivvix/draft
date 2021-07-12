@@ -2,10 +2,16 @@
 
 \section{Résultats numériques des schémas de Lawson approchés}
 
-\subsection{Comparaison des troncatures à pas de temps constant}
+Dans cette section nous effectuerons une comparaison entre les résultats obtenus la section~\ref{sec:3:num} avec une méthode de Lawson où la résolution de ls partie linéaire est exacte mais ne contient pas les équations de Maxwell, et la méthode proposée dans la section~\ref{s3:approx} avec une approximation de la partie linéaire, permettant de prendre en compte plus de termes au sein de celle-ci. L'utilisation de troncatures de la série de Taylor, ou d'approximants de Padé, permet toujours d'effectuer le filtrage de l'équation de Vlasov effectué dans la sous-section~\ref{ssec:3:filtrage}.
 
-\subsection{Étude à pas de temps adaptatif}
+Dans les diagnostics que nous allons présenter, nous regardons les mêmes quantités, à savoir les énergies magnétiques, électriques et l'énergie cinétiaue des particules froides, décrites dans les équations~\eqref{eq:3:nrj:me}-\eqref{eq:3:nrj:ce}.
 
 \begin{otherlanguage}{english}
 Acknowledgment: Experiments presented in this section were carried out using the PlaFRIM experimental testbed, supported by Inria, CNRS (LABRI and IMB), Université de Bordeaux, Bordeaux INP and Conseil Régional d’Aquitaine (see \url{https://www.plafrim.fr/}).
 \end{otherlanguage}
+
+\subsection{Comparaison des troncatures à pas de temps constant}
+
+
+\subsection{Étude à pas de temps adaptatif}
+

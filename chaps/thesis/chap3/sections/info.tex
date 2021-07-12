@@ -2,6 +2,8 @@
 
 \section{Optimisations et performances}
 
+Cette section s'intéresse aux aspects techniques de l'implémentation des schémas présentés dans la section~\ref{sec:3:scheme}. Il sera tout d'abord question de méthode de génération de code, utilisée uniquement dans le cadre de la méthode de Lawson, puis nous discuterons des performances et des choix d'implémentation effectués.
+
 \subsection{Génération automatique de code}
 \label{ssec:3:codegen}
 
@@ -13,12 +15,16 @@ Pour chaque étage de la méthode LRK, il est ainsi possible d'obtenir une expre
 
 \paragraph{Nota Bene :} La bibliothèque \sympy{} contient des fonctions permettant la génération de code en C ou Fortran, mais le fonctionnement de celles-ci s'adapte mal à une intégration dans une boucle d'un code déjà existant. De plus les fonctions ainsi générés ne fonctionnent pas avec un code contenant des \emph{template} \CC, pour changer éventuellement de type pour de possibles optimisations. Elles ne prennent en paramètre que des valeurs par copie ou par pointeur, ce qui limite leur usage avec des structures de données évoluées proposées par les librairies \CC. Il serait envisageable d'utiliser certains des mécanismes présents dans ces fonctions pour améliorer la génération de code proposé ci-dessus, en utilisant un parcours d'arbre syntaxique pour construire un \emph{Abstract Syntax Tree} (AST) permettant la génération dans n'importe quel langage d'une expression. \Josselin{Et derniers points, ces fonctions sont très mal documentées (je les ai découverte alors que je générais déjà les lignes de code pour le Lawson-RK(3,3) et que celui-ci tournait bien), et elles laissent des 1/2, 1/3 etc. qui peuvent valoir 0 selon les options de compilation ou les compilateurs.}
 
-\subsection{Parallélisation}
-
-\Josselin{Je ne sais pas trop quoi dire là dedans. Pour le moment la parallélisation n'est pas faite à cause de FFTW. J'ai trouvé une exemple de code pour indiquer comment utiliser FFTW avec OpenMP, mais il n'y a rien de très passionant à dire ici (à mon sens). Il faudra voir avec le gain en temps de calcul.}
-
-\Josselin{Autre problème de cette section c'est le code Taylor/Padé. Ceux-ci tournent correctement sur ma machine mais pas sur le serveur de calcul, je présume que la différence est surtout la version de GCC. Pierre m'a indiqué qu'il n'était pas prévu de mettre à jour GCC sur la machine de calcul actuelle car les dépendances ne peuvent être gérées sur la version de Fedora qui y tourne, et il ne sait pas quand le nouveau serveur sera opérationel. Or (je n'ai jamais testé mais c'est ce qu'on lit un peu partout) MacOS gère pas très très bien OpenMP, il est donc (possiblement) compliqué de faire ces tests sur ma machine.}
-
 \subsection{Performances}
+
+Nous souhaitons dans cette section présenter les choix techniques effecutés pour garantir la performance de l'implémentation des schémas détaillés dans la section~\ref{sec:3:scheme}, nous essayerons aussi de quantifier cette performance avec ou sans parallélisation.
+
+\subsubsection{Structure de données}
+
+Le choix a été fait, durant toute cette thèse, d'utiliser une méthode spectrale pour résoudre le transport en espace (direction $x$ ou $z$). Cela implique d'effectuer régulièrement des transformées de Fourier, ou des transformées inverses. Pour effectuer ces opérations efficacement il est nécessaire que cette mémoire soit contigüe en mémoire, cela indique qu'il s'agit du dernier indice dans les tableaux manipulés en \CC. Ainsi 
+
+\subsubsection{Performance séquentielle}
+
+\subsubsection{Performance parallélisée}
 
 

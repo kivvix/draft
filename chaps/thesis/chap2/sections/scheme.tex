@@ -158,7 +158,7 @@ $$
   \alpha_1 = \alpha_2 = \frac{1}{4 - \sqrt[3]{4}} \qquad \alpha_3 = \frac{1}{1- 4^{\frac{2}{3}}}
 $$
 Pour rappel, la méthode de Strang est une composition d'ordre 2 en temps, la méthode de Suzuki ainsi construite est une méthode d'ordre 4. 
-On refère à \cite{Casas:2020} pour d'autres méthodes de composition basées sur une décomposition en trois parties. 
+On réfère à \cite{Casas:2020} pour d'autres méthodes de composition basées sur une décomposition en trois parties. 
 
 \subsubsection{Discrétisation de l'espace des phases}
 
@@ -338,7 +338,7 @@ c'est-à-dire que $u^{n+1}_{[p]}$ est d'ordre $p$ et $u^{n+1}_{[p+1]}$ d'ordre $
   L_{[p]}^{n+1} =  |u^{n+1}_{[p+1]} - u^{n+1}_{[p]}|. 
   \label{eq:Lerror}
 \end{equation}
-Etant donnée une tolérance $\text{tol}$ (fixée par l'utilisateur), si l'erreur locale est supérieure à la tolérance alors l'itération est rejetée, on recommence l'itération avec $u^n$ et un nouveau pas de temps $\Delta t^n$ plus petit. Sinon l'itération est acceptée et $u^{n+1} = u^{n+1}_{[p]}$, car c'est sur l'estimation d'ordre $p$ que l'on contrôle l'erreur, dans la pratique l'approximation d'ordre $p+1$ est souvent celle qui finalement est conservée.
+Étant donnée une tolérance $\text{tol}$ (fixée par l'utilisateur), si l'erreur locale est supérieure à la tolérance alors l'itération est rejetée, on recommence l'itération avec $u^n$ et un nouveau pas de temps $\Delta t^n$ plus petit. Sinon l'itération est acceptée et $u^{n+1} = u^{n+1}_{[p]}$, car c'est sur l'estimation d'ordre $p$ que l'on contrôle l'erreur, dans la pratique l'approximation d'ordre $p+1$ est souvent celle qui finalement est conservée.
 
 Pour l'iteration suivante, le nouveau pas de temps optimal est calculé par :
 \begin{equation}
