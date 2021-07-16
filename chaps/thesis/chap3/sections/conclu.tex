@@ -1,0 +1,10 @@
+% !TEX root = ../../main.tex
+
+\section{Conclusion}
+% -------------------------------------------------------------------
+
+\Josselin{C'est le meilleur chapitre de la thèse, c'est trop bien, tout marche et on a les meilleurs résultats du monde !}
+
+Ce chapitre est une extension de ce qui a pu être effectué dans le chapitre~\ref{chap2} au cas $1dz-3dv$. Nous avons profiter de l'analyse faite dans le chapitre précédent pour étudier le modèle hybride en dimensions supérieures et ses deux méthodes de résolution. La première méthode de résolution, méthode de \emph{splitting}, profite de la structure hamiltonienne du système qui n'avait pas été exploitée jusque là dans la littérature, mais le nombre d'étapes supplémentaires ne rend pas la méthode concurrente d'un point de vue numérique. En effet, la seconde méthode de résolution est la méthode de Lawson, et celle-ci permet une augmentation du coup numérique linéaire par rapport à l'ordre en temps choisi.
+
+Nous avons pu enrichir la méthode de Lawson d'une méthode d'approximation de l'exponentielle de la partie linéaire à l'aide d'approximants de Padé. Cette stratégie innovante permet profiter de plus de termes linéaires lorsque l'exponentielle de la partie linéaire n'est pas calculable formellement. La condition de stabilité est ainsi réduite à quelques termes non-linéaires et permet dans la partie linéaire du problème de profiter de grands pas de temps via une méthode de pas de temps adaptatif.
