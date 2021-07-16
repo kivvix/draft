@@ -328,7 +328,7 @@ $$
 
 Nous terminons cette section en présentant des méthodes de pas adaptatifs qui seront incorporées aux intégrateurs en temps précédents. Ce type d'approche est important lorsqu'on souhaite effectuer des simulations dédiées à la physique des plasmas. En effet, lors d'instabilités, une phase linéaire peut être décrite à l'aide de grands pas de temps alors que dans la phase non linéaire, de petits pas de temps sont nécessaires pour capturer les phénomènes physiques complexes. 
 
-Pour une équation différentielle scalaire donnée $du(t)/dt = f(t, u(t)), u(0)=u_0$, une méthode à pas de temps adaptatif consiste à effectuer 2 estimations numériques de la solution $u(t^{n+1})$ au temps $t^{n+1}$. On note $\Delta t^n$ le pas de temps utilisé pour calculer $u^{n+1}_{[p]}$ et $u^{n+1}_{[p+1]}$ telles que :
+Pour une équation différentielle scalaire donnée $du(t)/dt = f(t, u(t))$, $u(0)=u_0$, une méthode à pas de temps adaptatif consiste à effectuer 2 estimations numériques de la solution $u(t^{n+1})$ au temps $t^{n+1}$. On note $\Delta t^n$ le pas de temps utilisé pour calculer $u^{n+1}_{[p]}$ et $u^{n+1}_{[p+1]}$ telles que :
 $$
   u^{n+1}_{[p]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+1}) \qquad u^{n+1}_{[p+1]} = u(t^{n+1}) + \mathcal{O}((\Delta t^n)^{p+2})
 $$
@@ -406,7 +406,7 @@ $$
                 & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \left(\frac{1}{6}-\lambda\right) & \lambda
   \end{array}
 $$
-avec $\lambda$ un paramètre fixé à $\frac{1}{10}$ et où l'estimateur d'ordre $4$, $U^{n+1}_{[4]}$, est donné par l'avant dernière ligne, et l'estimateur d'ordre $3$, $U^{n+1}_{[3]}$, est donné par la dernière ligne, l'avant dernière ligne se lisant alors comme une ligne classique du tableau de Butcher.
+avec $\lambda$ un paramètre fixé et où l'estimateur d'ordre $4$, $U^{n+1}_{[4]}$, est donné par l'avant dernière ligne, et l'estimateur d'ordre $3$, $U^{n+1}_{[3]}$, est donné par la dernière ligne, l'avant dernière ligne se lisant alors comme une ligne classique du tableau de Butcher.
 
 Comme dans l'approche précédente, on calcule l'estimation de l'erreur locale $L^{n+1}_{[3]} = \| U^{n+1}_{[4]}-U^{n+1}_{[3]} \|_2$ dont la définition est la même que \eqref{local_error}, et on adapte le pas de temps comme expliqué plus haut.  
 
@@ -414,4 +414,4 @@ Dans le tableau de Butcher, le paramètre $\lambda$ peut être optimisé selon c
 $$
 R(\lambda)=  \frac{\lambda z^{5}}{24} + z^{4} \left(\frac{1}{24} - \frac{\lambda}{12}\right) + \frac{z^{3}}{6} + \frac{z^{2}}{2} + z + 1
 $$
-Idéalement $\lambda=0$ permet d'obtenir une méthode d'ordre 4 (ce qui est déjà effectuée dans l'étage précédent du tableau de Butcher). On cherche donc à trouver le $\lambda\neq 0$ tel que le domaine de stabilité soit le plus large possible ou que ce schéma minimise l'erreur tout en restant d'ordre 3. 
+Idéalement $\lambda=0$ permet d'obtenir une méthode d'ordre 4 (ce qui est déjà effectuée dans l'étage précédent du tableau de Butcher). On cherche donc à trouver le $\lambda\neq 0$ tel que le domaine de stabilité soit le plus large possible ou que ce schéma minimise l'erreur tout en restant d'ordre 3. Dans la pratique on choisit $\lambda = \frac{1}{10}$ comme dans~\cite{Dormand:1978}.

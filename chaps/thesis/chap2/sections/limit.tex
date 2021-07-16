@@ -38,7 +38,7 @@ Avant une étude plus détaillée, nous donnons un premier aperçu des solutions
   \caption{Énergie électrique donnée pour le modèle cinétique avec $T_c=0.05,0.1,0.2,0.4$ et le modèle hybride linéarisé.}
   \label{fig:limit_ee_Tf300}
 \end{figure}
-La première observation est que les résultats proches de ceux obtenus par le modèle hybride linéarisé \eqref{eq:vahl} sont très proches de ceux obtenus par le modèle cinétique \eqref{eq:vlasov}-\eqref{eq:poisson}, ce qui valide la modélisation. La perturbation des particules chaudes induit une instabilité (l'équilibre étant du type double Gaussienne) qu'on voit se développer jusqu'au temps $t=75$ (voir figure \ref{fig:limit_ee_Tf300}) et deux vortex sont alors crés autour de la vitesse $v\approx 2$, au centre desquels de fines structures se développent. 
+La première observation est que les résultats proches de ceux obtenus par le modèle hybride linéarisé \eqref{eq:vahl} sont très proches de ceux obtenus par le modèle cinétique \eqref{eq:vlasov}-\eqref{eq:poisson}, ce qui valide la modélisation. La perturbation des particules chaudes induit une instabilité (l'équilibre étant du type double Gaussienne) qu'on voit se développer jusqu'au temps $t=75$ (voir figure \ref{fig:limit_ee_Tf300}) et deux vortex sont alors créés autour de la vitesse $v\approx 2$, au centre desquels de fines structures se développent. 
 
 Dans la suite, nous allons approfondir cette étude en comparant les résultats obtenus aux relations de dispersion des deux modèles puis en essayant de déterminer le domaine de validité du modèle VHL.  
 
@@ -93,7 +93,7 @@ Pour vérifier numériquement cette proposition nous effectuons un jeu de simula
   \label{fig:limit:totalenergy}
 \end{figure}
 
-Nous effectuons le même type d'analyse sur l'énergie électrique, à partir des données des simulations précédentes, en sachant qu'il n'existe pas de résultat théorique sur sa convergence. L'énergie électrique pour les différents choix de $T_c$ est représentée sur la figure~\ref{fig:limit:ee} (gauche), cette figure illustre mieux la nécessité d'effectuer une interpolation pour extraire les données. Une convergence est observée sur la figure~\ref{fig:limit:ee} (droite).
+Nous effectuons le même type d'analyse sur l'énergie électrique, à partir des données des simulations précédentes, en sachant que l'on n'a pas de résultat théorique sur sa convergence. L'énergie électrique pour les différents choix de $T_c$ est représentée sur la figure~\ref{fig:limit:ee} (gauche), cette figure illustre mieux la nécessité d'effectuer une interpolation pour extraire les données. Une convergence est observée sur la figure~\ref{fig:limit:ee} (droite).
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{\localPath/figures/order_eeTc.png}
@@ -109,7 +109,7 @@ Nous effectuons le même type d'analyse sur l'énergie électrique, à partir de
 
 Nous étudions numériquement la convergence des racines de la relation de dispersion quant $T_c$ tend vers $0$. Pour cela, on note $D^K_{[T_c]}(\omega,k)$ la relation de dispersion du modèle cinétique \eqref{D_3bump} et $D^H(\omega,k)$ la relation de dispersion du modèle VHL \eqref{eq:D_hchyb}. Pour $k$ fixé, on note $\omega\in\mathbb{C}$ la racine de plus grande partie imaginaire. 
 %Pour la relation de dispersion, nous regardons les zéros en $\omega$ de la fonction $D^K_{[T_c]}(\omega,k)$ et $D^H(\omega,k)$ à $k$ fixé par la condition initiale. Nous ne conservons que le $\omega\in\mathbb{C}$ avec la plus grande partie imaginaire. 
-Cette racine est calculée numériquement à l'aide d'une méthode de Newton. On étudie maintenant la convergence des $\omega_K$ (zéro de $(D^K(\omega,k)$) vers $\omega_H$ (zéro de $(D^H(\omega,k)$). La convergence de $\omega_K(T_c)$ vers $\omega_H$ est visible sur la figure \ref{fig:omega}, où l'on représente, en échelle log-log le module de la différence des 2 zéros $\Delta \omega = |\omega_K-\omega_H|$.
+Cette racine est calculée numériquement à l'aide d'une méthode de Newton. On étudie maintenant la convergence des $\omega_K$ (zéro de $(D^K(\omega,k)$) vers $\omega_H$ (zéro de $(D^H(\omega,k)$). La convergence de $\omega_K(T_c)$ vers $\omega_H$ est visible sur la figure \ref{fig:omega}, où l'on représente, en échelle log-log le module de la différence des deux zéros $\Delta \omega = |\omega_K-\omega_H|$.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\textwidth]{\localPath/figures/omega.png}
@@ -118,7 +118,7 @@ Cette racine est calculée numériquement à l'aide d'une méthode de Newton. On
 \end{figure}
 On observe une convergence d'ordre $1$ en $T_c$ des zéros de la relation de dispersion, aucun argument théorique sur les fonctions holomorphes ne vient appuyer ce résultat, contrairement à ce qui a été énoncé pour l'énergie totale.
 
-La racine de plus grande partie imaginaire permettent de valider la phase linéaire du code. Cette phase linéaire peut être rendue plus longue en considérant une valeur très faible de la perturbation $\epsilon=10^{-4}$ dans les conditions initiales~\eqref{eq:K:init} et~\eqref{eq:HL:init}. Ceci va nous permettre de vérifier non seulement le taux d'instabilité, mais aussi, grâce aux calculs de la section \ref{s:dispersion} de l'énergie électrique. Nous pouvons donc comparer pour $\alpha = 0.1$, $T_c=0.1$, $N_x=135$, $N_v=1200$, $T_f=200$ et $\Delta t = 0.5\Delta x$ ce régime linéaire sur la figure~\ref{fig:limit:ee:Tf200}\subref{fig:limit:ee:Tf200:eps10m4}. Un résultat similaire est observable pour différentes températures ainsi que sur le modèle hybride linéarisé, comme l'illustre la figure~\ref{fig:limit:ee:Tf200}\subref{fig:limit:ee:Tf200:cmp_zoom}. Les reconstructions de l'énergie électrique se font à partir des relations de dispersion, avec l'équation~\eqref{eq:enelec}.
+La racine de plus grande partie imaginaire permet de valider la phase linéaire du code. Cette phase linéaire peut être rendue plus longue en considérant une valeur très faible de la perturbation $\epsilon=10^{-4}$ dans les conditions initiales~\eqref{eq:K:init} et~\eqref{eq:HL:init}. Ceci va nous permettre de vérifier non seulement le taux d'instabilité, mais aussi, grâce aux calculs de la section \ref{s:dispersion} celui de l'énergie électrique. Nous pouvons donc comparer pour $\alpha = 0.1$, $T_c=0.1$, $N_x=135$, $N_v=1200$, $T_f=200$ et $\Delta t = 0.5\Delta x$ ce régime linéaire sur la figure~\ref{fig:limit:ee:Tf200}\subref{fig:limit:ee:Tf200:eps10m4}. Un résultat similaire est observable pour différentes températures ainsi que sur le modèle hybride linéarisé, comme l'illustre la figure~\ref{fig:limit:ee:Tf200}\subref{fig:limit:ee:Tf200:cmp_zoom}. Les reconstructions de l'énergie électrique se font à partir des relations de dispersion, avec l'équation~\eqref{eq:enelec}.
 \begin{figure}
   \centering
   \begin{subfigure}{0.8\textwidth}
@@ -136,14 +136,14 @@ La racine de plus grande partie imaginaire permettent de valider la phase linéa
   \caption{Évolution de l'énergie électrique dans une longue phase linéaire et comparaison avec les relations de dispersion.}
   \label{fig:limit:ee:Tf200}
 \end{figure}
-En plus du taux d'instabilité de l'énergie électrique, il est possible à l'aide des relations de dispersion d'obtenir une très bonne approximation de l'énergie électrique dans la phase linéaire. On peut voir que l'étude des relations de dispersion ne permet pas d'obtenir des résultats fiables en début de simulation, où d'autres modes que le mode principal sont encore visibles (modes évanescents). De même, comme on peut le voir sur la figure~\ref{fig:limit_ee_Tf300}, la phase non-linéaire où l'énergie électrique atteint une saturation mélange de nombreux modes, c qui est incompatible avec l'étude du linéarisé. Néanmoins, même au temps $t\approx 200$, les résultats du code sont en excellent accord avec ceux obtenus grâce aux relations de dispersion  (voir figure \ref{fig:limit:ee:Tf200:cmp_zoom}). 
+En plus du taux d'instabilité de l'énergie électrique, il est possible à l'aide des relations de dispersion d'obtenir une très bonne approximation de l'énergie électrique dans la phase linéaire. On peut voir que l'étude des relations de dispersion ne permet pas d'obtenir des résultats fiables en début de simulation, où d'autres modes que le mode principal sont encore visibles (modes évanescents). De même, comme on peut le voir sur la figure~\ref{fig:limit_ee_Tf300}, la phase non-linéaire où l'énergie électrique atteint une saturation mélange de nombreux modes, ce qui est incompatible avec l'étude du linéarisé. Néanmoins, même au temps $t\approx 200$, les résultats du code sont en excellent accord avec ceux obtenus grâce aux relations de dispersion  (voir figure \ref{fig:limit:ee:Tf200:cmp_zoom}). 
 
 \FloatBarrier
 %----------
 \subsection{Évolution avec la densité de particules chaudes}
 %----------
 
-Nous avons validé les modèles et les relations de dispersions lorsque la température des particules froides $T_c$ tend vers $0$, la proposition~\ref{p:limit:convergence} nous indique que la convergence s'effectue en $(1-\alpha)T_c|\Omega|$ où $\alpha$ est la densité des particules chaudes. Nous traçons sur la figure~\ref{fig:limit:slope:alpha} l'évolution du taux d'instabilité donnée par les relations de dispersions (racine de plus grande partie imaginaire) en fonction de $\alpha$ et pour différentes valeurs de $T_c$. Cette évolution est représentée pour le modèle cinétique avec différentes températures, et  pour le modèle hybride, avec comme condition initiale pour les particules chaudes :
+Nous avons validé les modèles et les relations de dispersion lorsque la température des particules froides $T_c$ tend vers $0$, la proposition~\ref{p:limit:convergence} nous indique que la convergence s'effectue en $(1-\alpha)T_c|\Omega|$ où $\alpha$ est la densité des particules chaudes. Nous traçons sur la figure~\ref{fig:limit:slope:alpha} l'évolution du taux d'instabilité donné par les relations de dispersion (racine de plus grande partie imaginaire) en fonction de $\alpha$ et pour différentes valeurs de $T_c$. Cette évolution est représentée pour le modèle cinétique avec différentes températures, et  pour le modèle hybride, avec comme condition initiale pour les particules chaudes :
 $$
   f_h^0(x,v) = \left(\mathcal{M}_{^\alpha/_2,4,1}(v) + \mathcal{M}_{^\alpha/_2,-4,1}(v)\right)(1+\epsilon\cos\left(k x\right)), \;\; x\in [0, 4\pi]. 
 $$

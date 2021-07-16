@@ -3,7 +3,7 @@
 \section{Relations de dispersion}
 \label{s:dispersion}
 
-Cette section est dédiée à l'étude des relations de dispersion relatives aux modèles cinétique~\eqref{eq:vlasov}-\eqref{eq:poisson} et hybride linéarisé~\eqref{eq:vahl}. Il s'agit de linéariser le modèle étudié puis d'exprimer le mode fondamental du champ électrique linéarisé. Cela permet d'obtenir une très bonne approximation de la phase linéaire de l'énergie électrique. Cette approche, complètement indépendante des schémas numériques utilisés pour résoudre le modèle de départ, sera utilisée comme outil de validation des codes présentés dans la section~\ref{s:scheme}.
+Cette section est dédiée à l'étude des relations de dispersion relatives aux modèles cinétique~\eqref{eq:vlasov}-\eqref{eq:poisson} et hybride linéarisé~\eqref{eq:vahl}. Il s'agit d'effectuer une linéarisation complète (c'est-à-dire aussi des particules chaudes) du modèle étudié puis d'exprimer le mode fondamental du champ électrique linéarisé. Cela permet d'obtenir une très bonne approximation de la phase linéaire de l'énergie électrique. Cette approche, complètement indépendante des schémas numériques utilisés pour résoudre le modèle de départ, sera utilisée comme outil de validation des codes présentés dans la section~\ref{s:scheme}.
 
 Nous allons présenter les relations de dispersion de nos deux modèles, puis nous expliquerons comment reconstruire l'approximation linéaire de l'énergie électrique. Enfin, nous détaillerons les calculs des relations de dispersion pour le cas test qui nous intéressera dans les simulations numériques (sections~\ref{s:limit} et~\ref{s:compare}).
 
@@ -32,7 +32,7 @@ La densité de particules est définie par $\rho_0 = \rho_{0,c}+\rho_{0,h} = \in
 $$
   \begin{cases}
     \varepsilon\partial_t f^{(1)} + v\varepsilon\partial_x f^{(1)} + \varepsilon E^{(1)}\left(\partial_v f^{(0)}+\varepsilon\partial_v f^{(1)}\right)=\mathcal{O}(\varepsilon^2) \\
-    \varepsilon\partial_x E^{(1)} = \int f^{(0)} + \varepsilon\int f^{(1)} - n_0 + \mathcal{O}(\varepsilon^2)
+    \varepsilon\partial_x E^{(1)} = \int f^{(0)} + \varepsilon\int f^{(1)} - 1 + \mathcal{O}(\varepsilon^2)
   \end{cases}
 $$
 ce qui nous permet d'obtenir, en négligeant les termes d'ordre $\varepsilon^2$, le système de Vlasov-Poisson linéarisé :
@@ -96,7 +96,7 @@ ce qui nous donne :
   \tilde{\hat{E}}(\omega,k)=-\frac{i}{k}\int_{-\infty}^{+\infty}\tilde{\hat{f}}(\omega,k,v)dv
   \label{eq:fourierlaplace_E}
 \end{equation}
-Maintenant, nous souhaitons injecter l'équation~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E}. Nous devons prêter attention aux pôles $\omega = kv$. En fait, si $\Im(\omega)>0$ et pour une fonction analytique $g(v)$, alors l'intégrale $\int_{-\infty}^{+\infty}\frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ est analytique. Lorsque $\Im(\omega) \leq 0$, nous devons construire un prolongement analytique et remplacer l'intégrale par $\int_\gamma \frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ avec $\gamma$ un coutour ouvert parallèle à l'axe réel à l'infini et qui passe par le pôle $\omega = kv$ (voir \cite{Sonnendrucker:2015}). Par la suite, nous utiliserons la notation $\gamma$ soit pour l'axe réel $]-\infty,+\infty[$ quand $\Im(\omega)>0$, ou pour un chemin ouvert bien choisi lorsque $\Im(\omega)\leq 0$. 
+Maintenant, nous souhaitons injecter l'équation~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E}. Nous devons prêter attention aux pôles $\omega = kv$. En fait, si $\Im(\omega)>0$ et pour une fonction analytique $g(v)$, alors l'intégrale $\int_{-\infty}^{+\infty}\frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ est analytique. Lorsque $\Im(\omega) \leq 0$, nous devons construire un prolongement analytique et remplacer l'intégrale par $\int_\gamma \frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ avec $\gamma$ un contour ouvert parallèle à l'axe réel à l'infini et qui passe en-dessous du pôle $\omega = kv$ (voir \cite{Sonnendrucker:2015}). Par la suite, nous utiliserons la notation $\gamma$ soit pour l'axe réel $]-\infty,+\infty[$ quand $\Im(\omega)>0$, ou pour un chemin ouvert bien choisi lorsque $\Im(\omega)\leq 0$. 
 
 Avec cette notation, le résultat de l'injection de~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E} nous donne :
 $$
@@ -259,7 +259,7 @@ $$
 \subsection{Expression du champ électrique linéarisé}
 %----------
 
-Dans cette sous-section, nous considérons un prolongement analytique continu de $N(k,\omega)$ et $D(k,\omega)$, et nous supposons que la transformée de Laplace et de Fourier de $\tilde{\hat{E}}$ sont bien définies pour obtenir une approximation du champ électrique linéarisé.
+Dans cette sous-section, nous considérons un prolongement analytique continu de $N(k,\omega)$ et $D(k,\omega)$, et nous supposons que les transformées de Laplace et de Fourier de $\tilde{\hat{E}}$ sont bien définies pour obtenir une approximation du champ électrique linéarisé.
 
 La transformée de Laplace inverse peut être calculée à l'aide du théorème des résidus :
 $$
@@ -299,7 +299,7 @@ donc, le passage à la limite nous donne :
   \label{lemma:doubleracine}
 \end{lemma}
 \begin{proof}
-  Voir en Annexe~\ref{a:dispersion}. \commentaire[Anais]{(à voir si on le laisse en annexe ou si on l'enlève complètement)} 
+  Voir en annexe~\ref{a:dispersion}.
 \end{proof}
 
 En considérant seulement les deux racines principales $\pm\omega_r + i\omega_i$ de $D(k,\omega)$, supposés pôles simples de $\tilde{\hat{E}}(\omega,k)$, nous avons l'approximation :
@@ -394,7 +394,7 @@ avec $\alpha$ la densité de particules chaudes, centrées en $\pm v_0\in\mathbb
 $$
   \mathcal{M}_{\rho,u,T}(v) := \frac{1}{(2\pi T)^\frac{1}{2}}\exp\left(-\frac{|v-u|^2}{2T}\right)
 $$
-la distribution maxwellienne de densité $\rho$, centrée en la vitesse $u$ et de température $T$. Cette distribution initiale $f_0$ nous permet de construire une condition initiale compatible pour le modèle hybride, données par la limite $T_c\to 0$ :
+la distribution maxwellienne de densité $\rho$, centrée en la vitesse $u$ et de température $T$. Cette distribution initiale $f_0$ nous permet de construire une condition initiale compatible pour le modèle hybride, donnée par la limite $T_c\to 0$ :
 \begin{equation}
   \begin{aligned}
     f_{h,0} (x,v) & = \left(
@@ -419,12 +419,12 @@ Dans le calcul de $D(k,\omega)$ et $N(k,\omega)$ apparaît la fonction de disper
   Z(\xi):=\frac{1}{\sqrt{\pi}} \int_\gamma \frac{e^{-z^2}}{z-\xi}\,\mathrm{d}z
   \label{eq:Zfct}
 \end{equation}
-Tout d'abord on rappelle que :
+On rappelle, à l'aide de~\cite{Fried:1961}, que la fonction $Z$ vérifie :
 \begin{equation}
   Z'(\xi)=-2\left(1+\xi Z(\xi)\right).
   \label{eq:Zder}
 \end{equation}
-Nous allons maintenant établir quelques propriétés utiles pour vérifier l'hypothèse~\ref{hyp:sym} dans différents cas test classiques.
+Nous allons maintenant établir quelques propriétés utiles pour vérifier l'hypothèse~\ref{hyp:sym} dans différents cas tests classiques.
 
 \begin{lemma}
   La fonction $Z_\alpha^0(\omega):\omega\in\mathbb{C}\mapsto Z\left(\alpha\omega\right)\in\mathbb{C}$, avec $\alpha\in\mathbb{R}$ fixé, est telle que : $Z_\alpha^0(-\bar{\omega}) = -\overline{Z_\alpha^0(\omega)}$.
@@ -533,10 +533,10 @@ $$
 $$
 soit finalement :
 \begin{equation}
-  \begin{split}
-    N(k,\omega) = \frac{(1-\alpha)}{\omega^2}\hat{u}(t=0,k) - \frac{1}{i\omega}\hat{E}(t=0,k) \\
-      -\frac{\hat{g}(k)}{k^2}\left[ \alpha\frac{k}{\omega} + \frac{\alpha}{2\sqrt{2}}\left( Z\left(\frac{\frac{\omega}{k}-v_0}{\sqrt{2}}\right) + Z\left(\frac{\frac{\omega}{k}+v_0}{\sqrt{2}}\right) \right) \right]
-  \end{split}
+  \begin{aligned}
+    N(k,\omega) =& \frac{(1-\alpha)}{\omega^2}\hat{u}(t=0,k) - \frac{1}{i\omega}\hat{E}(t=0,k) \\
+      &-\frac{\hat{g}(k)}{k^2}\left[ \alpha\frac{k}{\omega} + \frac{\alpha}{2\sqrt{2}}\left( Z\left(\frac{\frac{\omega}{k}-v_0}{\sqrt{2}}\right) + Z\left(\frac{\frac{\omega}{k}+v_0}{\sqrt{2}}\right) \right) \right]
+  \end{aligned}
   \label{eq:N_hchyb}
 \end{equation}
 où $\hat{g}(k)$ est donnée par :
@@ -611,7 +611,7 @@ $$
 $$
 et qu'à la limite $z\to+\infty$, nous avons le développement asymptotique suivant 
 $$
-  erfi(z) = -i + \exp(z^2)/\sqrt{\pi} (\frac{1}{z} +\frac{1}{2z^3} +\frac{3}{4z^5} + \mathcal{O}\left(z^{-7}\right) ).
+  erfi(z) = -i + \frac{\exp(z^2)}{\sqrt{\pi}} \left(\frac{1}{z} +\frac{1}{2z^3} +\frac{3}{4z^5} + \mathcal{O}\left(z^{-7}\right) \right).
 $$
 Ainsi, nous avons $Z(z) =  2 i \sqrt{\pi} \exp(-z^2)  - \frac{1}{z}  - \frac{1}{2z^3} - \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$ ou encore $Z(z)= - \frac{1}{z}  - \frac{1}{2z^3}- \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$ et donc
 $$
