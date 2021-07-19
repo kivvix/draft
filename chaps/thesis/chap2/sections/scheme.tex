@@ -169,7 +169,7 @@ Avec les conditions périodiques en espace, il parait naturel d'effectuer la ré
 
 \subsection{Méthode de Lawson sur le modèle hybride}\label{ssec:lawson}
 
-Nous présentons une seconde approche pour la discrétisation en temps du modèle (\ref{eq:vahl}), que nous comparerons à la méthode de \emph{splitting} présentée dans la sous-section \ref{ssec:splitting}. Il s'agit de la méthode de Lawson \cite{Lawson:1967}, qui fait partie de la classe des méthodes de type exponentielle.
+Nous présentons une seconde approche pour la discrétisation en temps du modèle (\ref{eq:vahl}), que nous comparerons à la méthode de \emph{splitting} présentée dans la sous-section \ref{ssec:splitting}. Il s'agit de la méthode de Lawson \cite{Lawson:1967}, qui fait partie de la classe des méthodes de type exponentiel.
 
 \subsubsection{Présentation de la méthode de Lawson}
 
@@ -197,11 +197,11 @@ On pose $U =\left(u_c , E , \hat{f}_h\right)^{\textsf{T}}$, ainsi que :
 $$
   A = \begin{pmatrix}0 & -1 & 0 \\ \rho_c & 0 & 0 \\ 0 & 0 & ikv \\ \end{pmatrix},\qquad N(U) = \begin{pmatrix} 0 \\ \int_\mathbb{R} vf_h\,\mathrm{d}v \\ \widehat{E\partial_vf_h} \end{pmatrix}
 $$
-pour écrire \eqref{eq:vahlfft} sous une forme plus compacte suivante :
+pour écrire \eqref{eq:vahlfft} sous la forme plus compacte suivante :
 $$
   \partial_t U + AU + N(U) = 0. 
 $$
-Cette formulation est propice à l'utilisation d'intégrateurs exponentiels dont le point de départ est la récriture suivante 
+Cette formulation est propice à l'utilisation d'intégrateurs exponentiels dont le point de départ est la récriture suivante :
 $$
   \partial_t(e^{tA}U) + e^{tA}N(U) = 0. 
 $$
@@ -209,9 +209,9 @@ Puis, en effectuant le changement d'inconnue $V=e^{tA}U$ et avec $\tilde{N}:(t,V
 $$
   \partial_t V + \tilde{N}(t,V) = 0
 $$
-Cette équation peut se résoudre numériquement avec une méthode de type Runge-Kutta. Cette méthode Runge-Kutta sur $V$ peut se réécrire en méthode sur $U$, la méthode ainsi obtenue sur $U$ est appelée méthode de Lawson induite par la méthode Runge-Kutta choisie, présentée initialement dans \cite{Lawson:1967a}.
+Cette équation peut se résoudre numériquement avec une méthode de type Runge-Kutta. Cette méthode Runge-Kutta sur $V$ se réécrit en méthode sur $U$, la méthode ainsi obtenue sur $U$ est appelée méthode de Lawson induite par la méthode Runge-Kutta choisie, présentée initialement dans \cite{Lawson:1967a}.
 
-Ainsi, à partir d'une méthode de Runge-Kutta explicite\footnote{Nous ne nous intéresserons ici qu'à des méthodes Runge-Kutta explicites, ce qui explique que le tableau de Butcher est triangulaire strictement inférieur, ce choix est fait pour des raisons de résolution numérique, en effet nous souhaitons mettre en place des méthodes d'ordre élevé au plus faible coût de calcul possible.} définie par un tableau de Butcher 
+Ainsi, à partir d'une méthode de Runge-Kutta explicite\footnote{Nous ne nous intéresserons ici qu'à des méthodes Runge-Kutta explicites, ce qui explique que le tableau de Butcher est triangulaire strictement inférieur ; ce choix est fait pour des raisons de résolution numérique ; en effet nous souhaitons mettre en place des méthodes d'ordre élevé au plus faible coût de calcul possible.} définie par un tableau de Butcher :
 $$
   \begin{array}{c|cccc}
     0      &         &        &           & \\
@@ -222,14 +222,14 @@ $$
            & b_1     & \cdots & b_{s-1}   & b_s
   \end{array}
 $$
-on peut écrire  le schéma sur $V$ 
+on écrit le schéma sur $V$ 
 $$
   \begin{aligned}
     V^{(i)} &= v^n + \Delta t \sum_j a_{ij} \tilde{N}(t^n+c_j\Delta t , V^{(j)}) \\
     V^{n+1} &= v^n + \Delta t \sum_i b_i \tilde{N}(t^n+c_i\Delta t , V^{(i)})
   \end{aligned}
 $$
-avec la convention $V^{(0)} = V^n$.  Exprimé avec la variable $U$ le schéma s'écrit alors :
+avec la convention $V^{(0)} = V^n$.  Exprimé avec la variable $U$, le schéma s'écrit alors :
 $$
   \begin{aligned}
     U^{(s)} &= e^{c_s \Delta t A}U^n + \Delta t\sum_{j=0}^{s-1} a_{s, j} e^{-(c_j-c_s)\Delta t A} N(U^{(j)}),  \\
@@ -237,7 +237,7 @@ $$
   \end{aligned}
 $$
 
-Pour un comparatif d'ordre équivalent à celui de la méthode de splitting présentée dans la sous-section \ref{ssec:splitting}, la méthode de Lawson que nous choisissons est la méthode de Lawson sous-jacente à la méthode Runge-Kutta d'ordre 4 : $RK(4,4)$ :
+Pour un comparatif d'ordre équivalent à celui de la méthode de \emph{splitting} présentée dans la sous-section \ref{ssec:splitting}, la méthode de Lawson que nous choisissons est la méthode de Lawson sous-jacente à la méthode Runge-Kutta d'ordre 4 : $RK(4,4)$ :
 $$
   \begin{array}{c|cccc}
     0           & \\
@@ -269,7 +269,7 @@ $$
 
 \subsubsection{Discrétisation spatiale}
 
-Il est maintenant nécessaire de présenter les méthodes de discrétisation dans l'espace des phases. Dans le modèle~\eqref{eq:vahlfft} que nous résolvons il n'y a que l'équation de Vlasov qui présente des dérivées spatiales. La dérivée spatiale dans la direction $x$, symbolisée par le $ikv\hat{f}_h$, sera approchée par une méthode pseudo-spectrale faisant appel en pratique à l'algorithme de transformée de Fourier rapide (FFT). La dérivée dans la direction $v$, $E\partial_v f_h$, nécessite une méthode d'ordre élevé pour bien capturer la filamentation produite dans les solutions du modèle de Vlasov-Poisson ou Vlasov-Ampère. Nous utilisons pour ce fait la méthode WENO (\emph{Weighted Essentially Non-oscillatory}) d'ordre 5 \cite{Shu:2003},\cite{Liu:1994},\cite{Wang:2007}. Cette méthode se présente comme suit (voir aussi \cite{Crouseilles:2019b}):
+Il est maintenant nécessaire de présenter les méthodes de discrétisation dans l'espace des phases. Dans le modèle~\eqref{eq:vahlfft} que nous résolvons, il n'y a que l'équation de Vlasov qui présente des dérivées spatiales. La dérivée spatiale dans la direction $x$, symbolisée par le $ikv\hat{f}_h$, sera approchée par une méthode pseudo-spectrale faisant appel en pratique à l'algorithme de transformée de Fourier rapide (FFT). La dérivée dans la direction $v$, $E\partial_v f_h$, nécessite une méthode d'ordre élevé pour bien capturer la filamentation produite dans les solutions du modèle de Vlasov-Poisson ou Vlasov-Ampère. Nous utilisons pour ce fait la méthode WENO (\emph{Weighted Essentially Non-oscillatory}) d'ordre 5 \cite{Shu:2003},\cite{Liu:1994},\cite{Wang:2007}. Cette méthode se présente comme suit (voir aussi \cite{Crouseilles:2019b}):
 $$
   \partial_t \left.\hat{f}_h\right._{k,\ell}
   + v_\ell ik\left.\hat{f}_h\right._{k,\ell}
@@ -277,7 +277,7 @@ $$
   + \left(\widehat{ E_\cdot^- \frac{\left.f^-_h\right._{\cdot,\ell+^1/_2}-\left.f^-_h\right._{\cdot,\ell-^1/_2}}{\Delta v} }\right)_k
   = 0
 $$
-où $\left.\hat{f}_h\right._{k,\ell} \approx \left.\hat{f}_h\right.(k,v_\ell)$, $v_\ell = \ell\Delta v + v_{\text{min}}$, $E^+ = \max(E,0)$, $E^- = \min(E,0)$ et ${f^\pm_h}_{i,\ell\pm^1/_2}$ représente le flux numérique donné par la méthode de WENO5.
+où $\left.\hat{f}_h\right._{k,\ell} \approx \left.\hat{f}_h\right.(k,v_\ell)$, $v_\ell = \ell\Delta v + v_{\text{min}}$, $E^+ = \max(E,0)$, $E^- = \min(E,0)$ et avec ${f^\pm_h}_{i,\ell\pm^1/_2}$ qui représente le flux numérique donné par la méthode de WENO5.
 
 La méthode WENO est une famille de schémas volumes finis non-linéaires ayant une interprétation en tant que méthode aux différences finies. La méthode consiste à utiliser 3 interpolations pondérées par des poids non-linéaires issus des approximations des dérivées successives de $f$. L'écriture des poids s'effectue comme suit :
 $$
@@ -338,9 +338,9 @@ c'est-à-dire que $u^{n+1}_{[p]}$ est d'ordre $p$ et $u^{n+1}_{[p+1]}$ d'ordre $
   L_{[p]}^{n+1} =  |u^{n+1}_{[p+1]} - u^{n+1}_{[p]}|. 
   \label{eq:Lerror}
 \end{equation}
-Étant donnée une tolérance $\text{tol}$ (fixée par l'utilisateur), si l'erreur locale est supérieure à la tolérance alors l'itération est rejetée, on recommence l'itération avec $u^n$ et un nouveau pas de temps $\Delta t^n$ plus petit. Sinon l'itération est acceptée et $u^{n+1} = u^{n+1}_{[p]}$, car c'est sur l'estimation d'ordre $p$ que l'on contrôle l'erreur, dans la pratique l'approximation d'ordre $p+1$ est souvent celle qui finalement est conservée.
+Étant donnée une tolérance $\text{tol}$ (fixée par l'utilisateur), si l'erreur locale est supérieure à la tolérance alors l'itération est rejetée, on recommence l'itération avec $u^n$ et un nouveau pas de temps $\Delta t^n$ plus petit. Sinon l'itération est acceptée et $u^{n+1} = u^{n+1}_{[p]}$, car c'est sur l'estimation d'ordre $p$ que l'on contrôle l'erreur ; dans la pratique l'approximation d'ordre $p+1$ est souvent celle qui finalement est conservée.
 
-Pour l'iteration suivante, le nouveau pas de temps optimal est calculé par :
+Pour l’itération suivante, le nouveau pas de temps optimal est calculé par :
 \begin{equation}
   \Delta t_\text{opt} = \sqrt[p]{\frac{\text{tol}}{L_{[p]}^{n+1}}}\Delta t^n
   \label{eq:dtopt}
@@ -406,7 +406,7 @@ $$
                 & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \left(\frac{1}{6}-\lambda\right) & \lambda
   \end{array}
 $$
-avec $\lambda$ un paramètre fixé et où l'estimateur d'ordre $4$, $U^{n+1}_{[4]}$, est donné par l'avant dernière ligne, et l'estimateur d'ordre $3$, $U^{n+1}_{[3]}$, est donné par la dernière ligne, l'avant dernière ligne se lisant alors comme une ligne classique du tableau de Butcher.
+avec $\lambda$ un paramètre fixé et où l'estimateur d'ordre $4$, $U^{n+1}_{[4]}$, est donné par l'avant dernière ligne, et l'estimateur d'ordre $3$, $U^{n+1}_{[3]}$, est donné par la dernière ligne, l'avant-dernière ligne se lisant alors comme une ligne classique du tableau de Butcher.
 
 Comme dans l'approche précédente, on calcule l'estimation de l'erreur locale $L^{n+1}_{[3]} = \| U^{n+1}_{[4]}-U^{n+1}_{[3]} \|_2$ dont la définition est la même que \eqref{local_error}, et on adapte le pas de temps comme expliqué plus haut.  
 

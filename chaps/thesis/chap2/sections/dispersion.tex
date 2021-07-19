@@ -11,7 +11,7 @@ Nous allons présenter les relations de dispersion de nos deux modèles, puis no
 \subsection{Relations de dispersion dans le cas cinétique}
 %----------
 
-Nous nous intéressons d'abord aux relations de dispersion du modèle cinétique de Vlasov-Poisson~\eqref{eq:vlasov}-\eqref{eq:poisson}, en nous appuyant sur \cite{Sonnendrucker:2015}. Pour obtenir les relations de dispersion, il est nécessaire de linéariser le système autour d'un équilibre, pour cela rappelons les équations de Vlasov-Poisson~\eqref{eq:vlasov}-\eqref{eq:poisson} :
+Nous nous intéressons d'abord aux relations de dispersion du modèle cinétique de Vlasov-Poisson~\eqref{eq:vlasov}-\eqref{eq:poisson}, en nous appuyant sur \cite{Sonnendrucker:2015}. Pour obtenir les relations de dispersion, il est nécessaire de linéariser le système autour d'un équilibre ; pour cela rappelons les équations de Vlasov-Poisson~\eqref{eq:vlasov}-\eqref{eq:poisson} :
 \begin{equation}
   \begin{cases}
     \partial_t f + v\partial_xf + E\partial_vf = 0 \\
@@ -20,7 +20,7 @@ Nous nous intéressons d'abord aux relations de dispersion du modèle cinétique
   \end{cases}
   \label{eq:vp}
 \end{equation}
-Dans un premier temps, nous nous intéressons à la linérarisation de ce modèle cinétique autour d'un état d'équilibre donné par $\left(f(t,x,v)\right)_{eq} = f^{(0)}(v)$ et $\left(E(t,x)\right)_{eq} = 0$, on considère le développement suivant :
+Dans un premier temps, nous nous intéressons à la linérarisation de ce modèle cinétique autour d'un état d'équilibre donné par $\left(f(t,x,v)\right)_{eq} = f^{(0)}(v)$ et $\left(E(t,x)\right)_{eq} = 0$ ; on considère le développement suivant :
 \begin{equation}
   \begin{cases}
     f(t,x,v) = f^{(0)}(v) + \varepsilon f^{(1)}(t,x,v) + \mathcal{O}(\varepsilon^2) \\
@@ -46,7 +46,7 @@ ce qui nous permet d'obtenir, en négligeant les termes d'ordre $\varepsilon^2$,
 
 Pour un état d'équilibre connu $f^{(0)}(v)$, habituellement une distribution gaussienne, les inconnues de~\eqref{eq:systVPlin} sont $f^{(1)}(t,x,v)$ et $E^{(1)}(t,x)$.
 
-Nous souhaitons dériver l'expression générale de la relation de dispersion associée au modèle cinétique linéarisé~\eqref{eq:systVPlin}. Afin de simplifier la lecture, nous supprimons l'index $(1)$ sur nos inconnues $f^{(1)}$ et $E^{(1)}$. Nous supposons que le fonctions $f^{(1)}$ et $E^{(1)}$ sont $L$-périodiques en $x$ dans le domaine $\Omega=[0,L]$, nous allons, successivement, appliquer une transformée de Fourier en $x$ et et une transformée de Laplace en $t$ sur le système~\eqref{eq:systVPlin}.
+Nous souhaitons dériver l'expression générale de la relation de dispersion associée au modèle cinétique linéarisé~\eqref{eq:systVPlin}. Afin de simplifier la lecture, nous supprimons l'index $(1)$ sur nos inconnues $f^{(1)}$ et $E^{(1)}$. Nous supposons que le fonctions $f^{(1)}$ et $E^{(1)}$ sont $L$-périodiques en $x$ dans le domaine $\Omega=[0,L]$ ; nous allons, successivement, appliquer une transformée de Fourier en $x$ et et une transformée de Laplace en $t$ sur le système~\eqref{eq:systVPlin}.
 
 Tout d'abord, nous effectuons une transformée de Fourier en $x$, définie pour une fonction $f(x)$ comme :
 $$
@@ -96,7 +96,7 @@ ce qui nous donne :
   \tilde{\hat{E}}(\omega,k)=-\frac{i}{k}\int_{-\infty}^{+\infty}\tilde{\hat{f}}(\omega,k,v)dv
   \label{eq:fourierlaplace_E}
 \end{equation}
-Maintenant, nous souhaitons injecter l'équation~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E}. Nous devons prêter attention aux pôles $\omega = kv$. En fait, si $\Im(\omega)>0$ et pour une fonction analytique $g(v)$, alors l'intégrale $\int_{-\infty}^{+\infty}\frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ est analytique. Lorsque $\Im(\omega) \leq 0$, nous devons construire un prolongement analytique et remplacer l'intégrale par $\int_\gamma \frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ avec $\gamma$ un contour ouvert parallèle à l'axe réel à l'infini et qui passe en-dessous du pôle $\omega = kv$ (voir \cite{Sonnendrucker:2015}). Par la suite, nous utiliserons la notation $\gamma$ soit pour l'axe réel $]-\infty,+\infty[$ quand $\Im(\omega)>0$, ou pour un chemin ouvert bien choisi lorsque $\Im(\omega)\leq 0$. 
+Maintenant, nous souhaitons injecter l'équation~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E}. Nous devons prêter attention aux pôles $\omega = kv$. En fait, si $\Im(\omega)>0$ et pour une fonction analytique $g(v)$, alors l'intégrale $\int_{-\infty}^{+\infty}\frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ est analytique. Lorsque $\Im(\omega) \leq 0$, nous devons construire un prolongement analytique et remplacer l'intégrale par $\int_\gamma \frac{g(v)}{ikv-i\omega}\,\mathrm{d}v$ avec $\gamma$ un contour ouvert parallèle à l'axe réel à l'infini et qui passe en-dessous du pôle $\omega = kv$ (voir \cite{Sonnendrucker:2015}). Par la suite, nous utiliserons la notation $\gamma$ soit pour l'axe réel $]-\infty,+\infty[$ quand $\Im(\omega)>0$, soit pour un chemin ouvert bien choisi lorsque $\Im(\omega)\leq 0$. 
 
 Avec cette notation, le résultat de l'injection de~\eqref{eq:fourierlaplace_f} dans~\eqref{eq:fourierlaplace_E} nous donne :
 $$
@@ -109,7 +109,7 @@ $$
 $$
 donc :
 $$
-  \left( 1 - \frac{1}{k^2}\int_\gamma \frac{\partial_v f^{(0)}}{v-\frac{\omega}{k}}\,\mathrm{d}v \right) \tilde{\hat{E}}(\omega,k) = -\frac{1}{k^2}\int_\gamma \frac{\hat{f}_0(k,v)}{v-\frac{\omega}{k}}\,\mathrm{d}v
+  \left( 1 - \frac{1}{k^2}\int_\gamma \frac{\partial_v f^{(0)}}{v-\frac{\omega}{k}}\,\mathrm{d}v \right) \tilde{\hat{E}}(\omega,k) = -\frac{1}{k^2}\int_\gamma \frac{\hat{f}_0(k,v)}{v-\frac{\omega}{k}}\,\mathrm{d}v.
 $$
 En introduisant :
 \begin{equation}
@@ -123,7 +123,7 @@ et
 \end{equation}
 nous pouvons définir $\tilde{\hat{E}}(\omega,k)$ comme :
 $$
-  \tilde{\hat{E}}(\omega,k) = \frac{N(k,\omega)}{D(k,\omega)}
+  \tilde{\hat{E}}(\omega,k) = \frac{N(k,\omega)}{D(k,\omega)}.
 $$
 L'équation~\eqref{eq:D} est appelée relation de dispersion du modèle cinétique.
 
@@ -131,7 +131,7 @@ L'équation~\eqref{eq:D} est appelée relation de dispersion du modèle cinétiq
 \subsection{Relations de dispersion dans le cas hybride}
 %----------
 
-Intéressons-nous dans cette section à dériver l'expression générale de la relation de dispersion associée au modèle hybride linéarisé~\eqref{eq:vahl}. Pour cela, nous allons repartir du modèle hybride non-linéaire~\eqref{eq:hyb_nonlin} et linéariser à la fois les équations fluides et l'équation cinétique. On injecte le développement~\eqref{eq:lin_variables} dans~\eqref{eq:hyb_nonlin}. Les mêmes calculs que dans la section~\ref{s:models} et l'approximation en $\varepsilon^2$ y compris dans l'équation cinétique sur $f_h$ conduisent au modèle
+Intéressons-nous dans cette section à dériver l'expression générale de la relation de dispersion associée au modèle hybride linéarisé~\eqref{eq:vahl}. Pour cela, nous allons repartir du modèle hybride non-linéaire~\eqref{eq:hyb_nonlin} et linéariser à la fois les équations fluides et l'équation cinétique. On injecte le développement~\eqref{eq:lin_variables} dans~\eqref{eq:hyb_nonlin}. Les mêmes calculs que dans la section~\ref{s:models} et l'approximation en $\varepsilon^2$ y compris dans l'équation cinétique sur $f_h$ conduisent au modèle :
 $$
   \begin{cases}
     \partial_tu_c^{(1)}=E^{(1)}\\
@@ -139,7 +139,7 @@ $$
     \partial_t f_h^{(1)}+ v\partial_xf_h^{(1)}+ E^{(1)}\partial_vf_h^{(0)}=0
   \end{cases}
 $$ 
-d'inconnues $E^{(1)}$, $u_c^{(1)}$ et $f_h^{(1)}$ que nous noterons dans la suite, respectivement, $E$, $u_c$ et $f_h$, solutions du système hybride linéarisé dans toutes les inconnues
+d'inconnues $E^{(1)}$, $u_c^{(1)}$ et $f_h^{(1)}$ que nous noterons dans la suite, respectivement, $E$, $u_c$ et $f_h$, solutions du système hybride linéarisé dans toutes les inconnues :
 \begin{equation}
   \begin{cases}
     \partial_t u_c = E \\
@@ -148,7 +148,7 @@ d'inconnues $E^{(1)}$, $u_c^{(1)}$ et $f_h^{(1)}$ que nous noterons dans la suit
   \end{cases}
 \label{eq:systHlin}
 \end{equation}
-Nous insistons sur le fait que le modèle~\eqref{eq:systHlin} correspond à une linéarisation de la partie cinétique (ou chaude) du modèle hybride~\eqref{eq:vahl} que nous avons étudié précédemment. Par la suite, nous supposerons que la densité de particules froides $\rho_c^{(0)}$ est une constante (en temps $t$ et espace $x$) et que la fonction $f_h^{(0)}$ est une fonction paire en $v$ et ne dépend que de cette variable. Nous supposons que les fonctions $f_h$, $E$ et $u_c$ sont $L$-périodiques en $x$ sur le domaine spatial $\Omega = [0,L]$ et nous appliquons la transformée de Fourier en $x$ puis une transformée de Laplace en $t$.
+Nous insistons sur le fait que le modèle~\eqref{eq:systHlin} correspond à une linéarisation de la partie cinétique (ou chaude) du modèle hybride~\eqref{eq:vahl} que nous avons étudié précédemment. Par la suite, nous supposerons que la densité de particules froides $\rho_c^{(0)}$ est une constante (en temps $t$ et espace $x$), et que la fonction $f_h^{(0)}$ est une fonction paire en $v$ et ne dépend que de cette variable. Nous supposons que les fonctions $f_h$, $E$ et $u_c$ sont $L$-périodiques en $x$ sur le domaine spatial $\Omega = [0,L]$, et nous appliquons la transformée de Fourier en $x$ puis une transformée de Laplace en $t$.
 
 Tout d'abord, nous appliquons la transformée de Fourier en $x$ :
 \begin{equation}
@@ -215,7 +215,7 @@ Nous introduisons :
   D(k,\omega) = 1-\frac{1}{k^2}\left( \rho_c^{(0)}\frac{k^2}{\omega^2}+\int_\gamma \frac{\partial_vf_h^{(0)}(v)}{v-\frac{\omega}{k}}dv\right )
   \label{eq:relD_H}
 \end{equation}
-et
+et :
 \begin{equation}
   N(k,\omega) = \frac{\rho_c^{(0)}}{\omega^2}\hat{u}_c(t=0,k)-\frac{1}{i\omega}\hat{E}(t=0,k) 
     -\frac{1}{\omega k}\int_\gamma v\frac{\hat{f}_h(t=0,k,v)}{v-\frac{\omega}{k}}dv,
@@ -302,7 +302,7 @@ donc, le passage à la limite nous donne :
   Voir en annexe~\ref{a:dispersion}.
 \end{proof}
 
-En considérant seulement les deux racines principales $\pm\omega_r + i\omega_i$ de $D(k,\omega)$, supposés pôles simples de $\tilde{\hat{E}}(\omega,k)$, nous avons l'approximation :
+En considérant seulement les deux racines principales $\pm\omega_r + i\omega_i$ de $D(k,\omega)$, supposées pôles simples de $\tilde{\hat{E}}(\omega,k)$, nous avons l'approximation :
 $$
   \hat{E}(t,k)\approx Res_{\omega=\omega_r+i\omega_i}\left(\tilde{\hat{E}}(\omega,k)e^{-i\omega t}\right)+Res_{\omega=-\omega_r+i\omega_i}\left(\tilde{\hat{E}}(\omega,k)e^{-i\omega t}\right)
 $$
@@ -311,7 +311,7 @@ où les résidus sont définis par~\eqref{eq:residu}. Notons $r^\pm$ le module d
   \hat{E}(t,k)\approx r^+e^{i\phi^+}e^{-i(\omega_r+i\omega_i)t}+r^-e^{i\phi^-}e^{-i(-\omega_r+i\omega_i)t}. 
   \label{eq:Etk_sanssym}
 \end{equation}
-Dans plusieurs cas test classiques, nous avons une symétrie entre les racines, qui dépend de la perturbation initiale de l'équilibre. Par la suite la perturbation initiale de l'équilibre sera toujours une fonction cosinus.
+Dans plusieurs cas tests classiques, nous avons une symétrie entre les racines, qui dépend de la perturbation initiale de l'équilibre. Par la suite la perturbation initiale de l'équilibre sera toujours une fonction cosinus.
 
 \begin{hyp}
   Le module et l'argument de $\frac{N(k,\pm\omega_r+i\omega_i)}{\frac{\partial D}{\partial \omega}(k,\pm\omega_r+i\omega_i)}$  vérifient $r^+ = r^-$ (noté $r$ par la suite) et $\phi^+ = -\phi^-$ (noté simplement $\phi$).
@@ -319,7 +319,7 @@ Dans plusieurs cas test classiques, nous avons une symétrie entre les racines, 
 \end{hyp}
 Sous l'hypothèse~\ref{hyp:sym}, nous obtenons :
 \begin{eqnarray}
-  \hat{E}(t,k)\approx&& re^{i\phi}e^{-i(\omega_r+i\omega_i)t}+re^{-i\phi}e^{-i(-\omega_r+i\omega_i)t} \nonumber\\
+  \hat{E}(t,k) &\approx& re^{i\phi}e^{-i(\omega_r+i\omega_i)t}+re^{-i\phi}e^{-i(-\omega_r+i\omega_i)t} \nonumber\\
   &=&re^{\omega_i t}\left(e^{i(\omega_r t-\phi)}+e^{-i(\omega_r t-\phi)}\right)\nonumber\\
   &=&2re^{\omega_i t}\cos\left(\omega_r t-\phi\right).
   \label{eq:Etk}
@@ -342,7 +342,7 @@ $$
   $N(k,\omega) = 0$ si $k\notin\left\{\pm\frac{2\pi}{L}\right\}$.
   \label{hyp:knuls}
 \end{hyp}
-Sous l'hypothèse~\ref{hyp:knuls}, avec l'approximation des coefficients de Fourier (qui sont tous réels) données par~\eqref{eq:Etk} et avec $l=\frac{2\pi}{L}$, nous obtenons l'approximation du champ électrique suivante :
+Sous l'hypothèse~\ref{hyp:knuls}, avec l'approximation des coefficients de Fourier (qui sont tous réels) donnés par~\eqref{eq:Etk} et avec $l=\frac{2\pi}{L}$, nous obtenons l'approximation du champ électrique suivante :
 $$
   \begin{aligned}
     E(t,x) &\approx \varepsilon E^{(1)}(t,x) \approx \varepsilon\left( \hat{E}(t,l)e^{ikx} + \overline{\hat{E}(t,l)}e^{-ilx} \right) \\
@@ -371,7 +371,7 @@ $$
   Il est possible de mener une étude similaire pour une perturbation donnée par une fonction sinus. Nous obtenons alors des résultats similaires en remplaçant dans l'approximation de $\hat{E}(t,k)$, $E(t,x)$ et $\mathcal{E}(t)$ les fonctions cosinus par des fonctions sinus.
 \end{remark}
 
-Il est à noter que ces approximations ne prennent en compte que les racines dominantes de $D(\frac{2\pi}{L},\omega)$, les deux ayant la plus grande partie imaginaire. Cette approximation devient valable en temps $t$ suffisamment long.
+Il est à noter que ces approximations ne prennent en compte que les racines dominantes de $D(\frac{2\pi}{L},\omega)$, les deux ayant la plus grande partie imaginaire. Cette approximation devient valable pour un temps $t$ suffisamment long.
 
 La partie imaginaire $\omega_i$ nous donne le comportement global des coefficients de Fourier du champ électrique, et donc de l'énergie électrique comme une fonction du temps. Nous obtenons un amortissement de l'énergie électrique si $\omega_i < 0$, ou une instabilité si $\omega_i >0$. Lorsque nous traçons l'énergie électrique en fonction du temps en échelle logarithmique, nous pouvons observer les comportements suivants :
 \begin{itemize}
@@ -390,7 +390,7 @@ $$
       \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v)
     \right)(1+\epsilon\cos(kx))
 $$
-avec $\alpha$ la densité de particules chaudes, centrées en $\pm v_0\in\mathbb{R}$, et les particules froides sont caractérisées par une température $T_c$, et où l'on note :
+avec $\alpha$ la densité de particules chaudes, centrées en $\pm v_0\in\mathbb{R}$, $T_c$ la température des particules froides, et où l'on note :
 $$
   \mathcal{M}_{\rho,u,T}(v) := \frac{1}{(2\pi T)^\frac{1}{2}}\exp\left(-\frac{|v-u|^2}{2T}\right)
 $$
@@ -400,15 +400,15 @@ la distribution maxwellienne de densité $\rho$, centrée en la vitesse $u$ et d
     f_{h,0} (x,v) & = \left(
       \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v)
     \right)(1+\epsilon\cos(kx)) \\
-    u_{c,0} & = 0
+    u_{c,0} & = 0.
   \end{aligned}
 \label{eq:f0hdexv}\end{equation}
-le champ électrique à l'instant initial $E_0$ est donné par la résolution de l'équation de Poisson avec la condition initiale :
+Le champ électrique à l'instant initial $E_0$ est donné par la résolution de l'équation de Poisson avec la condition initiale :
 $$
   \partial_x E_0(x) = (1-\alpha) + \int_\mathbb{R}f_{h,0}(x,v)\,\mathrm{d}v - 1
 $$
 
-Nous cherchons ensuite les racines en $\omega$ de la fonction $D(k,\omega)$ pour $k$ fixé. Celles-ci sont approchées numériquement à l'aide d'une méthode de Newton, la dérivée $\frac{\partial D}{\partial\omega}(k,\omega)$ est alors nécessaire. La racine ayant la plus grande partie imaginaire, dans la pratique nous ne conservons que celle avec une partie réelle positive, nous donne des informations sur l'évolution de l'énergie électrique au cours du temps (taux d'amortissement et taux d'instabilité en échelle logarithmique). De plus, le calcul de $N(k,\omega)$ nous permet d'obtenir plus d'informations sur le mode dominant $\hat{E}(t,k)$ donné par~\eqref{eq:Etk_sanssym} dans le cas général, ou par~\eqref{eq:Etk} sous l'hypothèse~\ref{hyp:sym}. Nous en déduisons notamment la phase des oscillations de l'énergie électrique dans sa partie linéaire.
+Nous cherchons ensuite les racines en $\omega$ de la fonction $D(k,\omega)$ pour $k$ fixé. Celles-ci sont approchées numériquement à l'aide d'une méthode de Newton, la dérivée $\frac{\partial D}{\partial\omega}(k,\omega)$ est alors nécessaire. La racine ayant la plus grande partie imaginaire (dans la pratique nous ne conservons que celle avec une partie réelle positive) nous donne des informations sur l'évolution de l'énergie électrique au cours du temps (taux d'amortissement et taux d'instabilité en échelle logarithmique). De plus, le calcul de $N(k,\omega)$ nous permet d'obtenir plus d'informations sur le mode dominant $\hat{E}(t,k)$ donné par~\eqref{eq:Etk_sanssym} dans le cas général, ou par~\eqref{eq:Etk} sous l'hypothèse~\ref{hyp:sym}. Nous en déduisons notamment la phase des oscillations de l'énergie électrique dans sa partie linéaire.
 
 
 %-------------
@@ -445,21 +445,21 @@ La démonstration de ces lemmes est proposée dans l'annexe~\ref{a:dispersion}.
 
 L'introduction de la fonction $Z$ provient de la nécessité dans les relations de dispersion définies en~\eqref{eq:D}-\eqref{eq:N} et~\eqref{eq:relD_H}-\eqref{eq:relN_H} d'intégrer une distribution maxwellienne qui est une distribution gaussienne renormalisée :
 $$
-  \mathcal{M}_{\rho,u,T} = \frac{\rho}{\sqrt{2\pi T}}e^{-\frac{(v-u)^2}{2T}}
+  \mathcal{M}_{\rho,u,T} = \frac{\rho}{\sqrt{2\pi T}}e^{-\frac{(v-u)^2}{2T}}.
 $$
 Rappelons le résultat :
 $$
-  \partial_v \mathcal{M}_{\rho,u,T}(v) = -\frac{v-u}{T}\mathcal{M}_{\rho,u,T}(v)
+  \partial_v \mathcal{M}_{\rho,u,T}(v) = -\frac{v-u}{T}\mathcal{M}_{\rho,u,T}(v).
 $$
 Ainsi, avant de passer à l'application de ces résultats sur le cas test qui nous intéresse, calculons une intégrale qui intervient dans le calcul de $D(k,\omega)$ :
 $$
   \begin{aligned}
     \int_\gamma \frac{\partial_v\mathcal{M}_{\rho,u,T}}{v-\frac{\omega}{k}}\,\mathrm{d}v 
       & = -\frac{\rho}{\sqrt{2\pi T}T}\int_\gamma \frac{(v-\frac{\omega}{k} + \frac{\omega}{k}-u)e^{-\frac{(v-u)^2}{2T}}}{v-\frac{\omega}{k}}\,\mathrm{d}v \\
-      & = -\frac{\rho}{\sqrt{2\pi T}T}\left( \int_\gamma e^{-\frac{(v-u)^2}{2T}}\,\mathrm{d}v + \left(\frac{\omega}{k}-u\right)\int_\gamma \frac{e^{-\frac{(v-u)^2}{2T}}}{v-\frac{\omega}{k}}\,\mathrm{d}v \right)
+      & = -\frac{\rho}{\sqrt{2\pi T}T}\left( \int_\gamma e^{-\frac{(v-u)^2}{2T}}\,\mathrm{d}v + \left(\frac{\omega}{k}-u\right)\int_\gamma \frac{e^{-\frac{(v-u)^2}{2T}}}{v-\frac{\omega}{k}}\,\mathrm{d}v \right).
   \end{aligned}
 $$
-Dans la première intégrale, on utilise le changement de variable $w = \frac{v-u}{\sqrt{T}}$, $\mathrm{d}w = \frac{\mathrm{d}v}{\sqrt{T}}$, dans la seconde intégrale, nous utilisons le changement de variable suivant : $w=\frac{v-u}{\sqrt{2T}}$, $\mathrm{d}w = \frac{\mathrm{d}v}{\sqrt{2T}}$. Nous obtenons :
+Dans la première intégrale, on utilise le changement de variable $w = \frac{v-u}{\sqrt{T}}$, $\mathrm{d}w = \frac{\mathrm{d}v}{\sqrt{T}}$ ; dans la seconde intégrale, nous utilisons le changement de variable suivant : $w=\frac{v-u}{\sqrt{2T}}$, $\mathrm{d}w = \frac{\mathrm{d}v}{\sqrt{2T}}$. Nous obtenons :
 $$
   \begin{aligned}
     -\frac{\rho}{\sqrt{2\pi T}T}\left( \int_\gamma e^{-\frac{w^2}{2}}\sqrt{T}\,\mathrm{d}w + \left(\frac{\omega}{k}-u\right)\int_\gamma \frac{e^{-w^2}}{\sqrt{2T}w + u - \frac{\omega}{k}}\sqrt{2T}\,\mathrm{d}w \right) \\
@@ -494,7 +494,7 @@ soit :
 %-------------
 \subsubsection{Application à la modélisation hybride}
 
-La condition initiale du cas test du modèle hybride nous donne comme état d'équilibre (état perturbé) pour les particules chaudes :
+La condition initiale du cas test du modèle hybride nous donne comme état d'équilibre (équilibre instable que nous perturbons) pour les particules chaudes :
 $$
   f_h^{(0)}(v) = \mathcal{M}_{^\alpha/_2,v_0,1}(v) + \mathcal{M}_{^\alpha/_2,-v_0,1}(v) = \frac{\alpha}{2\sqrt{2\pi}}\left( e^{-\frac{(v-v_0)^2}{2}} + e^{-\frac{(v+v_0)^2}{2}} \right)
 $$
@@ -592,7 +592,7 @@ ce qui nous permet, en utilisant les équations~\eqref{eq:N} et~\eqref{eq:NforM}
   \label{eq:N_3bump}
 \end{equation}
 
-Nous avons donc le lemme suivant.
+Nous avons donc le lemme suivant :
 \begin{lemma}
   Pour $\frac{\partial D(k,\omega)}{\partial\omega}$ donnée par~\eqref{eq:3bumpderD} et $N(k,\omega)$ par~\eqref{eq:N_3bump}, l'hypothèse~\ref{hyp:sym} est satisfaite.
   \label{lemme:hypcascin}
@@ -609,11 +609,11 @@ Dans les sous-sections précédentes, nous avons obtenu les relations de dispers
 $$
   Z(z)=\sqrt{\pi} \exp(-z^2) (i - erfi(z) )
 $$
-et qu'à la limite $z\to+\infty$, nous avons le développement asymptotique suivant 
+et qu'à la limite $z\to+\infty$, nous avons le développement asymptotique suivant :
 $$
   erfi(z) = -i + \frac{\exp(z^2)}{\sqrt{\pi}} \left(\frac{1}{z} +\frac{1}{2z^3} +\frac{3}{4z^5} + \mathcal{O}\left(z^{-7}\right) \right).
 $$
-Ainsi, nous avons $Z(z) =  2 i \sqrt{\pi} \exp(-z^2)  - \frac{1}{z}  - \frac{1}{2z^3} - \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$ ou encore $Z(z)= - \frac{1}{z}  - \frac{1}{2z^3}- \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$ et donc
+Ainsi, nous avons $Z(z) =  2 i \sqrt{\pi} \exp(-z^2)  - \frac{1}{z}  - \frac{1}{2z^3} - \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$ ou encore $Z(z)= - \frac{1}{z}  - \frac{1}{2z^3}- \frac{3}{4z^5}+ \mathcal{O}\left(z^{-7}\right)$, et donc
 $$
   zZ(z)=-1-\frac{1}{2z^2} + \mathcal{O}\left(z^{-4}\right).
 $$
@@ -622,17 +622,17 @@ Commençons par regarder la consistance en $D(k,\omega)$. Avec $z=\frac{1}{\sqrt
   -\frac{1-\alpha}{T_c}\left(1+\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}Z\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)\right)&=&-\frac{1-\alpha}{T_c}\left(1-1-\frac{1}{2\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)^2}+ \mathcal{O}\left(\left(\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}\right)^{-4}\right)\right)\nonumber\\
   &=& \left(1-\alpha\right)\frac{k^2}{\omega^2} + \mathcal{O}(T_c). 
 \end{eqnarray*}
-C'est le terme correspondant à la partie fluide (froide) de \eqref{eq:D_hchyb}. Les autres termes (venant des particules chaudes) sont les mêmes dans les deux expressions, donc $D(k,\omega)$ donné par le modèle cinétique est consistant, à la limite $T_c\to 0$, avec celui donné par le modèle hybride (avec un taux $\mathcal{O}(T_c)$). Regardons ensuite la consistance en $\frac{\partial D(k,\omega)}{\partial \omega}$. Les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:3bumpderD}) et hybride (\ref{eq:hchybderD}). Nous ne nous intéressons qu'aux termes venant des particules froides. De (\ref{eq:3bumpderD}), nous avons
+C'est le terme correspondant à la partie fluide (froide) de \eqref{eq:D_hchyb}. Les autres termes (venant des particules chaudes) sont les mêmes dans les deux expressions, donc $D(k,\omega)$ donné par le modèle cinétique est consistant, à la limite $T_c\to 0$, avec celui donné par le modèle hybride (avec un taux $\mathcal{O}(T_c)$). Regardons ensuite la consistance en $\frac{\partial D(k,\omega)}{\partial \omega}$. Les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:3bumpderD}) et hybride (\ref{eq:hchybderD}). Nous ne nous intéressons qu'aux termes venant des particules froides. De (\ref{eq:3bumpderD}), nous avons :
 \begin{eqnarray*}
   &&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\left(Z\left(\tilde{\omega}_0\right)-2\tilde{\omega}_0^2Z\left(\tilde{\omega}_0\right)-2\tilde{\omega}_0\right)\\
   &=&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\left(-\frac{1}{\tilde{\omega}_0}-\frac{1}{2\tilde{\omega}_0^3}+2\tilde{\omega}_0+\frac{1}{\tilde{\omega}_0}+\frac{3}{2\tilde{\omega}_0^3}-2\tilde{\omega}_0\right)+\mathcal{O}\left(\tilde{\omega}_0^{-5}\right)\\
-  &=&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\frac{1}{\tilde{\omega}_0^3}+\mathcal{O}\left(\tilde{\omega}_0^{-5}\right)
+  &=&\frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\frac{1}{\tilde{\omega}_0^3}+\mathcal{O}\left(\tilde{\omega}_0^{-5}\right),
 \end{eqnarray*}
-donc pour $\tilde{\omega}_0=\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}$, nous avons 
+donc pour $\tilde{\omega}_0=\frac{1}{\sqrt{2T_c}}\frac{\omega}{k}$, nous avons :
 $$
   \frac{1}{\sqrt{2}k^3}\frac{1-\alpha}{T_c\sqrt{T_c}}\frac{2T_c\sqrt{2T_c}k^3}{\omega^3}=2\frac{1-\alpha}{\omega^3}
 $$
-qui est le terme fluide de \eqref{eq:hchybderD}. Regardons enfin la consistance en $N(k,\omega)$. Là encore, les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:N_3bump}) et hybride (\ref{eq:N_hchyb}). Les termes supplémentaires dans le modèle hybride s'annulent sous l'hypothèse $\hat{u}(t=0,k)=0$ et avec $\hat{g}(k)$ donné par (\ref{eq:gk}) et $\hat{E}(t=0,k)$ obtenu à partir de l'équation de Poisson 
+qui est le terme fluide de \eqref{eq:hchybderD}. Regardons enfin la consistance en $N(k,\omega)$. Là encore, les termes venant des particules chaudes sont les mêmes dans les modèles cinétique (\ref{eq:N_3bump}) et hybride (\ref{eq:N_hchyb}). Les termes supplémentaires dans le modèle hybride s'annulent sous l'hypothèse $\hat{u}(t=0,k)=0$, avec $\hat{g}(k)$ donné par (\ref{eq:gk}) et $\hat{E}(t=0,k)$ obtenu à partir de l'équation de Poisson :
 \begin{eqnarray*}
   \partial_xE(t=0,x)&=& \rho_c(t=0,x)+\int f^h(t=0,x,v)dv-1\\
                     &=& \left(1-\alpha\right)+\alpha\left(1+\varepsilon\cos\left(\frac{2\pi}{L}x\right)\right)-1\\
