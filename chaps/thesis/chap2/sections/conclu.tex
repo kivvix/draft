@@ -6,3 +6,43 @@
 Au cours de ce chapitre nous avons pu étudier théoriquement et confirmer numériquement la convergence du modèle cinétique $1dx-1dv$ vers le modèle hybride. Nous avons décrit deux méthodes de résolutions du modèle hybride. La première méthode, méthode de \emph{splitting}, tirant parti de la structure hamiltonienne du système et assurant la conservation de certaines quantités (énergie, masse). La seconde méthode de résolution est basée sur une méthode de Lawson, et ne préserve aucune quantité particulière, mais permet une montée en ordre en temps pour un coup numérique plus faible. La comparaison des résultats s'est faites grâce à une étude fine des relations de dispersion, permettant de reconstruire le champ électrique et de déterminer le taux d'instabilité dans nos cas tests.
 
 Un résultat supplémentaire que nous avons pu obtenir dans cette comparaison, est l'intérêt plus important de la méthode de pas de temps adaptatif basée sur la méthode de Lawson, permettant de profiter de toute la littérature sur les méthodes de type Runge-Kutta.
+
+Il est envisageable d'augmenter la partie linéaire de l'équation de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere} en y intégrant le calcul du courant, en effet le système devient, après une transformée de Fourier en $x$, pour un mode de Fourier $\kappa$ :
+$$
+  \begin{cases}
+    \partial_t\hat{f}_\kappa + i\kappa v\hat{f}_\kappa + \widehat{\left(E\partial_vf\right)}_\kappa = 0 \\
+    \hat{E}_\kappa = -\int_\mathbb{R} v\hat{f}_\kappa\dd{v}
+  \end{cases}.
+$$
+En disctrétisant en $v$ le problème, et en calculant le courant à l'aide de la méthode des rectangles, il est possible de réécrire le problème comme :
+$$
+  \partial_t \begin{pmatrix}
+    \hat{f}_{\kappa,1} \\
+    \vdots \\
+    \hat{f}_{\kappa,N_v} \\
+    \hat{E}_\kappa
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \mqty{
+      \mqty{\dmat{-i\kappa v_1,\ddots,-i\kappa v_{N_v}}} & \mqty{0\\\vdots\\0} \\
+      \mqty{-v_1\Delta v &\cdots& -v_{N_v}\Delta v}  & 0
+    }
+  \end{pmatrix}
+  \begin{pmatrix}
+    \hat{f}_{\kappa,1} \\
+    \vdots \\
+    \hat{f}_{\kappa,N_v} \\
+    \hat{E}_\kappa
+  \end{pmatrix}
+  +
+  \begin{pmatrix}
+    -\widehat{(E\partial_vf)}_{\kappa} \\
+    \vdots \\
+    -\widehat{(E\partial_vf)}_{\kappa} \\
+    0
+  \end{pmatrix}.
+$$
+Ceci s'applique également au modèle hybride linéarisé, où il devient possible d'avoir une contribution de l'ordre de l'erreur machine à l'erreur $L_E$ présentée sur la figure~\ref{fig:compare:error:LucEfh}.
+
+Nous allons voir dans le chapitre suivant comment s'effectue la montée en dimension du modèle et de sa résolution numérique.
