@@ -2,8 +2,28 @@
 \addcontentsline{toc}{chapter}{Conclusion}
 \chaptermark{Conclusion}
 
-\section*{Première section de la conclusion}
-\addcontentsline{toc}{section}{Première section de la conclusion}
+\newcommand\csection[1]{\section*{#1}\addcontentsline{toc}{section}{#1}}
+\newcommand\csubsection[1]{\subsection*{#1}\addcontentsline{toc}{subsection}{#1}}
+\newcommand\csubsubsection[1]{\subsubsection*{#1}\addcontentsline{toc}{subsubsection}{#1}}
 
-Lorem ipsum dolor sit amet, «~consectetuer~» adipiscing elit. Maecenas fermentum, elit non lobortis cursus, orci velit suscipit est, id mollis turpis mi eget orci. Ut aliquam sollicitudin metus. Mauris at sapien sed sapien congue iaculis. Nulla lorem urna, bibendum id, laoreet iaculis, nonummy eget, massa. Phasellus ullamcorper commodo velit. Class aptent taciti sociosqu ad litora torquent per «~conubia nostra~», per inceptos hymenaeos. Phasellus est. Maecenas felis augue, gravida quis, porta adipiscing, iaculis vitae, felis. Nullam ipsum. Nulla a sem ac leo fringilla mattis. Phasellus egestas augue in sem. Etiam ac enim non mauris ullamcorper scelerisque. In wisi leo, malesuada vulputate, tempor sit amet, facilisis vel, velit. Mauris massa est, sodales placerat, luctus id, hendrerit a, urna. Nullam eleifend pede eget odio. Duis non erat. Nullam pellentesque.
+Au travers de différentes méthodes de simulations dédié à la physique des plasmas, nous avons mis en évidence comment calculer automatiquement des conditions de stabilité et tirer profit d'une partie linéaire de l'équation ; cela autorise l'utilisation de pas de temps plus grands et ainsi permet de réduire le temps de calcul. De plus, l'utilisation des méthodes de Lawson encourage à la monté en ordre en temps, et l'utilisation d'approximation de l'exponentielle de la partie linéaire permet l'usage de la méthode dans de nombreuses situations.
 
+\csection{Perspectives}
+
+Maths :
+\begin{enumerate}
+  \item Analyse mathématique des schémas de Lawson dans le cas cinétique, base de HO
+  \item gyrocinétique de la forme $\partial_t f + (E(f)+\nabla B(x))\cdot\nabla_xf$ pas possible de faire Fourier en $x$ (car le terme de transport en $x$ n'est pas linéaire), donc schéma de Rosenbrock (décomposition de $B(x)=B(x)-B(x_0)+B(x_0)$ et le transport à vitesse $B(x_0)$ est linéaire en $x$ donc Lawson utilisable, et le terme non-linéaire $B(x)-B(x_0)$ est (on l'espère) faible, donc pas trop dérangeant pour la CFL).
+\end{enumerate}
+Schémas numériques :
+\begin{enumerate}
+  \item Si non-périodique en espace ($x$ pour $1dx-1dv$ ou $z$ pour $1dz-3dv$) : semi-lagrangien pour Vlasov et éléments finis pour résoudre Maxwell (nécessite le calcul de l'exponentielle d'une matrice avec pour taille le nombre de points du maillage, utilisation de Padé ?)
+  \item semi-implicite (iWENO et DIRK)
+  \item explicite implicite Guillaume Dujardin (Inria Lille)
+  \item faire une méthode de Lawson qui conserve des trucs (Poisson, énergie totale...)
+\end{enumerate}
+Informatique :
+\begin{enumerate}
+  \item MPI -> décomposition de domaine (mais FFT est global donc récupération de toutes les données) \textbf{OU} traiter dans des processus différents $(j,B,E)^\top$ et $f_h$ (besoin d'échanger $B$ et $E$ pour calculer les vitesses d'advection en $v$)
+  \item \emph{multiprecsion}, utiliser des \texttt{float} sur $f_h$ et des \texttt{double} sur $(j,B,E)^\top$, permet de réduire l'espace mémoire nécessaire en RAM et potentiellement la vitesse de calcul des WENO (qui sont la partie limitante de la simu).
+\end{enumerate}
