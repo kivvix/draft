@@ -1,12 +1,46 @@
 %% This BibTeX bibliography file was created using BibDesk.
 %% https://bibdesk.sourceforge.io/
 
-%% Created for Josselin Massot at 2021-07-01 10:36:38 +0200 
+%% Created for Josselin Massot at 2021-07-27 14:10:50 +0200 
 
 
 %% Saved with string encoding Unicode (UTF-8) 
 
 
+
+@article{Boscarino:2019,
+	abstract = {In this paper, new high order schemes are constructed and analyzed, for the numerical solution of Euler equations of isentropic gas dynamics. Material waves are treated explicitly, while acoustic waves are treated implicitly, thus avoiding severe CFL restrictions for low Mach flows. High order accuracy in space is obtained by finite difference WENO schemes; while high order in time is obtained by IMEX methods with semi-implicit linearization treatment. The schemes are proven to be asymptotic preserving and asymptotic accurate as the Mach number vanishes. Several tests in one and two space dimensions illustrate the effectiveness of the proposed schemes.},
+	author = {Sebastiano Boscarino and Jing-Mei Qiu and Giovanni Russo and Tao Xiong},
+	date-added = {2021-07-27 14:10:32 +0200},
+	date-modified = {2021-07-27 14:10:32 +0200},
+	doi = {https://doi.org/10.1016/j.jcp.2019.04.057},
+	issn = {0021-9991},
+	journal = {Journal of Computational Physics},
+	keywords = {Asymptotic preserving, Semi-implicit, IMEX, WENO reconstruction, Low-Mach, Incompressible solver},
+	pages = {594-618},
+	title = {A high order semi-implicit IMEX WENO scheme for the all-Mach isentropic Euler system},
+	url = {https://www.sciencedirect.com/science/article/pii/S0021999119303109},
+	volume = {392},
+	year = {2019},
+	Bdsk-Url-1 = {https://www.sciencedirect.com/science/article/pii/S0021999119303109},
+	Bdsk-Url-2 = {https://doi.org/10.1016/j.jcp.2019.04.057}}
+
+@article{Cho:2021,
+	abstract = {In this paper, we propose and analyze a reconstruction technique which enables one to design high-order conservative semi-Lagrangian schemes for kinetic equations. The proposed reconstruction can be obtained by taking the sliding average of a given polynomial reconstruction of the numerical solution. A compact representation of the high order conservative reconstruction in one and two space dimension is provided, and its mathematical properties are analyzed. To demonstrate the performance of proposed technique, we consider implicit semi-Lagrangian schemes for kinetic-like equations such as the Xin-Jin model and the Broadwell model, and then solve related shock problems which arise in the relaxation limit. Applications to BGK and Vlasov-Poisson equations will be presented in the second part of the paper.},
+	author = {Seung Yeon Cho and Sebastiano Boscarino and Giovanni Russo and Seok-Bae Yun},
+	date-added = {2021-07-27 14:09:58 +0200},
+	date-modified = {2021-07-27 14:09:58 +0200},
+	doi = {https://doi.org/10.1016/j.jcp.2021.110159},
+	issn = {0021-9991},
+	journal = {Journal of Computational Physics},
+	keywords = {Conservative reconstruction, Semi-Lagrangian method, Relaxation limit, Broadwell model, Xin-Jin model},
+	pages = {110159},
+	title = {Conservative semi-Lagrangian schemes for kinetic equations Part I: Reconstruction},
+	url = {https://www.sciencedirect.com/science/article/pii/S0021999121000516},
+	volume = {432},
+	year = {2021},
+	Bdsk-Url-1 = {https://www.sciencedirect.com/science/article/pii/S0021999121000516},
+	Bdsk-Url-2 = {https://doi.org/10.1016/j.jcp.2021.110159}}
 
 @book{Saramito:2013,
 	address = {Grenoble, France},
@@ -1017,10 +1051,11 @@ Program title: sldg Catalogue identifier: AEZO_v1_0 Program summary URL:http://c
 @article{Liu:1994,
 	author = {Xu-Dong Liu and Stanley Osher and Tony Chan},
 	date-added = {2020-05-18 12:39:27 +0200},
-	date-modified = {2020-05-18 12:39:27 +0200},
+	date-modified = {2021-07-20 17:48:27 +0200},
 	doi = {https://doi.org/10.1006/jcph.1994.1187},
 	issn = {0021-9991},
 	journal = {Journal of Computational Physics},
+	keywords = {WENO},
 	number = {1},
 	pages = {200 - 212},
 	title = {Weighted Essentially Non-oscillatory Schemes},
