@@ -3,36 +3,52 @@
 \section{Conclusion}
 % -------------------------------------------------------------------
 
-Au cours de ce chapitre nous avons pu étudier théoriquement et confirmer numériquement la convergence du modèle cinétique $1dx-1dv$ vers le modèle hybride. Nous avons décrit deux méthodes de résolutions du modèle hybride. La première méthode, méthode de \emph{splitting}, tirant parti de la structure hamiltonienne du système et assurant la conservation de certaines quantités (énergie, masse). La seconde méthode de résolution est basée sur une méthode de Lawson, et ne préserve aucune quantité particulière, mais permet une montée en ordre en temps pour un coup numérique plus faible. La comparaison des résultats s'est faites grâce à une étude fine des relations de dispersion, permettant de reconstruire le champ électrique et de déterminer le taux d'instabilité dans nos cas tests.
+Au cours de ce chapitre nous avons pu étudier et confirmer numériquement la convergence du modèle cinétique $1dx-1dv$ vers le modèle hybride. Nous avons décrit deux méthodes de résolution du modèle hybride. La première méthode, méthode de \emph{splitting}, tirant parti de la structure hamiltonienne du système et assurant le bon comportement en temps long de certaines quantités (énergie, masse). La seconde méthode de résolution est basée sur une méthode de Lawson, et ne préserve aucune quantité particulière, mais permet une montée en ordre en temps pour un coup numérique plus faible. La comparaison des résultats s'est faite grâce à une étude fine des relations de dispersion, permettant de reconstruire le champ électrique et de déterminer le taux d'instabilité dans nos cas tests.
 
 Un résultat supplémentaire que nous avons pu obtenir dans cette comparaison, est l'intérêt plus important de la méthode de pas de temps adaptatif basée sur la méthode de Lawson, permettant de profiter de toute la littérature sur les méthodes de type Runge-Kutta.
 
-Il est envisageable d'augmenter la partie linéaire de l'équation de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere} en y intégrant le calcul du courant, en effet le système devient, après une transformée de Fourier en $x$, pour un mode de Fourier $\kappa$ :
+En perspective, il est possible d'étudier le modèle hybride, en tenant compte des termes non-linéaires dans la partie fluide. Dans un contexte plus perturbatif, il est possible que ceux-ci capture mieux la solution du modèle cinétique, cadre où les hypothèse de linéarisation sont violées. 
+
+Différentes perspectives sont en cours d'étude en ce qui concerne la résolution numérique. Il est envisageable d'augmenter la partie linéaire de l'équation de Vlasov-Ampère hybride linéarisé~\eqref{eq:vahl} en y intégrant le calcul du courant, en effet le système devient, après une transformée de Fourier en $x$, pour un mode de Fourier $\kappa$ :
 $$
   \begin{cases}
-    \partial_t\hat{f}_\kappa + i\kappa v\hat{f}_\kappa + \widehat{\left(E\partial_vf\right)}_\kappa = 0 \\
-    \hat{E}_\kappa = -\int_\mathbb{R} v\hat{f}_\kappa\dd{v}
-  \end{cases}.
+    \partial_t\hat{f}_{h,\kappa} + i\kappa v\hat{f}_{h,\kappa} + \widehat{\left(E\partial_vf_h\right)}_\kappa = 0 \\
+    \partial_t \hat{u}_{c,\kappa} = \hat{E}_\kappa \\
+    \partial_t\hat{E}_\kappa = -\rho_c^{(0)}\hat{u}_{c,\kappa} -\int_\mathbb{R} v\hat{f}_{h,\kappa}\dd{v}.
+  \end{cases}
 $$
-En disctrétisant en $v$ le problème, et en calculant le courant à l'aide de la méthode des rectangles, il est possible de réécrire le problème comme :
+En discrétisant en $v$ le problème, et en calculant le courant à l'aide de la méthode des rectangles, il est possible de réécrire le problème comme :
 $$
   \partial_t \begin{pmatrix}
-    \hat{f}_{\kappa,1} \\
+    \hat{f}_{h,\kappa,1} \\
     \vdots \\
-    \hat{f}_{\kappa,N_v} \\
+    \hat{f}_{h,\kappa,N_v} \\
+    \hat{u}_{c,\kappa} \\
     \hat{E}_\kappa
   \end{pmatrix}
   =
   \begin{pmatrix}
     \mqty{
-      \mqty{\dmat{-i\kappa v_1,\ddots,-i\kappa v_{N_v}}} & \mqty{0\\\vdots\\0} \\
-      \mqty{-v_1\Delta v &\cdots& -v_{N_v}\Delta v}  & 0
+      \mqty{
+        \mqty{\dmat{-i\kappa v_1,\ddots,-i\kappa v_{N_v}}} \\
+        \mqty{0            &\cdots& 0               \\
+              -v_1\Delta v &\cdots& -v_{N_v}\Delta v }
+      }
+      &
+      \mqty{
+        0             & 0      \\
+        \vdots        & \vdots \\
+        0             & 0      \\
+        0             & 1      \\
+        -\rho_c^{(0)} & 0
+      }
     }
   \end{pmatrix}
   \begin{pmatrix}
     \hat{f}_{\kappa,1} \\
     \vdots \\
     \hat{f}_{\kappa,N_v} \\
+    \hat{u}_{c,\kappa} \\
     \hat{E}_\kappa
   \end{pmatrix}
   +
@@ -40,9 +56,12 @@ $$
     -\widehat{(E\partial_vf)}_{\kappa} \\
     \vdots \\
     -\widehat{(E\partial_vf)}_{\kappa} \\
+    0 \\
     0
   \end{pmatrix}.
 $$
-Ceci s'applique également au modèle hybride linéarisé, où il devient possible d'avoir une contribution de l'ordre de l'erreur machine à l'erreur $L_E$ présentée sur la figure~\ref{fig:compare:error:LucEfh}.
+Ceci s'applique également au modèle de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere}. Cette stratégie permet de réduire à l'erreur machine les contributions de l'estimateur d'erreur $L_{u_c}$ et $L_E$, dans le cadre d'une méthode à pas de temps adaptatif, comme présentée sur la figure~\ref{fig:compare:error:LucEfh}.
+
+La résolution de ce problème avec une méthode de Lawson, permet envisager l'utilisation de méthodes de Lawson semi-implicites. Pour cela il est possible de construire des méthodes de Lawson induite par une méthode DIRK (\emph{Diagonally Implicit Runge-Kutta}), famille de méthodes présentée dans~\cite{Alexander:1976}. Cela se fait au prix d'une méthode de point fixe ou tout autre méthode d'inversion, comme la méthode iWENO (\emph{implicit WENO}) présentée dans~\cite{Gottlieb:2006}. Une autre stratégie est l'utilisation de méthodes IMEX construites à partir d'une méthode DIRK comme dans~\cite{Cho:2021}, et en utilisant du WENO adapté au IMEX présenté dans~\cite{Boscarino:2019}.
 
 Nous allons voir dans le chapitre suivant comment s'effectue la montée en dimension du modèle et de sa résolution numérique.

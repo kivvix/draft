@@ -3,7 +3,7 @@
 \section{Approximation de la partie linéaire}
 \label{s3:approx}
 
-L'obtention, à l'aide d'un logiciel de calcul formel, de l'exponentielle de la partie linéaire n'est pas toujours envisageable. Il est possible de recourir à une méthode d'approximation pour obtenir une formulation formelle de celle-ci qui sera possible d'utiliser pour l'écriture du code de simulation. On s'intéressera dans cette section à la partie linéaire $L$ définie par :
+L'obtention, même à l'aide de calcul ou d'un logiciel de calcul formel, de l'exponentielle de la partie linéaire n'est pas toujours envisageable. Il est possible de recourir à une méthode d'approximation pour obtenir une formulation formelle de celle-ci qui sera possible d'utiliser pour l'écriture du code de simulation. On s'intéressera dans cette section à la partie linéaire $L$ définie par :
 $$
   L = \begin{pmatrix}
     0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\
@@ -13,44 +13,51 @@ $$
    -1   &  0   & 0          & -\partial_z &  0             & 0             & 0 \\
     0   & -1   & \partial_z &  0          &  0             & 0             & 0 \\
     0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\
-  \end{pmatrix}
+  \end{pmatrix}.
 $$
-où on rappelle que $\Omega_{pe}=2$. Cette matrice est de la forme :
+Cette matrice est de la forme :
 $$
   L = \begin{pmatrix}
     A & 0 \\
     0 & -v_z\partial_z
-  \end{pmatrix}
+  \end{pmatrix},
 $$
-matrice diagonale par blocs, dont seul le bloc $A$ pose problème pour calculer formellement l'exponentielle. Ainsi on s'intéressera surtout à la sous-matrice $A$ obtenue après une transformée de Fourier en $z$ du système :
+dont seul le bloc $A$ pose problème pour calculer formellement l'exponentielle. Ainsi on s'intéressera surtout à la sous-matrice $A$ obtenue après une transformée de Fourier en $z$ du système :
 $$
   A = \begin{pmatrix}
-    0 & -1 & 0  &  0  &  \Omega_{pe}^2  & 0             \\
-    1 &  0 & 0  &  0  &  0              & \Omega_{pe}^2 \\
-    0 &  0 & 0  &  0  &  0              & ik            \\
-    0 &  0 & 0  &  0  & -ik             & 0             \\
-   -1 &  0 & 0  & -ik &  0              & 0             \\
-    0 & -1 & ik &  0  &  0              & 0             \\
+    0 & -1 & 0       &  0       &  \Omega_{pe}^2  & 0             \\
+    1 &  0 & 0       &  0       &  0              & \Omega_{pe}^2 \\
+    0 &  0 & 0       &  0       &  0              & i\kappa       \\
+    0 &  0 & 0       &  0       & -i\kappa        & 0             \\
+   -1 &  0 & 0       & -i\kappa &  0              & 0             \\
+    0 & -1 & i\kappa &  0       &  0              & 0             \\
   \end{pmatrix}
 $$
-Par abus de notation, nous noterons $A_0$, la matrice $A$ pour $k=0$, ce qui revient à une partie linéaire sans les équations de Maxwell, ceci sera utile lors de la comparaison des résultats entre les méthodes.
+%Par abus de notation, nous noterons $A_0$, la matrice $A$ pour $\kappa=0$, ce qui revient à une partie linéaire sans les équations de Maxwell, ceci sera utile lors de la comparaison des résultats entre les méthodes.
 
-La matrice $A$ est telle que toutes ses valeurs propres sont imaginaires pures, $\texttt{sp}(A)\subset i\mathbb{R}$. De plus, $A$ est presque anti-hermitienne, on peut trouver une matrice de passage $\Omega$ permettant de transformer notre matrice $A$ en une matrice anti-hermitienne :
+La matrice $A$ est presque anti-hermitienne, selon les valeurs de $\Omega_{pe}$ (constante liée à des caractéristiques physiques).  Il est nécessaire de trouver une matrice $\Omega$ permettant de transformer $A$ en une matrice anti-hermitienne :
 $$
   \Omega = 
   \begin{pmatrix}
     \dmat[0]{\Omega_{pe}^{-1/2},\Omega_{pe}^{-1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2},\Omega_{pe}^{1/2}}
   \end{pmatrix},
 $$
-où $\Omega$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a $H=\Omega A \Omega^{-1}$ anti-hermitienne. Le spectre de $H$ est imaginaire pur, et $H$ est diagonalisable dans une base orthonormale, c'est-à-dire :
+où $\Omega$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a alors $A = \Omega^{-1}H\Omega$, avec $H$ une matrice anti-hermitienne :
 $$
-  \exists Q \in GL_6(\mathbb{C}) / H = QDQ^{-1}, \|Q\|=1
+  H = \begin{pmatrix}
+    0           & -1           & 0       &  0       &  \Omega_{pe}  & 0           \\
+    1           &  0           & 0       &  0       &  0            & \Omega_{pe} \\
+    0           &  0           & 0       &  0       &  0            & i\kappa     \\
+    0           &  0           & 0       &  0       & -i\kappa      & 0           \\
+   -\Omega_{pe} &  0           & 0       & -i\kappa &  0            & 0           \\
+    0           & -\Omega_{pe} & i\kappa &  0       &  0            & 0           \\
+  \end{pmatrix}
 $$
-où $D$ est une matrice diagonale des valeurs propres de $H$. Ce qui nous permet de déterminer que les valeurs propres de l'exponentielle de $H$ sont sur le cercle unitaire, en effet :
+donc $H$ est diagonalisable dans une base unitaire : $H = QDQ^{-1}$ où $D$ est une matrice diagonale des valeurs propres de $H$, et $\texttt{sp}(H)\subset i\mathbb{R}$. Cela permet d'assurer que $A$ est également diagonalisable : $A = \Omega^{-1}QDQ^{-1}\Omega = PDP^{-1}$, avec $P=\Omega^{-1}Q$, et on a donc le résultat $\texttt{sp}(A)\subset i\mathbb{R}$. Cela nous permet de déterminer que les valeurs propres de l'exponentielle de $H$ sont sur le cercle unitaire, en effet on a :
 $$
-  \forall t\in\mathbb{R}, e^{tH} = Qe^{tD}Q^{-1}.
+  \forall t\in\mathbb{R}, e^{tH} = Qe^{tD}Q^{-1}
 $$
-Et on a, de même pour la matrice $A$, des valeurs propres distribuées sur le cercle unité, avec la matrice de passage $\Omega Q$, comme l'illustre la figure~\ref{fig:evexpAk}, où les valeurs propres de $A$ sont calculées numériquement pour différents modes de Fourier.
+avec $Q$ une matrice unitaire, et $D$ la matrice diagonale des valeurs propres, toutes imaginaires pures. On a également pour $A$, $e^{tA}=Pe^{tA}P^{-1}$, ce qui nous permet d'assurer que les valeurs propres de $e^{tA}$ sont sur un cercle, comme l'illustre la figure~\ref{fig:evexpAk}, où les valeurs propres de $e^{A}$ sont calculées numériquement pour différents modes de Fourier $\kappa$.
 
 \begin{figure}
   \centering
@@ -64,14 +71,14 @@ Et on a, de même pour la matrice $A$, des valeurs propres distribuées sur le c
 
 Un manière classique de définir la fonction exponentielle est par sa série de Taylor, ainsi on définit $e^{tA}$ par :
 $$
-  e^{tA} = \sum_{n=0}^\infty \frac{t^nA^n}{n!}.
+  e^{M} = \sum_{k=0}^\infty \frac{M^k}{k!}.
 $$
-Une troncature d'ordre suffisamment élevé permet d'obtenir une approximation de l'exponentielle $e^{tA}$ à un ordre plus élevé que la méthode LRK($s$,$n$) où elle sera utilisé garanti que l'erreur de troncature reste inférieur à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $m$ par :
+Une troncature d'ordre suffisamment élevé $m\geq n$ de cette série permet d'obtenir une approximation de l'exponentielle $e^{tA}$ sans dégrader la méthode LRK($s$,$n$) où elle sera utilisée. Cela garantit que l'erreur de troncature reste supérieur à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $m$ par :
 $$
-  T_m(A) = \sum_{k=0}^m \frac{A^k}{k!}.
+  T_m(M) = \sum_{k=0}^m \frac{M^k}{k!}.
 $$
 
-Nous savons que les valeurs propres de $e^{A}$ sont sur le cercle unité, préserver cette propriété permet d'assurer la stabilité du schéma. Nous regardons donc les valeurs propres de $T_5(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:T5}. On remarque que le module des valeurs propres à 1 n'est pas préservé.
+Nous savons que les valeurs propres de $e^{tA}$ sont sur le cercle unité, et préserver cette propriété permet d'assurer la stabilité du schéma, par analogie au cas unidimensionnel étudié dans~\cite{Crouseilles:2019b}. Nous regardons donc les valeurs propres de $T_5(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:T5}. On remarque que le module des valeurs propres à 1 n'est pas préservé. De plus certaines valeurs propres ont un module très grand, pour $\kappa\geq12$ certaines valeurs propres ont un module supérieur à $10^3$ par exemple.
 
 \begin{figure}
   \begin{subfigure}{.5\textwidth}
@@ -85,10 +92,10 @@ Nous savons que les valeurs propres de $e^{A}$ sont sur le cercle unité, prése
     \caption{Valeurs propres de $P_{2,2}(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$.}
     \label{fig:ev:P22}
   \end{subfigure}
-  \caption{Valeurs propres de l'approximation de l'exponentielle de $A$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs sont obtenues par paritée. Les méthodes d'approximation de l'exponentielle de $A$ sont la troncature de Taylor d'ordre 5 $T_5(A)$ (à gauche) et l'approximant de Padé d'ordre $(2,2)$ $P_{2,2}(A)$ (à droite).}
+  \caption{Valeurs propres de l'approximation de l'exponentielle de $A$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs sont obtenues par parité. Les méthodes d'approximation de l'exponentielle de $A$ sont la troncature de Taylor d'ordre 5 $T_5(A)$ (à gauche) et l'approximant de Padé d'ordre $(2,2)$ $P_{2,2}(A)$ (à droite).}
 \end{figure}
 
-On peut regarder, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$. C'est ce que l'on trace sur la figure~\ref{fig:taylor:error}.
+On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$, comme le montre la figure~\ref{fig:taylor:error}. Le choix du paramètre $\tau\in[-1,1]$ représente ici le coefficient de Butcher de l'étage considéré, et comme attendu, pour $|\tau|\ll1$ nous observons une bonne précision dans les résultats. L'erreur reste importante, même avec un ordre élevé $m=14$, pour les modes de Fourier plus élevé ($\kappa=15$) lorsque que le paramètre $\tau$ s'écarte de $0$. Ce résultat n'est pas souhaitable, et nous laisse supposer un mauvais comportement de la méthode lors de sa mise en place dans un schéma numérique.
 
 % \begin{figure}
 %   \begin{subfigure}{.5\textwidth}
@@ -108,14 +115,14 @@ On peut regarder, pour différentes valeurs de $m$, l'erreur de troncature faite
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA2T.png}
-    \caption{L'erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour le mode de Fourier $k=2$}
+    \caption{L'erreur absolue locale $\|e^{tA}-T_m(tA)\|$ pour le mode de Fourier $\kappa=2$}
   \end{subfigure}
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA15T.png}
-    \caption{L'erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour le mode de Fourier $k=15$}
+    \caption{L'erreur absolue locale $\|e^{tA}-T_m(tA)\|$ pour le mode de Fourier $\kappa=15$}
   \end{subfigure}
-  \caption{Erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour deux modes de Fourier $k=2$ à gauche et $k=15$ à droite.}
+  \caption{Erreur absolue locale $\|e^{tA}-T_p(tA)\|$ pour deux modes de Fourier $\kappa=2$ à gauche et $\kappa=15$ à droite.}
   \label{fig:taylor:error}
 \end{figure}
 
@@ -129,18 +136,15 @@ $$
     k_{p,q}(x) &= \sum_{j=0}^q (-1)^j \frac{\frac{q!}{(q-j)!}}{\frac{(p+q)!}{(p+q-j)!}} \frac{x^j}{j!}
   \end{aligned}
 $$
-
 $$
   P_{p,q}(x) = \frac{h_{p,q}(x)}{k_{p,q}(x)} \approx e^x
 $$
-
-Pour utiliser cet approximant de Padé, qui est une fraction rationnelle, avec des matrices il faut utiliser la définition suivante :
-
+Pour utiliser cet approximant de Padé avec des matrices il faut utiliser la définition suivante :
 $$
   e^M \approx P_{p,q}(M) = h_{p,q}(M)\cdot\left(k_{p,q}(M)\right)^{-1}
 $$
 
-L'introduction d'une fraction rationnelle permet de préserver certaines propriétés comme le fait que $P_{p,p}(-z) = \frac{1}{P_{p,p}(z)}$. Nous regardons les valeurs propres de $P_{2,2}(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:P22}, et l'on remarque que, contrairement à la troncature de la série de Taylor, le module des valeurs propres est 1.
+L'introduction d'une fraction rationnelle permet de préserver certaines propriétés comme le fait que $P_{p,p}(-z) = \frac{1}{P_{p,p}(z)}$. Nous regardons les valeurs propres de $P_{2,2}(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:P22}, et l'on remarque que, contrairement à l'approche basée sur une série de Taylor, le module des valeurs propres est 1, comme pour l'exponentielle exacte.
 
 %\begin{figure}
 %  \centering

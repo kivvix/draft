@@ -1,6 +1,6 @@
 % !TEX root = ../../main.tex
 
-\section{Hiéarchie des modèle du problème général}
+\section{Hiéarchie des modèles du problème général}
 
 Les modèles étudiés dans cette partie sont présentés dans un cadre général multi-dimensionnel en espace et en vitesse. Nous commençons par présenter les équations de Vlasov-Maxwell $3dx-3dv$ :
 \begin{align}
@@ -9,30 +9,31 @@ Les modèles étudiés dans cette partie sont présentés dans un cadre généra
   \label{eq:0:maxwellB}
     \pdv{\vb{B}}{t} &= - \nabla_{\vb{x}}\times\vb{E} \\
   \label{eq:0:maxwellE}
-    \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu q_e\int \vb{v} f\dd{\vb{v}} \\
+    \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f\dd{\vb{v}} \\
   \label{eq:0:poisson}
-    \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int f\dd{\vb{v}} \right)
+    \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int_{\mathbb{R}^3} f\dd{\vb{v}} \right)
 \end{align}
-où $f=f(t,\vb{x},\vb{v})$ représente la densité de particules dans l'espace des phases $\left\{ (\vb{x},\vb{v}) \in \Omega\times\mathbb{R}^3 \right\}$ avec $\Omega\subset\mathbb{R}^3$, au temps $t\geq0$, $\vb{E}=\vb{E}(t,\vb{x})\in\mathbb{R}^3$ représente le champ électrique, $\vb{B}=\vb{B}(t,\vb{x})\in\mathbb{R}^3$ représente le champ magnétique, et $\vb{B}_0 = \left(0,0,B_0\right)^\top$ est un champ magnétique extérieur supposé constant et d'intensité $B_0\in\mathbb{R}$. Le système~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson} forment les équations de Vlasov-Maxwell, et modélisent le transport non-linéaire d'une quantité $f$ dans l'espace des phases $\Omega\times\mathbb{R}^3$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse.
+où $f=f(t,\vb{x},\vb{v})$ représente la densité des électrons dans l'espace des phases $\left\{ (\vb{x},\vb{v}) \in \Omega\times\mathbb{R}^3 \right\}$ avec $\Omega\subset\mathbb{R}^3$, au temps $t\geq0$, $\vb{E}=\vb{E}(t,\vb{x})\in\mathbb{R}^3$ représente le champ électrique, $\vb{B}=\vb{B}(t,\vb{x})\in\mathbb{R}^3$ représente le champ magnétique, et $\vb{B}_0 = \left(0,0,B_0\right)^\top$ est un champ magnétique extérieur supposé constant et d'intensité $B_0 > 0$. Les valeurs physiques $q_\star$, $m_\star$ et $\rho_\star$, $\star\in{i,e}$ représente la charge, la masse et la densité des ions ($i$) ou des électrons ($e$). La constante physique $\mu_0$ représente la perméabilité magnétique du vide, la constante $c$ est la vitesse de la lumière, et $\varepsilon_0$ est la permittivité diélectrique du vide ; ces constantes physiques vérifient $c^2\mu_0\varepsilon_0=1$. Le système~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson} forment les équations de Vlasov-Maxwell, et modélisent le transport non-linéaire d'une quantité $f(\vb{x},\vb{v})$ dans l'espace des phases $\Omega\times\mathbb{R}^3$ au cours du temps $t$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse.
 
 \subsection{Dérivation du modèle de Vlasov-Maxwell hybride linéarisé}
 
-Le modélisation hybride vient de la volonté de réduire le temps de calcul en considérant la dynamique d'une population de particules comme fluide et non plus cinétique. En suivant cette stratégie, dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, on distingue la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible, et un second groupe de particules, dites chaudes, $f_h$ dont la vitesse thermique est grande. Ces deux populations sont supposées indépendantes et n'intéragissent ensemble que via le champ électrique $E$. Considérant cela, l'équation de Vlasov~\eqref{eq:0:vlasov} devient :
+Le modélisation hybride vient de la volonté de réduire le temps de calcul en considérant la dynamique d'une population de particules comme fluide et non plus cinétique. En suivant cette stratégie, dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, on distingue la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible, et un second groupe de particules, dites chaudes, $f_h$ dont la vitesse thermique est grande. Ces deux populations sont supposées indépendantes et n'intéragissent ensemble que via les champs électromagnétiques $(\vb{E},\vb{B})$. Considérant cela, l'équation de Vlasov~\eqref{eq:0:vlasov} devient :
 $$
   \begin{aligned}
     \pdv{f_c}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_c + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_c = 0 \\
     \pdv{f_h}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0
   \end{aligned}
 $$
-et l'équation de Maxwell-Ampère~\eqref{eq:0:maxwellE} et de Maxwell-Gauss~\eqref{eq:0:poisson} deviennent :
+avec les conditions initiales $f_c(t=0,\vb{x},\vb{v})$ et $f_h(t=0,\vb{x},\vb{v})$ telles que $f_c(t=0,\vb{x},\vb{v})+f_h(t=0,\vb{x},\vb{v}) = f(t=0,\vb{x},\vb{v})$ avec des conditions périodiques en espace $\vb{x}$ et nulles à l'infini en vitesse $\vb{v}$. L'équation de Maxwell-Ampère~\eqref{eq:0:maxwellE}, de Maxwell-Gauss~\eqref{eq:0:poisson} et de Maxwell-Faraday deviennent :
 $$
   \begin{aligned}
-    \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu q_e\int \vb{v} f_c\dd{\vb{v}} - \mu q_e\int \vb{v} f_h\dd{\vb{v}} \\
-    \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int f_c\dd{\vb{v}} + q_e\int f_h\dd{\vb{v}} \right)
+    \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f_c\dd{\vb{v}} - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f_h\dd{\vb{v}} \\
+    \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int_{\mathbb{R}^3} f_c\dd{\vb{v}} + q_e\int_{\mathbb{R}^3} f_h\dd{\vb{v}} \right) \\
+    \partial_t \vb{B} &= -\nabla_{\vb{x}}\times\vb{E}
   \end{aligned}
 $$
 
-La population de particules dont la vitesse thermique est suffisamment faible pour être approchée par un fluide est la population des particules dites froides $f_c$, que l'on souhaite rendre indépendante de la vitesse $\vb{v}$, et seulement dépendante du temps $t$ et de la position $\vb{x}$. En effet, elle représente une densité de particules froides, de faible vitesse thermique, dont on peut supposer qu'elles restent proches d'un équilibre thermodynamique. Pour obtenir le modèle hybride il est nécessaire de calculer les moments de $f_c$ et d'introduire la densité $\rho_c=\rho_c(t,\vb{x})$ et la vitesse moyenne $\vb{u}_c=\vb{u}_c(t,\vb{x})$ des particules froides :
+La population de particules dont la vitesse thermique est suffisamment faible pour être approchée par un fluide est la population des particules dites \emph{froides} $f_c$, que l'on souhaite rendre indépendante de la vitesse $\vb{v}$, et seulement dépendante du temps $t$ et de la position $\vb{x}$. En effet, elle représente une densité de particules froides, de faible vitesse thermique, dont on peut supposer qu'elles restent proches d'un équilibre thermodynamique. Pour obtenir le modèle hybride il est nécessaire de calculer les moments de $f_c$ et d'introduire la densité $\rho_c=\rho_c(t,\vb{x})$ et la vitesse moyenne $\vb{u}_c=\vb{u}_c(t,\vb{x})$ des particules froides :
 $$
   \begin{pmatrix}
     \rho_c \\
@@ -42,32 +43,33 @@ $$
   \int_{\mathbb{R}^3} \begin{pmatrix}
     1 \\
     \vb{v}
-  \end{pmatrix} f_c\dd{\vb{v}}
+  \end{pmatrix} f_c\dd{\vb{v}},
 $$
+ainsi que définir également le courant des particules froides $\vb{j}_c = q_e\rho_c\vb{u}_c$.
 
 \begin{pro}
   \label{pro:0:vmh}
-  En suppose l'approximation dite de \emph{plasma froid} utilisée dans la littérature (\cite{Tronci:2014,Holderied:2019}) qui suppose $f_c(t,\vb{x},\vb{v}) = \rho_c(t,\vb{x})\delta_{\{\vb{v}=\vb{u}_c(t,\vb{x})\}}(\vb{v})$, le modèle hybride s'écrit :
+  On suppose l'approximation dite de \emph{plasma froid} utilisée dans la littérature (\cite{Tronci:2014,Holderied:2019}) qui suppose $f_c(t,\vb{x},\vb{v}) = \rho_c(t,\vb{x})\delta_{\{\vb{v}=\vb{u}_c(t,\vb{x})\}}(\vb{v})$, le modèle hybride s'écrit :
   \begin{align}
     \label{eq:0:vmh:1}
       \partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
     \label{eq:0:vmh:2}
-      \partial_t\rho_c &+ \frac{1}{q_e}\nabla_{\vb{x}}\cdot(\vb{j}_c) = 0 \\
+      \partial_t\rho_c &+ \frac{1}{q_e}\nabla_{\vb{x}}\cdot\vb{j}_c = 0 \\
     \label{eq:0:vmh:3}
       \partial_t\vb{j}_c &+ \nabla_{\vb{x}}\cdot\frac{\vb{j}_c\otimes\vb{j}_c}{q_e\rho_c} - \frac{q_e}{m}\left( q_e\rho_c\vb{E} + \vb{j}_c\times(\vb{B}+\vb{B}_0) \right) = 0 \\
     \label{eq:0:vmh:4}
       \pdv{\vb{B}}{t} &= - \nabla_{\vb{x}}\times\vb{E} \\
     \label{eq:0:vmh:5}
-      \frac{1}{c^2}\partial_t\vb{E} &= \nabla_{\vb{x}}\times \vb{B} - \mu\vb{j}_c - \mu q_e\int \vb{v} f_h\dd{\vb{v}} \\
+      \frac{1}{c^2}\partial_t\vb{E} &= \nabla_{\vb{x}}\times \vb{B} - \mu_0\vb{j}_c - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f_h\dd{\vb{v}} \\
     \label{eq:0:vmh:6}
-      \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\rho_c + q_e\int f_h\dd{\vb{v}} \right)
+      \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\rho_c + q_e\int_{\mathbb{R}^3} f_h\dd{\vb{v}} \right)
   \end{align}
 \end{pro}
 \begin{proof}
   Voir annexe \ref{ssec:0:vmh}.
 \end{proof}
 
-Ce système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} n'est pas nécessairement plus simple à résoudre numériquement que le système cinétique à cause de la non-linéarité introduite par le calcul des moments, mais celui-ci peut être initialisé avec une condition initiale raide de la forme $f_c(t,\vb{x},\vb{v}) = \rho_c(t,\vb{x})\delta_{\vb{v}=\vb{u}_c(t,\vb{x})}(v)$. La littérature physique propose de linéarisé la partie fluide (voir~\cite{Holderied:2019}). Ainsi on considère maintenant la linéarisation du modèle~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} satisfait par $(\rho_c,\vb{j}_c,\vb{E},\vb{B},f_h)$ autour de l'équilibre donné par $\left(\rho_c^{(0)},0,0,0,f_h^{(0)}(\vb{v})\right)$, avec $f_h^{(0)}(\vb{v})$ une fonction telle que $\int\vb{v}f_h^{(0)}\dd{\vb{v}} = 0$. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire, tout en conservant la non-linéarité dans l'équation cinétique permettant le couplage des différentes quantités. On écrit alors :
+Ce système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} n'est pas nécessairement plus simple à résoudre numériquement que le système cinétique à cause de la non-linéarité introduite par le calcul des moments, mais celui-ci peut être initialisé avec une condition initiale raide de la forme $f_c(t,\vb{x},\vb{v}) = \rho_c(t,\vb{x})\delta_{\vb{v}=\vb{u}_c(t,\vb{x})}(v)$. La littérature physique propose de linéariser la partie fluide (voir~\cite{Holderied:2019}). Ainsi on considère maintenant la linéarisation du modèle~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} satisfait par $(\rho_c,\vb{j}_c,\vb{E},\vb{B},f_h)$ autour de l'équilibre donné par $\left(\rho_c^{(0)}(\vb{x}),0,0,0,f_h^{(0)}(\vb{v})\right)$, avec $f_h^{(0)}(\vb{v})$ une fonction telle que $\int\vb{v}f_h^{(0)}\dd{\vb{v}} = 0$. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire, tout en conservant la non-linéarité dans l'équation cinétique permettant le couplage des différentes quantités. On écrit alors :
 \begin{equation}
   \begin{aligned}
     \rho_c. (t,\vb{x}) &= \rho_c^{(0)}(\vb{x}) & + & \varepsilon\rho_c^{(1)}(t,\vb{x}) \\
@@ -86,7 +88,7 @@ Ce système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} n'est pas nécessairement plus
     \label{eq:0:vmhl:1}
       \partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
     \label{eq:0:vmhl:2}
-      \partial_t j_c &= \varepsilon_0\Omega_{pe}^2\vb{E} + \frac{q}{m_e}\vb{j}_c\times\vb{B}_0 \\
+      \partial_t\vb{j}_c &= \varepsilon_0\Omega_{pe}^2\vb{E} + \frac{q_e}{m_e}\vb{j}_c\times\vb{B}_0 \\
     \label{eq:0:vmhl:3}
       \partial_t\vb{B} &= -\nabla_{\vb{x}}\times\vb{E} \\
     \label{eq:0:vmhl:4}
@@ -98,13 +100,11 @@ Ce système~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} n'est pas nécessairement plus
   Voir annexe \ref{ssec:0:vmhl}.
 \end{proof}
 
-\subsection{Structure hamiltonienne}
-
-L'énergie du système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4}, ou hamiltonien, est :
+Le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} possède des invariants (masse et énergie totale) que l'on obtient à partir des invariants du système de Vlasov-Maxwell. Pour obtenir ceux du modèle hybride linéarisé, il suffit de poser $f(t,\vb{x},\vb{v})=\rho_c(t,\vb{x})\delta_{\vb{v}=\vb{u}_c(t,\vb{x})}(\vb{v}) + f_h(t,\vb{x},\vb{v})$, où $\rho_c$ est la densité des particules froides, $\vb{u}_c$ est la vitesse moyenne de celles-ci et $f_h$ la distribution des particules chaudes dans l'espace des phases. On obtient ainsi l'hamiltonien du système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} est donné par :
 \begin{equation}
-  \mathcal{H} = \underbrace{\frac{\varepsilon_0}{2} \int_{\Omega} |\vb{E}|^2 \dd{\vb{x}} }_{\mathcal{H}_E}
+  \mathcal{H}(t) = \underbrace{\frac{\varepsilon_0}{2} \int_{\Omega} |\vb{E}|^2 \dd{\vb{x}} }_{\mathcal{H}_E}
               + \underbrace{\frac{1}{2\mu_0}        \int_{\Omega} |\vb{B}|^2 \dd{\vb{x}} }_{\mathcal{H}_B}
               + \underbrace{\frac{1}{2\varepsilon_0}\int_{\Omega} \frac{1}{\Omega_{pe}^2}|\vb{j}_c|^2 \dd{\vb{x}} }_{\mathcal{H}_{j_c}}
               + \underbrace{\frac{m_e}{2}           \int_{\Omega}\int_{\mathbb{R}^3} |\vb{v}|^2f_h \dd{\vb{x}}\dd{\vb{v}} }_{\mathcal{H}_{f_h}}
 \end{equation}
-
+On verra plus tard que, comme le modèle de Vlasov-Maxwell, le modèle hybride linéarisé possède un structure géométrique qui sera utile pour la construction de méthodes numériques.
