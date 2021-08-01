@@ -417,7 +417,7 @@
 - [[Crestetto:2018](pdf/2018-Crestetto.pdf)] **A particle micro-macro decomposition based numercial scheme for collisional kinetic equations in the diffusion scaling** (*2018*)
 	A. Crestetto, N. Crouseilles, M. Lemou
 	*Communications in Mathematical Sciences*
-- [[Boscarino:2019](https://www.sciencedirect.com/science/article/pii/S0021999119303109)] **A high order semi-implicit IMEX WENO scheme for the all-Mach isentropic Euler system** (*2019*)
+- [[Boscarino:2019](pdf/2019-Boscarino.pdf)] **A high order semi-implicit IMEX WENO scheme for the all-Mach isentropic Euler system** (*2019*)
 	S. Boscarino, J. Qiu, G. Russo, T. Xiong
 	*Journal of Computational Physics*
 - [[Einkemmer:2019](https://www.sciencedirect.com/science/article/pii/S0021999118306697)] **A performance comparison of semi-Lagrangian discontinuous Galerkin and spline based Vlasov solvers in four dimensions** (*2019*)
@@ -459,7 +459,7 @@
 - [[Crouseilles:2020](pdf/2020-Crouseilles.pdf)] **Poisson bracket for one electron hybrid model** (*2020*)
 	N. Crouseilles
 	 
-- [[Cho:2021](https://www.sciencedirect.com/science/article/pii/S0021999121000516)] **Conservative semi-Lagrangian schemes for kinetic equations Part I: Reconstruction** (*2021*)
+- [[Cho:2021](pdf/2021-Cho.pdf)] **Conservative semi-Lagrangian schemes for kinetic equations Part I: Reconstruction** (*2021*)
 	S. Yeon Cho, S. Boscarino, G. Russo, S. Yun
 	*Journal of Computational Physics*
 - [[Kormann:2021](https://www.sciencedirect.com/science/article/pii/S0021999120306641)] **Energy-conserving time propagation for a structure-preserving particle-in-cell Vlasov–Maxwell solver** (*2021*)
