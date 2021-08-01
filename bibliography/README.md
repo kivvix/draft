@@ -51,6 +51,9 @@
 - [[Hairer:1993](pdf/1993-Hairer.pdf)] **Solving Ordinary Differential Equations I: Nonstiff Problems** (*1993*)
 	E. Hairer, G. Wanner, S. P. Nørsett
 	 
+- [[Bini:1994](pdf/1994-Bini.pdf)] **Polynomial and Matrix Computations** (*1994*)
+	D. Bini, V. Y. Pan
+	 
 - [[Gustafsson:1994](https://doi.org/10.1145/198429.198437)] **Control-Theoretic Techniques for Stepsize Selection in Implicit Runge-Kutta Methods** (*1994*)
 	K. Gustafsson
 	*ACM Trans. Math. Softw.*
@@ -63,6 +66,9 @@
 - [[Liu:1994](pdf/1994-Liu.pdf)] **Weighted Essentially Non-oscillatory Schemes** (*1994*)
 	X. Liu, S. Osher, T. Chan
 	*Journal of Computational Physics*
+- [[Ascher:1995](pdf/1995-Ascher.pdf)] **Implicit-explicit methods for time-dependent partial differential equations** (*1995*)
+	U. M. Ascher, S. J. Ruuth, B. T. R. Wetton
+	*Journal on Numerical Analysis*
 - [[Evans:1996](pdf/1996-Evans.pdf)] **A new fifth order weighted runge kutta formula** (*1996*)
 	D. Evans, A. Yaakub
 	*International Journal of Computer Mathematics*
@@ -72,6 +78,15 @@
 - [[Jiang:1996](pdf/1996-Jiang.pdf)] **Efficient Implementation of Weighted ENO Schemes** (*1996*)
 	G. Jiang, C. Shu
 	*Journal of Computational Physics*
+- [[Parker:1997a](pdf/1997-Parker(a).pdf)] **Monte Carlo Arithmetic: a framework for the statistical analysis of roundo error** (*1997*)
+	D. Parker, P. Eggert, B. Pierce
+	 
+- [[Parker:1997](pdf/1997-Parker.pdf)] **Monte Carlo Arithmetic: exploiting randomness in floating-point arithmetic** (*1997*)
+	D. Parker, D. Langley
+	 
+- [[Ascher:1997](pdf/1997-Ascher.pdf)] **Implicit-explicit Runge-Kutta methods for time-dependent partial differential equations** (*1997*)
+	U. M. Ascher, S. J. Ruuth, R. J. Spiteri
+	*Applied Numerical Mathematics*
 - [[Hochbruck:1997](https://doi.org/10.1137/S0036142995280572)] **On Krylov Subspace Approximations to the Matrix Exponential Operator** (*1997*)
 	M. Hochbruck, C. Lubich
 	*SIAM Journal on Numerical Analysis*
@@ -267,6 +282,9 @@
 - [[Crestetto:2012b](pdf/2012-Crestetto(b).pdf)] **Kinetic/Fluid Micro-Macro Numerical Schemes for Vlasov-Poisson-BGK Equation Using Particles** (*2012*)
 	A. Crestetto, N. Crouseilles, M. Lemou
 	*Kinetic and Related Models*
+- [[Cavaglieri:2013](pdf/2013-Cavaglieri.pdf)] **Low-storage IMEX Runge-Kutta schemes for the simulation of Navier-Stokes systems** (*2013*)
+	D. Cavaglieri, P. Beyhaghi, T. Bewley
+	 
 - [[Saramito:2013](https://cel.archives-ouvertes.fr/cel-00573975)] **Langage C++ et calcul scientifique** (*2013*)
 	P. Saramito
 	 
@@ -459,10 +477,13 @@
 - [[Crouseilles:2020](pdf/2020-Crouseilles.pdf)] **Poisson bracket for one electron hybrid model** (*2020*)
 	N. Crouseilles
 	 
+- [[Einkemmer:2021](pdf/2021-Einkemmer.pdf)] **An exponential integrator/WENO discretization for sonic-boom simulation on modern computer hardware** (*2021*)
+	L. Einkemmer, A. Ostermann, M. Residori
+	*arXiv e-prints*
 - [[Cho:2021](pdf/2021-Cho.pdf)] **Conservative semi-Lagrangian schemes for kinetic equations Part I: Reconstruction** (*2021*)
 	S. Yeon Cho, S. Boscarino, G. Russo, S. Yun
 	*Journal of Computational Physics*
-- [[Kormann:2021](https://www.sciencedirect.com/science/article/pii/S0021999120306641)] **Energy-conserving time propagation for a structure-preserving particle-in-cell Vlasov–Maxwell solver** (*2021*)
+- [[Kormann:2021](pdf/2021-Kormann.pdf)] **Energy-conserving time propagation for a structure-preserving particle-in-cell Vlasov–Maxwell solver** (*2021*)
 	K. Kormann, E. Sonnendrücker
 	*Journal of Computational Physics*
 - [[Wu:2021](pdf/2021-Wu.pdf)] **Very high order WENO schemes using efficient smoothness indicators** (*2021*)
