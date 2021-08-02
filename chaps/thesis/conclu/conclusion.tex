@@ -1,6 +1,10 @@
+% !TEX root = ../main.tex
+
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 \chaptermark{Conclusion}
+
+\newcommand{\parallelsum}{\mathbin{\!/\mkern-5mu/\!}}
 
 \newcommand\csection[1]{\section*{#1}\addcontentsline{toc}{section}{#1}}
 \newcommand\csubsection[1]{\subsection*{#1}\addcontentsline{toc}{subsection}{#1}}
@@ -10,20 +14,26 @@ Au travers de différentes méthodes de simulations dédiées à la physique des
 
 \csection{Perspectives}
 
-Maths :
-\begin{enumerate}
-  \item Analyse mathématique des schémas de Lawson dans le cas cinétique, base de HO
-  \item gyrocinétique de la forme $\partial_t f + (E(f)+\nabla B(x))\cdot\nabla_xf$ pas possible de faire Fourier en $x$ (car le terme de transport en $x$ n'est pas linéaire), donc schéma de Rosenbrock (décomposition de $B(x)=B(x)-B(x_0)+B(x_0)$ et le transport à vitesse $B(x_0)$ est linéaire en $x$ donc Lawson utilisable, et le terme non-linéaire $B(x)-B(x_0)$ est (on l'espère) faible, donc pas trop dérangeant pour la CFL).
-\end{enumerate}
-Schémas numériques :
-\begin{enumerate}
-  \item Si non-périodique en espace ($x$ pour $1dx-1dv$ ou $z$ pour $1dz-3dv$) : semi-lagrangien pour Vlasov et éléments finis pour résoudre Maxwell (nécessite le calcul de l'exponentielle d'une matrice avec pour taille le nombre de points du maillage, utilisation de Padé ?)
-  \item semi-implicite (iWENO et DIRK)
-  \item explicite implicite Guillaume Dujardin (Inria Lille)
-  \item faire une méthode de Lawson qui conserve des trucs (Poisson, énergie totale...)
-\end{enumerate}
-Informatique :
-\begin{enumerate}
-  \item MPI -> décomposition de domaine (mais FFT est global donc récupération de toutes les données) \textbf{OU} traiter dans des processus différents $(j,B,E)^\top$ et $f_h$ (besoin d'échanger $B$ et $E$ pour calculer les vitesses d'advection en $v$)
-  \item \emph{multiprecsion}, utiliser des \texttt{float} sur $f_h$ et des \texttt{double} sur $(j,B,E)^\top$, permet de réduire l'espace mémoire nécessaire en RAM et potentiellement la vitesse de calcul des WENO (qui sont la partie limitante de la simu).
-\end{enumerate}
+\csubsection{Analyse mathématique}
+
+Cette thèse présente le début de l'analyse de stabilité des méthodes de Lawson dans le contexte d'une équation de transport, et plus particulièrement une équation cinétique. Des travaux récents d'erreur de troncature~\cite{Hochbruck:2020} présentent des résultats sur des problèmes raides où la partie linéaire $L$ vérie $|e^{\Delta t L}|=1$. Le cadre plus large engendre des domaines de stabilités dépendant de la discrétisation de la partie linéaire, comme les schémas exponentiels présentés dans le chapitre~\ref{chap1}, et des estimations d'erreur dans ce contexte n'est pas encore faite.
+
+Nous nous sommes concentrés au tout long de ce travail sur l'équation de Vlasov-Maxwell, où les termes linéaires peuvent être résolus à l'aidre d'une transformée de Fourier. Il existe à l'inverse des termes linéaires difficiles à traiter, c'est le cas par exemple dans le contexte gyrocinétique avec un champ magnétique extérieur donné $\vb{B}(x)$ non-homogène. Ces équations font intervenir un terme de dérivée spatiale plus compliqué que dans le cadre de l'équation de Vlasov : $\nabla_{x}(v_{\parallelsum}\vb{B}f)$, qu'il n'est pas possible de traiter simplement avec une transformée de Fourier à cause du champ magnétique $\vb{B}$ ou des conditions aux bords. L'utilisation de schémas de Rosenbrock permet de décomposer $\vb{B}(x) = \vb{B}(x_0) + ( \vb{B}(x)-\vb{B}(x_0) )$ où $x_0$ est déterminé de sorte que $\|\vb{B}(x)-\vb{B}(x_0)\| \ll 1$, permettant de traiter ce terme dans la partie non-linéaire de la méthode de Lawson sans introduire de contrainte de stabilité trop dure. Les transformées de Fourier, impossibles à cause des conditions aux bords, peuvent être remplacées par l'utilisation de méthodes semi-lagrangiennes.
+
+\csubsection{Schémas numériques}
+
+Comme nous venons de l'évoquer, des conditions aux bords non-périodiques rendent impossibles l'utilisation de transformées de Fourier. Il devient alors nécessaire d'utiliser une méthode semi-lagrangienne pour résoudre numériquement l'équation de Vlasov, les équations de Maxwell quant à elle, nécessitent l'utilisation d'éléments finis. Cette dernière méthode engendre une matrice de même taille que le maillage, qui peut questionner la possibilité de calculer formellement un approximant de Padé d'une matrice de grande taille.
+
+L'ajout de termes de collision à l'équation de Vlasov (cas des gaz rares par exemple) nécessite l'utilisation de méthodes implicites-explicites (IMEX), celles-ci peuvent être construite à partir d'une méthode DIRK comme dans~\cite{Cho:2021}, et être couplées avec une méthode WENO spéciale~\cite{Boscarino:2019}. Il est aussi possible d'utiliser une méthode Runge-Kutta où seule la diagonale est implicite : DIRK, où tous les termes sont implicités, cela peut mener à l'utilisation de la méthode iWENO~\cite{Gottlieb:2006}.
+
+La méthode présentées dans la conclusion du chapitre~\ref{chap2} qui propose d'introduire le calcul du courant dans la partie linéaire d'une méthode de Lawson, permet de résoudre le système de Vlasov-Ampère, ou le modèle Vlasov-Ampère hybride linéarisé, tout en vérifiant l'équation de Poisson. L'ajout de termes dans la partie linéaire de la méthode de Lawson permet d'assurer la préservation de certaines quantités. Il devient sans doute possible, comme par exemple en utilisant les stratégies de la méthode de Lawson à la méthode GEMPIC, de construire des méthodes de Lawson qui préservent l'énergie totale ou en assurent un bon comportement en temps long.
+
+\csubsection{Détails d'implémentation}
+
+Une thèse en mathématiques ne permet pas d'envisager tous les développements informatiques que l'on souhaiterait parfois effectuer.
+
+Il serait possible de mettre en place une parallélisation via MPI, cela peut se faire en suivant deux stratégies différentes. La première, plus classique, consiste à effectuer une décomposition de domaine, mais l'usage intensif de transformées de Fourier, algorithme non-local, nécessite de nombreux échanges de données vers un processus parent. On peut aussi remarquer que la résolution des grandeurs spatiales $(\vb{j},\vb{B},\vb{E})$ est indépendant de la résolution de la densité de particules $f_h$, il est seulement nécessaire d'échanger les quelques termes de couplages (vitesses d'advection dans la direction $\vb{v}$ pour $f_h$ et le courant des particules chaudes pour $(\vb{j},\vb{B},\vb{E})$).
+
+Une discrétisation plus fine de l'espace des phases, plus particulièrement en vitesse $\vb{v}$ entraine l'utilisation de très grands tableaux pour représenter $f_h$ et nécessite de grands espaces en mémoire RAM. Pour le moment le code de simulation n'utilise que des nombres à virgule flottante à double précision : \texttt{double}. La mise en place d'une stratégie \emph{multiprecsion} consisterait à traiter $f_h$ avec des nombres à virgule flottante à simple précision : \texttt{float} (l'usage de demi-précision : \texttt{half} est aussi envisageable), et de continuer l'usage de \texttt{double} pour les grandeurs spatiales ; cela nécessite des algorithmes de réduction performants sur $f_h$ sans perdre en précision, ce qui permet de calculer des intégrales en $\vb{v}$ tout en obtenant une valeur à double précision \texttt{double} par sommation d'éléments en simple précision \texttt{float}. L'espace mémoire se retrouve ainsi divisé par deux, et certains calculs, comme la méthode WENO, se retrouvent aussi accélérés.
+
+L'utilisation d'arithmétique stochastique, ou d'arithmétique de Monte-Carlo~\cite{Parker:1997,Parker:1997a}, a aussi été envisagée pour vérifier la stabilité numérique des méthodes mise en œuvre, ainsi que vérifier la précision nécessaire pour les calculs sur $f_h$. L'étude prospective réalisée a montré la stabilité numérique des méthodes utilisées.
