@@ -22,9 +22,11 @@ Nous souhaitons dans cette section présenter les choix techniques effecutés po
 
 \subsubsection{Structure de données}
 
-Le choix a été fait, durant toute cette thèse, d'utiliser une méthode spectrale pour résoudre le transport en espace (direction $x$ ou $z$). Cela implique d'effectuer régulièrement des transformées de Fourier, ou des transformées inverses. Pour effectuer ces opérations efficacement il est nécessaire que cette mémoire soit contigüe en mémoire, cela indique qu'il s'agit du dernier indice dans les tableaux manipulés en \CC. Ainsi 
+Le choix a été fait, durant toute cette thèse, d'utiliser une méthode spectrale pour résoudre le transport en espace (direction $x$ ou $z$). Cela implique d'effectuer régulièrement des transformées de Fourier, ou des transformées inverses. Pour effectuer ces opérations efficacement il est nécessaire que cette mémoire soit contigüe en mémoire, cela indique qu'il s'agit du dernier indice dans les tableaux manipulés en \CC. \Josselin{Parler ici du stencil en y ajoutant une figure similaire à celle faire en CSS sur \url{https://perso.univ-rennes1.fr/josselin.massot/stencil.html}, image trompeuse car les données ne sont pas continues en $\vb{v}$, et les accès sont donc plus longs et il s'agit là de la partie limitante dans la simulation. Évoquer Valgrind et test avec Massif.}
 
 \subsubsection{Performance séquentielle}
+
+\Josselin{Tableau des temps de calcul et commenter, les temps sont dispo sur }\url{https://perso.univ-rennes1.fr/josselin.massot/journal/index.html\#section-23}\footnote{Il semblerait qu'il y ait un bug dans les applications MacOS dès qu'il y a un dièse dans une adresse, source : \url{https://tex.stackexchange.com/questions/555559/href-broken-links-due-to-url-encoding-hash-sign-23}}\Josselin{, il manque ceux avec le \emph{splitting}.}
 
 \subsubsection{Performance parallélisée}
 
