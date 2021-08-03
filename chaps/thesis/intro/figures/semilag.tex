@@ -1,0 +1,38 @@
+\documentclass[tikz]{standalone}
+\tikzset{every label/.style={font=\footnotesize,inner sep=1pt}}
+\newcommand{\stencilpt}[4][]{\node[circle,fill,draw,inner sep=1.5pt,label={above:#4},#1] at (#2) (#3) {}}
+\newcommand{\smallpt}[4][]{\node[circle,fill,draw,inner sep=0.75pt,label={above:#4},#1] at (#2) (#3) {}}
+
+\begin{document}
+\begin{tikzpicture}
+  \stencilpt{ 5,2}{j0}{$j$};
+  \stencilpt{-4,0}{j-2}{${j^\star-2}$};
+  \stencilpt{-2,0}{j-1}{${j^\star-1}$};
+  \stencilpt{ 0,0}{j}  {${j^\star}$};
+  \stencilpt{ 2,0}{j+1}{${j^\star+1}$};
+  \stencilpt{ 4,0}{j+2}{${j^\star+2}$};
+  \draw (j-2) -- (j-1)
+        (j-1) -- (j)
+        (j)   -- (j+1)
+        (j+1) -- (j+2);
+  \draw (-4.5,0) -- (j-2)
+        ( 4.5,0) -- (j+2);
+
+  \smallpt{0.7,0}{jstar}{};
+
+  \draw[stealth-] (-5,2.5) node[above left] {$t$} -- (-5,-0.5);
+
+  \draw[-] (-5.5,2) node[left] {$t^{n+1}$} -- (-4.5,2);
+  \draw[dashed] (-4.5,2) -- (4,2);
+  \draw[-] (4,2) -- (6,2);
+
+  \draw[-] (-5.5,0) node[left] {$t^{n}$} -- (j-2);
+
+  \draw[-] (j0) -- (jstar);
+  \draw[-stealth] (0.7,-0.55) -- (0.7,-0.05);
+  \node[,align=left] at (0.8,-0.7) {$x_j-a\Delta t$};
+
+  \draw[dashed] (4.5,0) -- (6,0);
+\end{tikzpicture}
+\end{document}
+

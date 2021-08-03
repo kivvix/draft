@@ -191,11 +191,25 @@ L'étude de la stabilité de la méthode WENO5 couplée avec différentes métho
 
 Une méthode très populaire pour la résolution numérique de l'équation de Vlasov, car les termes de transports sont linéaires, et que cette méthode d'introduit pas de contrainte de stabilité est la méthode semi-lagrangienne.
 
+$$
+  \partial_t u + a\partial_xu = 0
+$$
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\textwidth]{\localPath/figures/semilag.pdf}
+  \caption{Méthode des caractéristiques pour une méthode semi-lagrangienne avec une vitesse de transport $a>0$. \Josselin{En soit, la figure est de moi, je l'ai faite avec Tikz, je peux donc facilement la modifier au besoin.}}
+  \label{fig:intro:semilag}
+\end{figure}
+
+
 % --------------------------------------------------------------------
 \subsection{Méthode pseudo-spectrale}
 % --------------------------------------------------------------------
 
 Une autre méthode souvent utilisée pour la résolution d'équation aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète et ainsi transformer une dérivée dans l'espace réel en un produit dans l'espace de Fourier.
 
-
+$$
+  \hat{f} = \frac{1}{L}\int_0^L f(x)e^{-i\kappa x}\dd{x},\quad\kappa=\frac{2\pi}{L}n,\ n\in\mathbb{Z}
+$$
 
