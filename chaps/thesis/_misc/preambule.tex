@@ -33,9 +33,11 @@
 \usepackage{placeins} % to force floating element placement with \FloatBarrier
 
 \usepackage{physics} % please, read: http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/physics/physics.pdf
+\usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{latexsym}
 %\usepackage{mathabx}
 \usepackage{mathrsfs}
 \usepackage{wasysym}
@@ -139,16 +141,18 @@
 \newtheorem{property}{Property}[chapter]
 \newtheorem{hyp}{Hypothèse}[chapter]
 
+% newcommand for a real widehat
+% this is purely cosmetic
 \usepackage{scalerel,stackengine}
 \stackMath
 \newcommand\Widehat[1]{%
 \savestack{\tmpbox}{\stretchto{%
   \scaleto{%
-    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
-    {\rule[-\textheight/2]{1ex}{1.2\textheight}}%WIDTH-LIMITED BIG WEDGE
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern.1pt\mathchar"0362\kern.1pt}%
+    {\rule{0ex}{\textheight}}%WIDTH-LIMITED CIRCUMFLEX
   }{\textheight}% 
-}{0.6ex}}%
-\stackon[1pt]{#1}{\tmpbox}%
+}{2.4ex}}%
+\stackon[6.9pt]{#1}{\tmpbox}%
 }
 \parskip 1ex
 

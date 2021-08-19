@@ -7,7 +7,7 @@ Au cours de ce chapitre nous avons pu étudier et confirmer numériquement la co
 
 Un résultat supplémentaire que nous avons pu obtenir dans cette comparaison, est l'intérêt plus important de la méthode de pas de temps adaptatif basée sur la méthode de Lawson, permettant de profiter de toute la littérature sur les méthodes de type Runge-Kutta.
 
-En perspective, il est possible d'étudier le modèle hybride, en tenant compte des termes non-linéaires dans la partie fluide. Dans un contexte plus perturbatif, il est possible que ceux-ci capture mieux la solution du modèle cinétique, cadre où les hypothèse de linéarisation sont violées. 
+En perspective, il est possible d'étudier le modèle hybride, en tenant compte des termes non-linéaires dans la partie fluide. Dans un contexte plus perturbatif, il est possible que ceux-ci capturent mieux la solution du modèle cinétique, cadre où les hypothèse de linéarisation sont violées. 
 
 Différentes perspectives sont en cours d'étude en ce qui concerne la résolution numérique. Il est envisageable d'augmenter la partie linéaire de l'équation de Vlasov-Ampère hybride linéarisé~\eqref{eq:vahl} en y intégrant le calcul du courant, en effet le système devient, après une transformée de Fourier en $x$, pour un mode de Fourier $\kappa$ :
 $$
@@ -62,6 +62,6 @@ $$
 $$
 Ceci s'applique également au modèle de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere}. Cette stratégie permet de réduire à l'erreur machine les contributions de l'estimateur d'erreur $L_{u_c}$ et $L_E$, dans le cadre d'une méthode à pas de temps adaptatif, comme présentée sur la figure~\ref{fig:compare:error:LucEfh}.
 
-La résolution de ce problème avec une méthode de Lawson, permet envisager l'utilisation de méthodes de Lawson semi-implicites. Pour cela il est possible de construire des méthodes de Lawson induite par une méthode DIRK (\emph{Diagonally Implicit Runge-Kutta}), famille de méthodes présentée dans~\cite{Alexander:1976}. Cela se fait au prix d'une méthode de point fixe ou tout autre méthode d'inversion, comme la méthode iWENO (\emph{implicit WENO}) présentée dans~\cite{Gottlieb:2006}. Une autre stratégie est l'utilisation de méthodes IMEX construites à partir d'une méthode DIRK comme dans~\cite{Cho:2021}, et en utilisant du WENO adapté au IMEX présenté dans~\cite{Boscarino:2019}.
+La résolution de ce problème avec une méthode de Lawson, permet d'envisager l'utilisation de méthodes de Lawson semi-implicites. Pour cela il est possible de construire des méthodes de Lawson induites par une méthode DIRK (\emph{Diagonally Implicit Runge-Kutta}), famille de méthodes présentée dans~\cite{Alexander:1976}. Cela se fait au prix d'une méthode de point fixe ou tout autre méthode d'inversion, comme la méthode iWENO (\emph{implicit WENO}) présentée dans~\cite{Gottlieb:2006}. Une autre stratégie est l'utilisation de méthodes IMEX construites à partir d'une méthode DIRK comme dans~\cite{Cho:2021}, et en utilisant du WENO adapté au IMEX présenté dans~\cite{Boscarino:2019}.
 
 Nous allons voir dans le chapitre suivant comment s'effectue la montée en dimension du modèle et de sa résolution numérique.

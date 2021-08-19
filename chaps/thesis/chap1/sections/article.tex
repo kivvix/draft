@@ -454,7 +454,7 @@ $$
 $$
 The numerical parameters are chosen as follows: the number of points in space is $N_x=81$ whereas the velocity domain is truncated to $[-v_{\max}, v_{\max}]$ with $v_{\max}=8$ and is discretized with $N_v=128$ grid points.
 
-Let us remark that for the Landau damping test, the conditions \eqref{cfl_vlasov_lc} and \eqref{cfl_vlasov_lw} allow us to take very large time steps, since $\| E^n \|_{L^\infty} \leq \| E^0 \|_{L^\infty} = 2\cdot 10^{-3}$. Then, we get $\Delta t = C \Delta v \; 0.5\cdot 10^3 =  62.5 C$, where $C$ can be either $y_{\max}$ or $\sigma$ depending on the chosen time integrator. This means that in practice we can choose the time step $\Delta t$ independently from the mesh. This is clearly a desirable desirable feature of the time integrator.
+Let us remark that for the Landau damping test, the conditions \eqref{cfl_vlasov_lc} and \eqref{cfl_vlasov_lw} allow us to take very large time steps, since $\| E^n \|_{L^\infty} \leq \| E^0 \|_{L^\infty} = 2\cdot 10^{-3}$. Then, we get $\Delta t = C \Delta v \; 0.5\cdot 10^3 =  62.5 C$, where $C$ can be either $y_{\max}$ or $\sigma$ depending on the chosen time integrator. This means that in practice we can choose the time step $\Delta t$ independently from the mesh. This is clearly a desirable feature of the time integrator.
 
 In Figure \ref{ld}, the time history of the electric energy $\|E^n\|_{L^2}$ (in semi-log scale) using Lawson($RK(4, 4)$)-WENO5 (with two different time steps $\Delta t=1/8$ and $\Delta t=1$), and using Hochbruck--Ostermann-CD2 (with $\Delta t=1$). One can observe that the expected damping rate ($\gamma=-0.153$) is recovered for the three schemes. Although, the accuracy deteriorates for $\Delta t=1$ Lawson($RK(4, 4)$)-WENO5, the Hochbruck--Ostermann-CD2 scheme gives very good results even with $\Delta t=1$. We note that all the numerical schemes are clearly stable.
 
@@ -546,7 +546,7 @@ In Figure \ref{unstable}, the time evolution of the electric energy $\|E(t)\|^2_
 \section{Numerical simulation: drift-kinetic equations\label{sec:dk}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section we will consider a model motivated by the simulation of strongly magnetized plasmas, such as those found in tokamaks. In this case the dynamics is governed by gyrokinetic equations. Gyrokinetics averages out the fast oscillatory motion of the charged particles around the magnetic field lines. In a simplified slab geometry, gyrokinetic models reduce to the drift-kinetic equation. In this case the unknown $f$ depends on three cylindrical spatial coordinates $(r,\theta,z)$ and one velocity direction $v$. This model is composed of a guiding-center dynamics in the plane orthogonal to the magnetic field lines and of a Vlasov type dynamics in the direction parallel (to the magnetic field lines). In addition to its relevance in physics, it is also a good test case for stressing exponential methods. The latter is due to the fact that after some time the nonlinearity can become strong enough such that the time step size is is dictated by stability constraints (especially for high order methods).
+In this section we will consider a model motivated by the simulation of strongly magnetized plasmas, such as those found in tokamaks. In this case the dynamics is governed by gyrokinetic equations. Gyrokinetics averages out the fast oscillatory motion of the charged particles around the magnetic field lines. In a simplified slab geometry, gyrokinetic models reduce to the drift-kinetic equation. In this case the unknown $f$ depends on three cylindrical spatial coordinates $(r,\theta,z)$ and one velocity direction $v$. This model is composed of a guiding-center dynamics in the plane orthogonal to the magnetic field lines and of a Vlasov type dynamics in the direction parallel (to the magnetic field lines). In addition to its relevance in physics, it is also a good test case for stressing exponential methods. The latter is due to the fact that after some time the nonlinearity can become strong enough such that the time step size is dictated by stability constraints (especially for high order methods).
 
 Our goal in this section is to find a numerical approximation of $f=f(t,r,\theta,z,v)$ satisfying the following $4D$ slab drift-kinetic equation (see \cite{Grandgirard:2006})
 \begin{equation}
@@ -568,7 +568,7 @@ In many situations the $v \partial_z f$ term yields the most restrictive CFL con
 
 First, we remark that $z$ is a periodic variable which motivates us to consider the Fourier transform in this direction. The corresponding frequencies are denoted by $k$. Equation \eqref{dk} then becomes
 $$
-  \partial_t \hat{f}_k -\partial_r \widehat{\left(\frac{\partial_\theta \phi}{r}f\right)}_k+\partial_\theta \widehat{\left(\frac{\partial_r \phi}{r} f\right)}_k +vik \hat{f}_k-\partial_v\widehat{\left( \partial_z\phi \, f\right)}_k=0, 
+  \partial_t \hat{f}_k -\partial_r \widehat{\left(\frac{\partial_\theta \phi}{r}f\right)}_k+\partial_\theta \widehat{\left(\frac{\partial_r \phi}{r} f\right)}_k +vik \hat{f}_k-\partial_v\widehat{\left( \partial_z\phi \, f\right)}_k=0.
 $$
 Setting $F(t, f)= \partial_r \widehat{\left(\frac{\partial_\theta \phi}{r}f\right)}-\partial_\theta \widehat{\left(\frac{\partial_r \phi}{r} f\right)} +\partial_v\widehat{\left( \partial_z\phi \,f\right)}$, this equation can be written as
 $$
@@ -606,7 +606,7 @@ Finally, we consider the parameters of \cite{Coulette:2013} (MEDIUM case)
   &&r_{\rm min} = 0.1,\ r_{\rm max} = 14.5,\\
   && \kappa_{n_0}= 0.055,\ \kappa_{T_i}=\kappa_{T_e}= 0.27586,\\
   &&\delta r_{T_i}=\delta r_{T_e}=\frac{\delta r_{n_0}}{2}= 1.45,\ \epsilon=10^{-6},\ n=1,\ m=5,\\
-  &&L=1506.759067,\ r_p = \frac{r_{\rm min}+r_{\rm max}}{2},\delta r = \frac{4 \delta r_{n_0}}{\delta r_{T_i}}.
+  &&L=1506.759067,\ r_p = \frac{r_{\rm min}+r_{\rm max}}{2},\delta r = \frac{4 \delta r_{n_0}}{\delta r_{T_i}},
 \end{eqnarray*}
 and use a $v$-range of $v \in [-7.32,7.32]$.
 

@@ -5,14 +5,14 @@
 
 On s'intéresse ici à démontrer la proposition~\ref{pro:0:vmh}.
 \begin{proof}
-  Pour écrire le modèle hybride, on distingue deux populations de particles dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, une population de particules froides $f_c$ donc la vitesse thermique est faible, et une seconde population de particules chaudes $f_h$ dont la vitesse thermique est grande. Ces populations sont supposées indépendantes, l'équation de Vlasov devient :
+  Pour écrire le modèle hybride, on distingue deux populations de particules dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, une population de particules froides $f_c$ dont la vitesse thermique est faible, et une seconde population de particules chaudes $f_h$ dont la vitesse thermique est grande. Ces populations sont supposées ne pas interagir directement entre elles mais seulement par le couplage via les champs électromagnétiques, l'équation de Vlasov devient :
   $$
     \begin{aligned}
       \pdv{f_c}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_c + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_c = 0 \\
       \pdv{f_h}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0
     \end{aligned}
   $$
-  et l'équation de Maxwell-Ampère~\eqref{eq:0:maxwellE} et de Maxwell-Gauss~\eqref{eq:0:poisson} deviennent :
+  et les équations de Maxwell-Ampère~\eqref{eq:0:maxwellE} et de Maxwell-Gauss~\eqref{eq:0:poisson} deviennent :
   $$
     \begin{aligned}
       \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu q_e\int \vb{v} f_c\dd{\vb{v}} - \mu q_e\int \vb{v} f_h\dd{\vb{v}} \\
@@ -145,7 +145,7 @@ On s'intéresse ici à démontrer la proposition~\ref{pro:0:vmhl}.
     \label{eq:0:vmhleps:6}
       \varepsilon\nabla_{\vb{x}}\cdot\vb{E}^{(1)} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\rho_c + q_e\int f_h\dd{\vb{v}} \right)
   \end{align}
-  Nous souhaitons négliger les termes non-linéaires d'ordre $\order{\varepsilon^2}$. Dans le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} On remarque alors que~\eqref{eq:0:vmhleps:2} est la seule équation faisant intervenir $\rho_c^{(1)}$, et cette variable peut être recalculer à partir de~\eqref{eq:0:vmhleps:6} si besoin. L'équation~\eqref{eq:0:vmhleps:2} pourra donc être omise du système par la suite. Par abus de notation, pour la lisibilité, on retirera les indices de variables linéarisées lorsqu'il n'y a pas d'ambiguïté, par conséquent les variables $\vb{j}_c$, $\vb{E}$, $\vb{B}$ qui apparaissent par la suite, donc d'ordre $\varepsilon$ et correspondent à leurs perturbations par rapport à un équilibre nul. On introduit aussi la fréquence de plasma des particules froides $\Omega_{pe}^2 = \frac{q^2\rho_c^{(0)}}{\varepsilon_0m_e}$. On peut alors réécrire le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} comme :
+  Nous souhaitons négliger les termes non-linéaires d'ordre $\order{\varepsilon^2}$. Dans le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} on remarque alors que~\eqref{eq:0:vmhleps:2} est la seule équation faisant intervenir $\rho_c^{(1)}$, et cette variable peut être recalculée à partir de~\eqref{eq:0:vmhleps:6} si besoin. L'équation~\eqref{eq:0:vmhleps:2} pourra donc être omise du système par la suite. Par abus de notation, pour la lisibilité, on retirera les indices de variables linéarisées lorsqu'il n'y a pas d'ambiguïté, par conséquent les variables $\vb{j}_c$, $\vb{E}$, $\vb{B}$ qui apparaissent par la suite, donc d'ordre $\varepsilon$ et correspondent à leurs perturbations par rapport à un équilibre nul. On introduit aussi la fréquence de plasma des particules froides $\Omega_{pe}^2 = \frac{q^2\rho_c^{(0)}}{\varepsilon_0m_e}$. On peut alors réécrire le système~\eqref{eq:0:vmhleps:1}-\eqref{eq:0:vmhleps:5} comme :
   \begin{align}
       \partial_t f_h &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0 \\
       \partial_t j_c &= \varepsilon_0\Omega_{pe}^2\vb{E} + \frac{q}{m_e}\vb{j}_c\times\vb{B}_0 \\
