@@ -25,12 +25,12 @@ $$
 dont seul le bloc $A$ pose problème pour calculer formellement l'exponentielle. Ainsi on s'intéressera surtout à la sous-matrice $A$ obtenue après une transformée de Fourier en $z$ du système :
 \begin{equation}
   A = \begin{pmatrix}
-    0 & -1 & 0       &  0       &  \Omega_{pe}^2  & 0             \\
-    1 &  0 & 0       &  0       &  0              & \Omega_{pe}^2 \\
-    0 &  0 & 0       &  0       &  0              & i\kappa       \\
-    0 &  0 & 0       &  0       & -i\kappa        & 0             \\
-   -1 &  0 & 0       & -i\kappa &  0              & 0             \\
-    0 & -1 & i\kappa &  0       &  0              & 0             \\
+    0   & -B_0 & 0       &  0       &  \Omega_{pe}^2  & 0             \\
+    B_0 &  0   & 0       &  0       &  0              & \Omega_{pe}^2 \\
+    0   &  0   & 0       &  0       &  0              & i\kappa       \\
+    0   &  0   & 0       &  0       & -i\kappa        & 0             \\
+   -1   &  0   & 0       & -i\kappa &  0              & 0             \\
+    0   & -1   & i\kappa &  0       &  0              & 0             \\
   \end{pmatrix}
   \label{eq:3:A}
 \end{equation}
@@ -46,8 +46,8 @@ $$
 où $\Omega$ est obtenu avec les mêmes stratégies qu'un symétriseur. On a alors $A = \Omega^{-1}H\Omega$, avec $H$ une matrice anti-hermitienne :
 $$
   H = \begin{pmatrix}
-    0           & -1           & 0       &  0       &  \Omega_{pe}  & 0           \\
-    1           &  0           & 0       &  0       &  0            & \Omega_{pe} \\
+    0           & -B_0         & 0       &  0       &  \Omega_{pe}  & 0           \\
+    B_0         &  0           & 0       &  0       &  0            & \Omega_{pe} \\
     0           &  0           & 0       &  0       &  0            & i\kappa     \\
     0           &  0           & 0       &  0       & -i\kappa      & 0           \\
    -\Omega_{pe} &  0           & 0       & -i\kappa &  0            & 0           \\
@@ -74,7 +74,7 @@ Un manière classique de définir la fonction exponentielle est par sa série de
 $$
   e^{M} = \sum_{k=0}^\infty \frac{M^k}{k!}.
 $$
-Une troncature d'ordre suffisamment élevé $m\geq n$ de cette série permet d'obtenir une approximation de l'exponentielle $e^{tA}$ sans dégrader la méthode LRK($s$,$n$) où elle sera utilisée. Cela garantit que l'erreur de troncature reste supérieur à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $m$ par :
+Une troncature d'ordre suffisamment élevé $m\geq n$ de cette série permet d'obtenir une approximation de l'exponentielle $e^{tA}$ sans dégrader la méthode LRK($s$,$n$) où elle sera utilisée. Cela garantit que l'erreur de troncature reste supérieure à $n$, l'ordre de la méthode en temps. On définit la troncature de la série de Taylor à l'ordre $m$ par :
 $$
   T_m(M) = \sum_{k=0}^m \frac{M^k}{k!}.
 $$
@@ -96,7 +96,7 @@ Nous savons que les valeurs propres de $e^{tA}$ sont sur le cercle unité, et pr
   \caption{Valeurs propres de l'approximation de l'exponentielle de $A$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs sont obtenues par parité. Les méthodes d'approximation de l'exponentielle de $A$ sont la troncature de Taylor d'ordre 5 ($T_5(A)$) à gauche et l'approximant de Padé d'ordre $(2,2)$ ($P_{2,2}(A)$) à droite.}
 \end{figure}
 
-On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$, comme le montre la figure~\ref{fig:taylor:error}. Le choix du paramètre $\tau\in[-1,1]$ représente ici le coefficient de Butcher de l'étage considéré, et comme attendu, pour $|\tau|\ll1$ nous observons une bonne précision dans les résultats. L'erreur reste importante, même avec un ordre élevé $m=14$, pour les modes de Fourier plus élevé ($\kappa=15$) lorsque que le paramètre $\tau$ s'écarte de $0$. Ce résultat n'est pas souhaitable, et nous laisse supposer un mauvais comportement de la méthode lors de sa mise en place dans un schéma numérique.
+On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$, comme le montre la figure~\ref{fig:taylor:error}. Le choix du paramètre $\tau\in[-1,1]$ représente ici le coefficient de Butcher de l'étage considéré, et comme attendu, pour $|\tau|\ll1$ nous observons une bonne précision dans les résultats. L'erreur reste importante, même avec un ordre élevé $m=14$, pour les modes de Fourier plus élevés ($\kappa=15$) lorsque que le paramètre $\tau$ s'écarte de $0$. Ce résultat n'est pas souhaitable, et nous laisse supposer un mauvais comportement de la méthode lors de sa mise en place dans un schéma numérique.
 
 % \begin{figure}
 %   \begin{subfigure}{.5\textwidth}
@@ -130,7 +130,7 @@ On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite e
 \subsection{Approximant de Padé}
 %--------------------------------------------------------------------
 
-Pour approcher une fonction, au lieu d'utiliser un polynôme comme dans le cadre des séries des développement limités, il est possible de construire une fraction rationnelle. L'approximant de Padé de la fonction exponentielle est la meilleure approximation de la fonction exponentielle par une fraction rationnelle et est définie par :
+Pour approcher une fonction, au lieu d'utiliser un polynôme comme dans le cadre des séries des développements limités, il est possible de construire une fraction rationnelle. L'approximant de Padé de la fonction exponentielle est la meilleure approximation de la fonction exponentielle par une fraction rationnelle et est définie par :
 $$
   \begin{aligned}
     h_{p,q}(x) &= \sum_{i=0}^p \frac{\frac{p!}{(p-i)!}}{\frac{(p+q)!}{(p+q-i)!}}\frac{x^i}{i!} \\
@@ -171,7 +171,7 @@ L'introduction d'une fraction rationnelle permet de préserver certaines propri�
                  &= \Omega^{-1}Q \left( \sum_{k=0}^p \frac{1}{k!}D^k \right) \cdot \left(\sum_{\ell=0}^p (-1)^\ell \frac{1}{\ell!}D^\ell \right)^{-1} Q^{-1}\Omega
     \end{aligned}
   $$
-  La matrice $D$ ayant un spectre imaginaire pure, on note $D = diag\left(\left\{ i\alpha_j, j=1,\dots,6 \right\}\right)$ avec $\alpha_j\in\mathbb{R}$, $j=1,\dots,6$. Cela permet d'expliciter les sommes :
+  La matrice $D$ ayant un spectre imaginaire pur, on note $D = diag\left(\left\{ i\alpha_j, j=1,\dots,6 \right\}\right)$ avec $\alpha_j\in\mathbb{R}$, $j=1,\dots,6$. Cela permet d'expliciter les sommes :
   $$
     \begin{aligned}
       \sum_{k=0}^p \frac{1}{k!}D^k & = diag\left(\left\{ \sum_{k=0}^p i^k\frac{\alpha_j^k}{k!} , j=1,\dots,6 \right\}\right) \\
@@ -250,17 +250,17 @@ Il est possible d'étudier numériquement les valeurs propres des approximants d
   \label{fig:pade:error}
 \end{figure}
 
-Sur la figure~\ref{fig:pade:error} est tracée l'erreur absolue $\|e^{\tau A}-P_{p,p}(\tau A)\|$ pour deux modes de Fourier $\kappa=2$ à gauche et $\kappa=15$ à droite. On remarque que même pour des hauts modes, l'erreur est limitée par l'erreur machine du calcul numérique pour $p$ suffisamment grand. On observe donc un meilleur comportement que l'approche basée sur la série de Taylor. Ce que l'on confirme par l'étude pour différent modes de Fourier $\kappa$ avec l'approximant de Padé $P_{2,2}$ sur la figure~\ref{fig:pade:error22}.
+Sur la figure~\ref{fig:pade:error} est tracée l'erreur absolue $\|e^{\tau A}-P_{p,p}(\tau A)\|$ pour deux modes de Fourier $\kappa=2$ à gauche et $\kappa=15$ à droite. On remarque que même pour des hauts modes, l'erreur est limitée par l'erreur machine du calcul numérique pour $p$ suffisamment grand. On observe donc un meilleur comportement que l'approche basée sur la série de Taylor. Ce que l'on confirme par l'étude pour différents modes de Fourier $\kappa$ avec l'approximant de Padé $P_{2,2}$ sur la figure~\ref{fig:pade:error22}.
 
 \begin{figure}
   \centering
   \includegraphics[width=0.75\textwidth]{\localPath/figures/approx_errortAkP22.png}
-  \caption{L'erreur absolue locale $\|e^{tA}-P_{2,2}(tA)\|$ pour différents mode de Fourier.}
+  \caption{L'erreur absolue locale $\|e^{tA}-P_{2,2}(tA)\|$ pour différents modes de Fourier.}
   \label{fig:pade:error22}
 \end{figure}
 
 
-\subsection{Test sur un modèle jouet}
+\subsection{Test sur une advection 2D}
 %--------------------------------------------------------------------
 
 Nous souhaitons mettre en place cette stratégie d'approximation de la partie linéaire d'une méthode de Lawson sur une première équation qui nous servira de \emph{toy model} :
@@ -301,13 +301,11 @@ $$
 $$
 ce qui nous permet de déterminer l'erreur de troncature du schéma en temps d'une méthode de Lawson LRK($s$,$p$) couplée à une méthode d'approximation de l'exponentielle d'ordre $r$, l'ordre du schéma est $\min(r,p)$.
 
-Il est possible de retrouver ce résultat numériquement en comparant les différentes méthodes et en mesurant l'erreur effectuée pour différentes valeurs de pas de temps $\Delta t$ et ainsi mesure l'ordre en temps de la méthode. Pour cela on choisit le schéma LRK(3,3) induit par la méthode SSP RK(3,3) de Shu-Osher, on se munit d'une discrétisation spatiale de $243$ points par direction, de plusieurs valeurs de pas de temps $\Delta t\in[0.00158,0.02370]$. La simulation s'effectue jusqu'au temps final $T_f=0.07111$ avec les vitesses $a=1.0$ et $b=0.75$. On regarde l'erreur, par rapport à notre solution de référence en norme 1 :
+Il est possible de retrouver ce résultat numériquement en comparant les différentes méthodes et en mesurant l'erreur effectuée pour différentes valeurs de pas de temps $\Delta t$ et ainsi mesurer l'ordre en temps de la méthode. Pour cela on choisit le schéma LRK(3,3) induit par la méthode SSP RK(3,3) de Shu-Osher, on se munit d'une discrétisation spatiale de $243$ points par direction, de plusieurs valeurs de pas de temps $\Delta t\in[0.00158,0.02370]$. La simulation s'effectue jusqu'au temps final $T_f=0.07111$ avec les vitesses $a=1.0$ et $b=0.75$. On regarde l'erreur, par rapport à notre solution de référence en norme 1 :
 $$
   e_1 = \| u(T_f,x,y) - u_0(x-aT_f,y-bT_f) \|_1 \approx \sum_{i,j}|u^n_{i,j}-u_0(x_i-aT_f,y_j-bT_f)|\Delta x\Delta y,
 $$
 ce qui nous permet de tracer, sur la figure~\ref{fig:lrk33ref} l'erreur pour la méthode de référence avec un calcul exact de l'exponentielle de la partie linéaire, ainsi qu'avec une troncature de la série de Taylor d'ordre 4, ordre supérieur à celui de la méthode de Lawson, et un approximant de Padé d'ordre $(2,2)$ (équivalent à un ordre 4), aussi supérieur à l'ordre de la méthode de Lawson, on retrouve bien dans ces cas là l'ordre 3 de la méthode LRK(3,3). La figure~\ref{fig:lrk33taylor} représente l'ordre pour différentes troncatures de la série de Taylor, on remarque que pour des ordres inférieurs à l'ordre de la méthode de Lawson, on retrouve l'ordre de la méthode de Taylor. La figure~\ref{fig:lrk33pade} quant à elle, représente l'ordre pour différents approximants de Padé, on retrouve les mêmes résultats avec une constante d'erreur plus faible.
-
-\Josselin{Je ne suis pas certain de la notation $\mathfrak{exp}$, on comprend bien que ça a un lien avec la fonction $\exp$, on n'indique pas d'ordre (en même temps Taylor ne prend qu'un indique et Padé 2, chose que je résume par un $\order{\Delta t^{r+1}}$), et ça évite de dupliquer les expressions pour Taylor puis pour Padé.}
 
 \begin{figure}
   \centering
@@ -329,11 +327,31 @@ ce qui nous permet de tracer, sur la figure~\ref{fig:lrk33ref} l'erreur pour la 
     \caption{Ordre en temps de la méthode LRK(3,3) associée à l'approximant Padé d'ordre $(1,1)$, $(2,1)$, $(1,2)$, et $(2,2)$.}
     \label{fig:lrk33pade}
   \end{subfigure}
-  \caption{Ordre en temps de la méthode LRK(3,3) où l'exponentielle de la partie linéaire est approchée par différentes méthodes, série de Taylor ou approximant de Padé de différents ordre. La solution de référence à gauche, le test avec différentes séries de Taylor à droite, et avec différents approximant de Padé en bas.}
+  \caption{Ordre en temps de la méthode LRK(3,3) où l'exponentielle de la partie linéaire est approchée par différentes méthodes, série de Taylor ou approximant de Padé de différents ordres. La solution de référence à gauche, le test avec différentes séries de Taylor à droite, et avec différents approximants de Padé en bas.}
   \label{fig:3:order}
 \end{figure}
 
-Ce calcul est fait dans le cas commutatif, il est possible dans le cas non-commutatif de reprendre les calculs effectués dans la section~\ref{ssec:3:cflMaxwell} pour calculer la fonction de stabilité de la méthode $LRK(3,3)$ donnée par la méthode de Shu-Osher :
+\subsection{Test sur une rotation 2D}
+%--------------------------------------------------------------------
+
+Nous poursuivons la mise en place de cette stratégie sur un modèle où les opérateurs dans les directions $x$ et $y$ ne commutent pas, il s'agit du cas d'une rotation à 2 dimensions :
+$$
+  \partial_t u = -y\partial_x u + x\partial_y u,\quad u(0,x,y)=u_0(x,y)
+$$
+où $u(t,x,y)$ est une fonction à valeurs réelles, $(x,y)\in[-2,2]\times[-2,2]$, $t\geq0$, $a,b\in\mathbb{R}$ donnés, et avec des conditions aux bords périodiques en $x$ et $y$. Nous souhaitons illustrer le caractère instable de la troncature de Taylor sur un cas simple sans effectuer de calcul d'erreur de troncature, plus compliqué dans le cas non-commutatif. Ainsi nous résolvons de la même manière le problème, c'est-à-dire avec une méthode spectrale dans la direction $y$, et une méthode type différence finie (WENO5) dans la direction $x$. Nous obtenons les résultats présentés sur la figure~\ref{fig:uft3p11} avec comme paramètres $N_x=N_y=81$, le pas de temps $\Delta t=0.020944$, jusqu'au temps final $T_f=1.52891$. La condition initiale est donnée par :
+$$
+  u_0(x,y) = \exp( -\frac{(x-0.2)^2}{0.25} - \frac{y^2}{0.05} ).
+$$
+Pour mettre en valeur les instabilités de la méthode de Lawson couplée à une série de Taylor, nous représentons la valeur absolue de la solution. On observe ainsi l'apparition d'instabilité uniquement avec $T_3$ (troncature de la série de Taylor de degré 3), dont l'amplitude est supérieur à 10 pour des hauts modes en $y$, c'est-à-dire les bords du domaine. Aucune instabilité n'est présente lorsque la méthode de Lawson est couplée à un approximant de Padé, ici $P_{1,1}$. Dès que le degré du numérateur est supérieur au dénominateur des instabilités apparaissent, comme nous le verrons par la suite dans la résolution du système de Vlasov-Maxwell.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{\localPath/figures/uf_t3p11.png}
+    \caption{Solutions de l'équation de rotation 2D avec comme condition initiale une gaussienne (à gauche), et les solutions au temps final $T_f=1.52891$ avec $\Delta t=0.020944$ et $N_x=N_y=81$, données par LRK(3,3) couplé avec $T_3$ (au centre), et couplé avec $P_{1,1}$ (à droite).}
+    \label{fig:uft3p11}
+\end{figure}
+
+Le calcul d'erreur de troncature a été fait précédemment dans le cas commutatif, il est possible dans le cas non-commutatif de reprendre les calculs effectués dans la section~\ref{ssec:3:cflMaxwell} pour calculer la fonction de stabilité de la méthode $LRK(3,3)$ donnée par la méthode de Shu-Osher :
 $$
   \begin{aligned}
     u^{n+1} = \Big[ e^{\Delta tL} &+ \Delta t\left(\frac{2}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}+\frac{1}{6}e^{\Delta tL}N + \frac{1}{6}Ne^{\Delta tL}\right) \\
@@ -342,5 +360,3 @@ $$
   \end{aligned}
 $$
 On peut toujours calculer l'erreur de troncature de ce schéma et obtenir : $e^{\Delta t(L+N)}u(t^n) = u(t^{n+1})+\order{\Delta t^{p+1}}+\order{\Delta t^{r+1}}$ si on décide de coupler le schéma avec une méthode d'approximation de l'exponentielle de la partie linéaire.
-
-\Josselin{Si j'ai le temps en rentrant de vacances, mettre ici une simu dans le cas rotation où Taylor expose mais pas Padé.}
