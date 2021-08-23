@@ -189,16 +189,16 @@ L'étude de la stabilité de la méthode WENO5 couplée avec différentes métho
 \subsection{Méthode semi-lagrangienne}
 % --------------------------------------------------------------------
 
-Une méthode très populaire pour la résolution numérique de l'équation de Vlasov, car les termes de transports sont linéaires, et que cette méthode n'introduit pas de contrainte de stabilité est la méthode semi-lagrangienne.
-
+Une méthode très populaire pour la résolution numérique de l'équation de Vlasov est la méthode semi-lagrangienne. Celle-ci s'adapte très bien à notre problème car les termes de transports sont linéaires. Elle a l'avantage de ne pas introduire de contrainte de stabilité. La méthode semi-lagrangienne repose sur la remonté des caractéristique, prenons pour exemple l'équation :
 $$
-  \partial_t u + a\partial_xu = 0
+  \partial_t u + a\partial_xu = 0,\quad u(t=0,x)=u_0(x).
 $$
+On sait que la solution le long d'une caractéristique définie par $x-at$ la solution $u$ est constante, ainsi $u(x_j,t^{n+1})=u(x_j-a\Delta t,t^n)$. C'est ce que l'on illustre sur la figure~\ref{fig:intro:semilag}. Pour reconstruire la solution au temps $t^{n+1}$ il suffit ensuite d'interpoler les données au point $u(x_j-a\Delta t,t^n)$ à partir des données $u(x_{j^\star-2},t^n)$ jusqu'à $u(x_{j^\star+2},t^n)$ à l'aide d'un polynôme de Lagrange de degré 5.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\textwidth]{\localPath/figures/semilag.pdf}
-  \caption{Méthode des caractéristiques pour une méthode semi-lagrangienne avec une vitesse de transport $a>0$. \Josselin{En soit, la figure est de moi, je l'ai faite avec Tikz, je peux donc facilement la modifier au besoin.}}
+  \caption{Méthode des caractéristiques pour une méthode semi-lagrangienne avec une vitesse de transport $a>0$.}
   \label{fig:intro:semilag}
 \end{figure}
 
@@ -207,9 +207,10 @@ $$
 \subsection{Méthode pseudo-spectrale}
 % --------------------------------------------------------------------
 
-Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète et ainsi transformer une dérivée dans l'espace réel en un produit dans l'espace de Fourier.
-
+Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète. Cette méthode permet de transformer une équation aux dérivées partielles en une équation différentielle ordinaire en transformant une dérivée dans l'espace réel en un produit dans l'espace de Fourier. La transformée de Fourier d'une fonction réelle $f$ est :
 $$
-  \hat{f} = \frac{1}{L}\int_0^L f(x)e^{-i\kappa x}\dd{x},\quad\kappa=\frac{2\pi}{L}n,\ n\in\mathbb{Z}
+  \hat{f} = \frac{1}{L}\int_0^L f(x)e^{-i\kappa x}\dd{x},\quad\kappa=\frac{2\pi}{L}n,\ n\in\mathbb{Z},
 $$
+où chaque terme $\kappa$ s'appelle un mode de Fourier. Le mode $\kappa=0$ est le mode fondamental et correspond à la moyenne en espace de la fonction $f$ ; il devient simple numériquement de forcer la moyenne nulle d'une fonction.
 
+Nous utiliserons l'algorithme de transformée de Fourier rapide (\emph{fast Fourier transform} ou FFT) pour effectuer numériquement cette opération, dont une implémentation est proposée dans~\cite{Saramito:2013}. Cet algorithme possède une complexité en temps de $\order{n\log n}$, où $n$ est le nombre de points de discrétisation en espace.

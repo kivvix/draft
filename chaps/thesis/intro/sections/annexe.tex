@@ -154,6 +154,60 @@ On s'intéresse ici à démontrer la proposition~\ref{pro:0:vmhl}.
   \end{align}
 \end{proof}
 
-\Josselin{Est-ce qu'on ajoute ici l'adimensionnement du système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} ou un lien vers l'annexe où cela sera fait ?}
 
+\section{Adimensionnement du système de Vlasov-Maxwell hybride}
+\label{sec:0:adim}
 
+Nous n'étudierons pas directement le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} mais uniquement deux de ses restrictions. Une première à une dimension en espace $x$ et une dimension en vitesse $v$, que nous appellerons modèle $1dx-1dv$ (chapitre~\ref{chap2}) ; et une seconde toujours à une dimension en espace, celle fois notée $z$, et trois dimensions en vitesse $\vb{v}$, que nous appellerons modèle $1dz-3dv$ (chapitre~\ref{chap3}). Une pratique courante pour simplifier l'étude des modèles et d'effectuer un adimensionnement de ceux-ci, en prenant le plus de constantes physiques égales à 1.
+
+\subsection{Adimensionnement du système $1dx-1dv$}
+
+Le tableau~\ref{dim1d} présente les paramètres physiques utilisés pour l'adimensionnement du modèle hybride~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} en une dimension en espace et vitesse. De plus, en supposant $\frac{\rho_h^{(0)}}{\rho_c^{(0)}}\frac{\bar{u}_h}{\bar{u}_c} =1$, on obtient le modèle hybride linéarisé de Vlasov-Ampère~\eqref{eq:vahl} (qui sera utilisé au chapitre~\ref{chap2}). Ici, la constante physique $e$ est la charge élémentaire d'un électron: $q_e=-e$.
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|c}
+    Paramètre & Valeur \\
+    \hline
+    $t$                            & $1/\Omega_{pe}$                 \\
+    $x$                            & $\bar{u}_c/\Omega_{pe}$         \\ 
+    $v$                            & $u_c$                           \\ 
+    $E$                            & $ \Omega_{pe}m_e \bar{u}_c/q_e$ \\ 
+    $j_c$                          & $q_e \rho_c^{(0)} \bar{u}_c$    \\ 
+    $\int_{\mathbb{R}}vf_h \dd{v}$ & $\rho_h^{(0)} \bar{u}_h$        \\ 
+  \end{tabular}
+  \caption{Adimensionnement du système pour le modèle hybride 2D.}
+  \label{dim1d}
+\end{table}
+
+\subsection{Adimensionnement du système $1dz-3dv$}
+
+Le tableau~\ref{dim4d} présente les paramètres physiques utilisés pour l'adimensionnement du modèle hybride~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} en une dimension en espace et trois en vitesse.
+\begin{table}[h]
+  \centering
+  \begin{tabular}{c|c}
+    Paramètre & Valeur \\
+    \hline
+    $t$                                       & $1/|\Omega_{ce}|$         \\
+    $z$                                       & $c/|\Omega_{ce}|$         \\ 
+    $\vb{v}$                                  & $c$                       \\ 
+    $\vb{B}$                                  & $|\Omega_{ce}|m_e/e$      \\ 
+    $\vb{E}$                                  & $c |\Omega_{ce}|m_e/e$    \\ 
+    $\vb{j}_c$                                & $e\rho_c^{(0)} \bar{u}_c$ \\ 
+    $\int_{\mathbb{R}^3}\vb{v}f_h\dd{\vb{v}}$ & $\rho_h^{(0)} \bar{u}_h$  \\
+  \end{tabular}
+  \caption{Adimensionnement du système pour le modèle hybride 4D.}
+  \label{dim4d}
+\end{table}
+De plus, en supposant $\frac{\Omega_{pe}^2}{\Omega_{ce}^2}\frac{\bar{u}_c}{c}=1$ et $\frac{\Omega_{pe}^2}{\Omega_{ce}^2}\frac{\bar{u}_h}{c}\frac{\rho_h^{(0)}}{\rho_c^{(0)}}=1$ nous obtenons :
+\begin{align}
+  \label{hybrid_model1_adim}
+  &\frac{\partial \vb{j}_c}{\partial t} = \bar{\Omega}_{pe}^2 \vb{E} - \vb{j}_c \times \vb{B}_0,\\
+  \label{hybrid_model2_adim}
+  &\frac{\partial f_h}{\partial t} + {\mathbf v}\cdot \nabla f_h - \left(\vb{E} + {\mathbf v} \times ({\mathbf B }+ \vb{B}_0)\right)\cdot \nabla_{\mathbf v} f_h = 0,\\
+  \label{hybrid_model3_adim}
+  &\frac{\partial \vb{B}}{\partial t} = -\nabla \times \vb{E},\\
+  \label{hybrid_model4_adim}
+  & \frac{\partial \vb{E}}{\partial t} = \nabla \times \vb{B} - \vb{j}_c + \int_{\mathbb{R}^3} {\mathbf v}f_h \dd{\vb{v}},
+\end{align}
+où $\bar{\Omega}^2_{pe}=\frac{\Omega_{pe}^2}{\Omega_{ce}^2}$ correspond à la fréquence du plasma adimensionnée (qui sera notée $\Omega^2_{pe}$ par la suite).

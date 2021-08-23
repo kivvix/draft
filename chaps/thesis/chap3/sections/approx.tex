@@ -79,9 +79,15 @@ $$
   T_m(M) = \sum_{k=0}^m \frac{M^k}{k!}.
 $$
 
-Nous savons que les valeurs propres de $e^{tA}$ sont sur le cercle unité, et préserver cette propriété permet d'assurer la stabilité du schéma, par analogie au cas unidimensionnel étudié dans~\cite{Crouseilles:2019b}. Nous regardons donc les valeurs propres de $T_5(A)$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur la figure~\ref{fig:ev:T5}. On remarque que le module des valeurs propres à 1 n'est pas préservé. De plus certaines valeurs propres ont un module très grand, pour $\kappa\geq12$ certaines valeurs propres ont un module supérieur à $10^3$ par exemple.
+Nous savons que les valeurs propres de $e^{tA}$ sont sur le cercle unité, et préserver cette propriété permet d'assurer la stabilité du schéma, par analogie au cas unidimensionnel étudié dans~\cite{Crouseilles:2019b}. Nous regardons donc les valeurs propres de $T_m(A)$ pour $m=\{4,5,6\}$, pour les modes de Fourier $\kappa\in[\![0,15]\!]$ sur les figure~\ref{fig:ev:T4},~\ref{fig:ev:T5} et~\ref{fig:ev:T6}. Le choix $m\leq 4$ se justifie car nous souhaiterons utiliser une méthode de Lawson d'ordre 3 ou 4. On remarque que le module des valeurs propres à 1 n'est pas préservé, quelque soit la valeur de $m$. De plus certaines valeurs propres ont un module très grand, pour $\kappa\geq12$ certaines valeurs propres ont un module supérieur à $10^3$ par exemple. On remarque même que la stabilité pour les petits modes n'est pas assuré, en effet pour $m=6$ (figure~\ref{fig:ev:T6}), aucune valeur propre n'est à l'intérieur du cercle, propriété que semble mieux satisfaire $T_4(A)$ (figure~\ref{fig:ev:T4}).
 
 \begin{figure}
+  \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{\localPath/figures/ev_T4.png}
+    \caption{Valeurs propres de $T_4(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$.}
+    \label{fig:ev:T4}
+  \end{subfigure}
   \begin{subfigure}{.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{\localPath/figures/ev_T5.png}
@@ -89,14 +95,22 @@ Nous savons que les valeurs propres de $e^{tA}$ sont sur le cercle unité, et pr
     \label{fig:ev:T5}
   \end{subfigure}
   \begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{\localPath/figures/ev_T6.png}
+    \caption{Valeurs propres de $T_6(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$.}
+    \label{fig:ev:T6}
+  \end{subfigure}
+  \begin{subfigure}{.5\textwidth}
     \includegraphics[width=\textwidth]{\localPath/figures/ev_P22.png}
     \caption{Valeurs propres de $P_{2,2}(A)$ pour différentes fréquences $\kappa\in[\![0,15]\!]$.}
     \label{fig:ev:P22}
   \end{subfigure}
-  \caption{Valeurs propres de l'approximation de l'exponentielle de $A$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs sont obtenues par parité. Les méthodes d'approximation de l'exponentielle de $A$ sont la troncature de Taylor d'ordre 5 ($T_5(A)$) à gauche et l'approximant de Padé d'ordre $(2,2)$ ($P_{2,2}(A)$) à droite.}
+  \caption{Valeurs propres de l'approximation de l'exponentielle de $A$ pour différentes fréquences $\kappa\in[\![0,15]\!]$. Les valeurs propres des modes de Fourier négatifs sont obtenues par parité. Les méthodes d'approximation de l'exponentielle de $A$ sont la troncature de Taylor d'ordre 4 ($T_4(A)$) en haut à gauche, la troncature de Taylor d'ordre 5 ($T_5(A)$) en haut à droite, la troncature de Taylor d'ordre 6 ($T_6(A)$) en bas à gauche et l'approximant de Padé d'ordre $(2,2)$ ($P_{2,2}(A)$) en bas à droite.}
 \end{figure}
 
-On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$, comme le montre la figure~\ref{fig:taylor:error}. Le choix du paramètre $\tau\in[-1,1]$ représente ici le coefficient de Butcher de l'étage considéré, et comme attendu, pour $|\tau|\ll1$ nous observons une bonne précision dans les résultats. L'erreur reste importante, même avec un ordre élevé $m=14$, pour les modes de Fourier plus élevés ($\kappa=15$) lorsque que le paramètre $\tau$ s'écarte de $0$. Ce résultat n'est pas souhaitable, et nous laisse supposer un mauvais comportement de la méthode lors de sa mise en place dans un schéma numérique.
+
+
+% On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite en norme matricielle pour 2 modes de Fourier $\kappa=2$ et $15$, comme le montre la figure~\ref{fig:taylor:error}. Le choix du paramètre $\tau\in[-1,1]$ représente ici le coefficient de Butcher de l'étage considéré, et comme attendu, pour $|\tau|\ll1$ nous observons une bonne précision dans les résultats. L'erreur reste importante, même avec un ordre élevé $m=14$, pour les modes de Fourier plus élevés ($\kappa=15$) lorsque que le paramètre $\tau$ s'écarte de $0$. Ce résultat n'est pas souhaitable, et nous laisse supposer un mauvais comportement de la méthode lors de sa mise en place dans un schéma numérique.
 
 % \begin{figure}
 %   \begin{subfigure}{.5\textwidth}
@@ -112,20 +126,20 @@ On peut tracer, pour différentes valeurs de $m$, l'erreur de troncature faite e
 %   \caption{Valeurs propres de $e^{A}$ et de $T_5(A)$ pour $k=0$ (sans les équations de Maxwell) à gauche, et pour différentes valeurs de $k\in[\![0,15]\!]$ à droite.}
 % \end{figure}
 
-\begin{figure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA2T.png}
-    \caption{L'erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour le mode de Fourier $\kappa=2$}
-  \end{subfigure}
-  \begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA15T.png}
-    \caption{L'erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour le mode de Fourier $\kappa=15$}
-  \end{subfigure}
-  \caption{Erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour deux modes de Fourier $\kappa=2$ à gauche et $\kappa=15$ à droite.}
-  \label{fig:taylor:error}
-\end{figure}
+% \begin{figure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA2T.png}
+%     \caption{L'erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour le mode de Fourier $\kappa=2$}
+%   \end{subfigure}
+%   \begin{subfigure}{.5\textwidth}
+%     \centering
+%     \includegraphics[width=\textwidth]{\localPath/figures/approx_errortA15T.png}
+%     \caption{L'erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour le mode de Fourier $\kappa=15$}
+%   \end{subfigure}
+%   \caption{Erreur absolue locale $\|e^{\tau A}-T_m(\tau A)\|$ pour deux modes de Fourier $\kappa=2$ à gauche et $\kappa=15$ à droite.}
+%   \label{fig:taylor:error}
+% \end{figure}
 
 \subsection{Approximant de Padé}
 %--------------------------------------------------------------------

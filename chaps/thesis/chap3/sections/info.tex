@@ -53,6 +53,15 @@ Le cadre multi-dimensionnel se prête moins au raffinement du maillage ou à de 
   \label{tab:3:computing:time}
 \end{table}
 
+Pour comparer également la qualité des résultats, en plus de leur vitesse d'obtention, nous traçons sur la figure~\ref{fig:3:H_time} l'erreur relative sur l'énergie totale pour différentes simulations. Pour la visibilité de la courbe, nous ne conservons ici que les simulations obtenues avec les méthodes de Strang, de Suzuki ainsi que les méthodes de Lawson LRK(4,4) et LDP4(3) couplé avec l'approximant de Padé $P_{2,2}$. On remarque que les méthodes géométrique (méthode de Strang et de Suzuki), à cause du maillage trop grossier, n'ont pas le comportement attendu, c'est-à-dire une oscillation autour de zéro. La méthode de Strang, comme la méthode de Lie, donne une erreur relative bien plus intéressante ($5.1\%$) que la méthode de Suzuki ($12.1\%$). Les méthodes de Lawson donnent des erreurs relatives similaires, c'est-à-dire autour de $8.4\%$, c'est principalement le temps de calcul qui distingue ces différentes méthodes, et non la précision de leurs résultats, même pour les méthodes de Lawson d'ordre 3. L'impact faible de l'ordre de la méthode sur les résultats vient du maillage relativement grossier.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{\localPath/figures/H_time.png}
+  \caption{Comparaison de l'erreur relative au cours du temps pour différentes simulations : méthode de Strang, Suzuki, de Lawson $LRK(4,4)$ et la méthode de Lawson à pas de temps adaptatif couplée à un approximant de Padé $LDP4(3)-P_{2,2}$.}
+  \label{fig:3:H_time}
+\end{figure}
+
 \subsubsection{Performance parallélisée}
 
 
