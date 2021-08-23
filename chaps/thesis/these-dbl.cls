@@ -125,6 +125,9 @@
 \setcounter{secnumdepth}{3}
 %\setcounter{tocdepth}{3}
 
+% in french, table us "tableau"
+\addto\captionsfrench{\def\tablename{Tableau}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
 
