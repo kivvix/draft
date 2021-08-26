@@ -17,7 +17,11 @@ $$
     \partial_t\hat{E}_\kappa = -\rho_c^{(0)}\hat{u}_{c,\kappa} -\int_\mathbb{R} v\hat{f}_{h,\kappa}\dd{v}.
   \end{cases}
 $$
-En discrétisant en $v$ le problème, et en calculant le courant à l'aide de la méthode des rectangles, il est possible de réécrire le problème comme :
+En discrétisant en $v$ le problème, et en calculant le courant induit par les particules chaudes $j_h$ à l'aide de la méthode des rectangles :
+$$
+  \int_\mathbb{R} v\hat{f}_{h,\kappa}\dd{v} = \hat{j}_h \approx \sum_{j=1}^{N_v} v_j\hat{f}_j\Delta v
+$$
+avec $v_j = -v_{\text{max}}+ j\Delta v$, il est possible de réécrire le problème comme :
 $$
   \partial_t \begin{pmatrix}
     \hat{f}_{h,\kappa,1} \\
@@ -53,15 +57,15 @@ $$
   \end{pmatrix}
   +
   \begin{pmatrix}
-    -\widehat{(E\partial_vf)}_{\kappa} \\
+    -\widehat{(E\partial_vf)}_{\kappa,1} \\
     \vdots \\
-    -\widehat{(E\partial_vf)}_{\kappa} \\
+    -\widehat{(E\partial_vf)}_{\kappa,N_v} \\
     0 \\
     0
   \end{pmatrix}.
 $$
-Ceci s'applique également au modèle de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere}. Cette stratégie permet de réduire à l'erreur machine les contributions de l'estimateur d'erreur $L_{u_c}$ et $L_E$, dans le cadre d'une méthode à pas de temps adaptatif, comme présentée sur la figure~\ref{fig:compare:error:LucEfh}.
+Ceci s'applique également au modèle de Vlasov-Ampère~\eqref{eq:vlasov}-\eqref{eq:ampere}. Cette stratégie permet de garantir que l'équation de Poisson sous-jacente est satisfaite. De plus les contributions des estimateurs d'erreur $L_{u_c}$ et $L_E$ passent sous l'erreur machine car mettant en jeu que des variables résolues dans la partie linéaire (et donc exacte), dans le cadre d'une méthode à pas de temps adaptatif, comme présentée sur la figure~\ref{fig:compare:error:LucEfh}.
 
-La résolution de ce problème avec une méthode de Lawson, permet d'envisager l'utilisation de méthodes de Lawson semi-implicites. Pour cela il est possible de construire des méthodes de Lawson induites par une méthode DIRK (\emph{Diagonally Implicit Runge-Kutta}), famille de méthodes présentée dans~\cite{Alexander:1976}. Cela se fait au prix d'une méthode de point fixe ou tout autre méthode d'inversion, comme la méthode iWENO (\emph{implicit WENO}) présentée dans~\cite{Gottlieb:2006}. Une autre stratégie est l'utilisation de méthodes IMEX construites à partir d'une méthode DIRK comme dans~\cite{Cho:2021}, et en utilisant du WENO adapté au IMEX présenté dans~\cite{Boscarino:2019}.
+La résolution de ce problème avec une méthode de Lawson, permet d'envisager l'utilisation de méthodes de Lawson semi-implicites, permettant de lever des conditions de stabilité en $v$. Pour cela il est possible de construire des méthodes de Lawson induites par une méthode DIRK (\emph{Diagonally Implicit Runge-Kutta}), famille de méthodes présentée dans~\cite{Alexander:1976}, une autre stratégie est l'utilisation de méthodes IMEX à partir d'une méthode DIRK comme dans~\cite{Cho:2021}. Rendre implicite des termes, plus particulièrement ceux résolus par une méthode non-linéaire comme WENO est un problème compliqué. Une proposition d'inversion de WENO est présenté dans~\cite{Gottlieb:2006}, avec la méthode iWENO (\emph{implicit WENO}), entraînant des oscillations. Il est également possible de s'appuyer sur les travaux présentés dans~\cite{Boscarino:2019} où est utilisé une méthode de WENO dans un contexte de méthode IMEX en temps. Si on accepte le coût numérique engendré par la méthode implicite il peut être intéressant de s'intéresser aux méthodes AVF (\emph{Averaged Vector Field}) qui permettent de conserver l'énergie totale. Dans~\cite{Mei:2021}, les auteurs combinent le schéma exponentiel et la méthode AVF dans un contexte d'équation différentielles ordinaires ; la généralisation au cas des équations aux dérivées partielles n'est pas triviale mais intéressante.
 
-Nous allons voir dans le chapitre suivant comment s'effectue la montée en dimension du modèle et de sa résolution numérique.
+Nous allons voir dans le chapitre suivant comment s'effectue la montée en dimension du modèle et de sa résolution numérique. Celle-ci engendre de nombreuses modifications, à la fois sur le nombre d'étapes de la méthode de \emph{splitting}, et sur la discrétisation envisageable pour une méthode de Lawson en $(x,\vb{v})$. Les conclusions obtenues, à propos de la performance de certaines méthodes, seront différentes.

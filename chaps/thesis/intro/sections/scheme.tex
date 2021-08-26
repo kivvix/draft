@@ -5,7 +5,7 @@
 
 Dans cette section nous allons présenter les principales méthodes utilisées pour résoudre numériquement des équations dites cinétiques en temps, et plus spécifiquement le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4}. Une fois discrétisé en $(\vb{x},\vb{v})$, les différents systèmes que nous regardons peuvent se réduire au modèle abstrait suivant :
 \begin{equation}
-  \dot{u}(t) = L(t,u) + N(t,u),\quad u(t=0)=u_0
+  \dot{u} = L(t,u) + N(t,u),\quad u(0)=u_0
   \label{eq:0:dtu}
 \end{equation}
 d'inconnue $u\in\mathbb{R}^n$ et où $L$ et $N$ sont des fonctions $(t,u)\in\mathbb{R}_+\times\mathbb{R}^n\mapsto\mathbb{R}^n$, $n\in\mathbb{N}$ est le nombre de dimensions, ou d'inconnues du problème. C'est sur cette équation~\eqref{eq:0:dtu} que nous allons présenter les différentes méthodes d'intégration en temps utilisées ici.
@@ -18,8 +18,8 @@ Les méthodes de \emph{splitting} sont classiquement utilisées dans la résolut
 
 Une méthode de \emph{splitting} consiste à résoudre les deux équations suivantes successivement :
 \begin{eqnarray}
-    \dot{u} = L(t,u) \label{eq:0:split:1}\\
-    \dot{u} = N(t,u) \label{eq:0:split:2}
+    \dot{u} = L(t,u)\label{eq:0:split:1}\\
+    \dot{u} = N(t,u)\label{eq:0:split:2}
 \end{eqnarray}
 La solution de l'équation~\eqref{eq:0:dtu} au temps $t$ est $\varphi_t(u_0)$, et sera approchée par une composition de $\varphi_t^{[L]}(u_0)$ et $\varphi_t^{[N]}(u_0)$, respectivement solutions de~\eqref{eq:0:split:1} et~\eqref{eq:0:split:2}. Ainsi la méthode de Lie, \emph{splitting} d'ordre 1, consiste à approcher $\varphi_t(u_0)$ par $\varphi_t(u_0)\approx \varphi_t^{[L]} \circ \varphi_t^{[N]}(u_0)$. Si la résolution de chaque sous-système $\varphi_t^{[L]}$ et $\varphi_t^{[N]}$ est exacte, la seule erreur en temps provient du \emph{splitting}.
 
@@ -28,7 +28,7 @@ $$
   u(t) = S_{t}(u_0) = \varphi^{[L]}_{t/2}\circ\varphi^{[N]}_{t}\circ\varphi^{[L]}_{t/2}(u_0)
 $$
 
-Lorsque l'équation met en jeu plusieurs termes, comme c'est le cas pour le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4}, il est difficile de savoir comment choisir $L$ et $N$. L'hamiltonien du système permet de suggérer une décomposition intéressante, et de construire des méthodes appelées \emph{splitting} hamiltonien. \Josselin{voir dans \cite{Hairer:2006} s'il est nécessaire de résoudre exactement chaque sous-système pour avoir une splitting hamiltonien.}
+Lorsque l'équation met en jeu plusieurs termes, comme c'est le cas pour le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4}, il est difficile de savoir comment choisir $L$ et $N$. L'hamiltonien du système permet de suggérer une décomposition intéressante, et de construire des méthodes appelées \emph{splitting} hamiltonien~\cite{Crouseilles:2015,Casas:2017,Bernier:2020,Li:2019}.
 
 
 \subsection{Méthode de type Runge-Kutta}
@@ -36,7 +36,7 @@ Lorsque l'équation met en jeu plusieurs termes, comme c'est le cas pour le syst
 
 Les méthodes de type Runge-Kutta sont des méthodes d'approximation de solutions d'équations différentielles, développées dès 1901. Elles peuvent être vues comme une extension, à des ordres supérieurs, de la méthode d'Euler. Nous utiliserons ce type de méthodes pour résoudre la discrétisation en temps. Nous allons présenter ce type de méthode sur l'équation :
 $$
-  \dot{u} = N(t,u)
+  \dot{u} = N(t,u),\qquad u(0)=u_0
 $$
 où $u\in\mathbb{R}^n$, et $N:(t,u)\in\mathbb{R}_+\times\mathbb{R}^n\mapsto N(t,u)\in\mathbb{R}^n$ une fonction agissant sur $u$ et pouvant dépendre du temps $t$. Il s'agit d'un cas particulier de l'équation~\eqref{eq:0:dtu} où $L$ est la fonction nulle. Nous résumerons les méthodes par leur tableau de Butcher\cite{Butcher:2008}, qui se représentent sous la forme :
 \begin{equation}  
@@ -101,7 +101,7 @@ $$
   \end{aligned}
 $$
 
-Comme pour une méthode Runge-Kutta classique, il est possible d'appliquer la même méthode d'optimisation de Shu-Osher pour n'avoir qu'une seule évaluation de la fonction non-linéaire $N$ par étage dans le cadre d'une méthode explicite.
+Le cadre théorique pour l'étude de convergence de schémas a été proposé dans~\cite{Hochbruck:2010,Hochbruck:2020}. Comme pour une méthode Runge-Kutta classique, il est possible d'appliquer la même méthode d'optimisation de Shu-Osher pour n'avoir qu'une seule évaluation de la fonction non-linéaire $N$ par étage dans le cadre d'une méthode explicite.
 
 
 \section{Méthodes de résolution numérique en espace}
@@ -193,12 +193,12 @@ Une méthode très populaire pour la résolution numérique de l'équation de Vl
 $$
   \partial_t u + a\partial_xu = 0,\quad u(t=0,x)=u_0(x).
 $$
-On sait que la solution le long d'une caractéristique définie par $x-at$ la solution $u$ est constante, ainsi $u(x_j,t^{n+1})=u(x_j-a\Delta t,t^n)$. C'est ce que l'on illustre sur la figure~\ref{fig:intro:semilag}. Pour reconstruire la solution au temps $t^{n+1}$ il suffit ensuite d'interpoler les données au point $u(x_j-a\Delta t,t^n)$ à partir des données $u(x_{j^\star-2},t^n)$ jusqu'à $u(x_{j^\star+2},t^n)$ à l'aide d'un polynôme de Lagrange de degré 5.
+On sait que la solution le long d'une caractéristique définie par $x-at$ la solution $u$ est constante, ainsi $u(x_j,t^{n+1})=u(x_j-a\Delta t,t^n)$. C'est ce que l'on illustre sur la figure~\ref{fig:intro:semilag}. Pour reconstruire la solution au temps $t^{n+1}$ il suffit ensuite d'interpoler les données au point $u(x_j-a\Delta t,t^n)$. Plusieurs méthodes d'interpolation sont alors envisageable, la méthode par splines permet une reconstruction gloable de la solution~\cite{Cheng:1976,Sonnendrucker:2015} ; une approche plus locale à partir des données d'un \emph{stencil}, c'est-à-dire des données $u(x_{j^\star-d},t^n)$ jusqu'à $u(x_{j^\star+d},t^n)$, à l'aide d'un polynôme d'interpolation, comme un polynôme de Lagrange de degré $2d+1$, est aussi envisageable~\cite{Charles:2013}. Nous utiliserons cette approche locale avec $d=2$ par la suite.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.9\textwidth]{\localPath/figures/semilag.pdf}
-  \caption{Méthode des caractéristiques pour une méthode semi-lagrangienne avec une vitesse de transport $a>0$.}
+  \caption{Méthode des caractéristiques pour une méthode semi-lagrangienne avec une vitesse de transport $a>0$, et $d=2$.}
   \label{fig:intro:semilag}
 \end{figure}
 
@@ -207,10 +207,19 @@ On sait que la solution le long d'une caractéristique définie par $x-at$ la so
 \subsection{Méthode pseudo-spectrale}
 % --------------------------------------------------------------------
 
-Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète. Cette méthode permet de transformer une équation aux dérivées partielles en une équation différentielle ordinaire en transformant une dérivée dans l'espace réel en un produit dans l'espace de Fourier. La transformée de Fourier d'une fonction réelle $f$ est :
+Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète. Cette méthode permet de transformer une équation aux dérivées partielles en une équation différentielle ordinaire en transformant une dérivée dans l'espace réel en un produit dans l'espace de Fourier. Nous considèrerons ici la transformée de Fourier discrète, cela consiste à réécrire notre fonction $u$, $L$-périodique et de classe $C^1$, sous la forme :
 $$
-  \hat{f} = \frac{1}{L}\int_0^L f(x)e^{-i\kappa x}\dd{x},\quad\kappa=\frac{2\pi}{L}n,\ n\in\mathbb{Z},
+  u(x) = \sum_{\kappa=-\infty}^{+\infty} \hat{u}_\kappa e^{i\frac{2\pi \kappa}{L}x},
 $$
-où chaque terme $\kappa$ s'appelle un mode de Fourier. Le mode $\kappa=0$ est le mode fondamental et correspond à la moyenne en espace de la fonction $f$ ; il devient simple numériquement de forcer la moyenne nulle d'une fonction.
+où les coefficients de Fourier $\hat{u}_\kappa$ sont définis par :
+$$
+  \hat{u}_\kappa - \frac{1}{L}\int_0^L u(x)e^{-i\frac{2\pi \kappa}{L}x}\dd{x}.
+$$
+On remarque alors que le mode fondamental $\kappa=0$ correspond à la moyenne en espace de la fonction $u$ ; il devient simple numériquement de forcer la moyenne nulle d'une fonction.
+
+En n'ayant la connaissance de la fonction $u$ qu'en des points $x_j = j\frac{L}{N}$, $j=0,\dots,N-1$ de la grille, il est possible d'approcher les coefficient de Fourier par une somme discrète :
+$$
+  \hat{u}_\kappa \approx \frac{1}{N}\sum_{j=0}^N u(x_j) e^{=i\frac{2\pi j}{N}\kappa}.
+$$
 
 Nous utiliserons l'algorithme de transformée de Fourier rapide (\emph{fast Fourier transform} ou FFT) pour effectuer numériquement cette opération, dont une implémentation est proposée dans~\cite{Saramito:2013}. Cet algorithme possède une complexité en temps de $\order{n\log n}$, où $n$ est le nombre de points de discrétisation en espace.
