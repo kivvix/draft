@@ -74,6 +74,7 @@ Nous bénéficions de la large littérature sur le sujet des méthodes de type R
 
 \subsubsection{Méthode de Lawson}
 % --------------------------------------------------------------------
+\label{ssec:0:lawson}
 
 Les méthodes de Lawson sont une optimisation des méthodes de type Runge-Kutta à des équations ayant une partie linéaire que l'on écrit comme suit :
 $$
@@ -221,5 +222,15 @@ En n'ayant la connaissance de la fonction $u$ qu'en des points $x_j = j\frac{L}{
 $$
   \hat{u}_\kappa \approx \frac{1}{N}\sum_{j=0}^N u(x_j) e^{=i\frac{2\pi j}{N}\kappa}.
 $$
+
+Transformer une dérivée en un produit nous sera utile au long de ce travail dans deux contextes, un premier linéaire :
+$$
+  \partial_t u + a\partial_x u = 0,\qquad u(t=0,x)=u_0(x)
+$$
+devenant après une transformée de Fourier : $\partial_t \hat{u}_\kappa + ai\kappa \hat{u}_\kappa = 0$ et pouvant se résoudre exactement en temps : $\hat{u}_\kappa(t) = \exp(-ia\kappa t)\hat{u}_\kappa(0)$. Cela correspond à la partie linéaire d'une méthode de Lawson~\ref{ssec:0:lawson}. L'autre cas d'utilisation sera pour un terme non-linéaire de la forme :
+$$
+  \partial_t u + \partial_xf(u) = 0,\qquad u(t=0,x)=u_0(x)
+$$
+devenant alors après une transformée de Fourier : $\partial_t\hat{u}_\kappa + i\kappa\widehat{\left(f(u)\right)}_\kappa = 0$. Ce terme n'ayant pas de solution explicite il sera résolu numériquement pas une méthode Runge-Kutta, correspondant au terme non-linéaire d'une méthode de Lawson.
 
 Nous utiliserons l'algorithme de transformée de Fourier rapide (\emph{fast Fourier transform} ou FFT) pour effectuer numériquement cette opération, dont une implémentation est proposée dans~\cite{Saramito:2013}. Cet algorithme possède une complexité en temps de $\order{n\log n}$, où $n$ est le nombre de points de discrétisation en espace.
