@@ -115,9 +115,10 @@ Nous présentons dans cette section les méthodes numériques permettant de disc
 % --------------------------------------------------------------------
 
 La méthode WENO, pour \emph{Weighted Essentially Non-Oscillatory}, est une méthode volumes finis ou différences finies, dont l'écriture classique est d'ordre 5. Il s'agit d'une méthode \emph{upwind}, d'ordre élevé, combinée à des poids non-linéaires permettant de réduire les oscillations par de la baisse d'ordre et de la diffusion numérique. La méthode d'ordre 5 est présentée dans \cite{Liu:1994,Jiang:1996,Shu:1999,Shu:2003}. Nous la présentons ici pour une équation de transport de la forme :
-$$
+\begin{equation}
   \partial_t u + \partial_x f(u) = 0,\qquad u(t=0,x) = u_0(x)
-$$
+  \label{eq:0:dtudxfu}
+\end{equation}
 avec $u(t,x)$ la fonction inconnue dépendant du temps $t\geq 0$ et de l'espace $x\in\Omega$ (supposé ici périodique par commodité), et $f:u\mapsto f(u)$ une fonction agissant sur $u$. On définit une discrétisation de l'espace $x_i = i\Delta x + x_0$, $i=0,\dots,N_x$, avec $\Delta x>0$ le pas d'espace. La méthode WENO se présente comme suit :
 $$
   \partial_t u_j(t) + \frac{1}{\Delta x}\left( \hat{f}_{j+\frac{1}{2}} - \hat{f}_{j-\frac{1}{2}} \right) = 0,
@@ -192,9 +193,20 @@ L'étude de la stabilité de la méthode WENO5 couplée avec différentes métho
 
 Une méthode très populaire pour la résolution numérique de l'équation de Vlasov est la méthode semi-lagrangienne. Celle-ci s'adapte très bien à notre problème car les termes de transports sont linéaires. Elle a l'avantage de ne pas introduire de contrainte de stabilité. La méthode semi-lagrangienne repose sur la remonté des caractéristique, prenons pour exemple l'équation :
 $$
-  \partial_t u + a\partial_xu = 0,\quad u(t=0,x)=u_0(x).
+  \partial_t u + a\partial_xu = 0,\quad u(t=0,x)=u_0(x),
 $$
-On sait que la solution le long d'une caractéristique définie par $x-at$ la solution $u$ est constante, ainsi $u(x_j,t^{n+1})=u(x_j-a\Delta t,t^n)$. C'est ce que l'on illustre sur la figure~\ref{fig:intro:semilag}. Pour reconstruire la solution au temps $t^{n+1}$ il suffit ensuite d'interpoler les données au point $u(x_j-a\Delta t,t^n)$. Plusieurs méthodes d'interpolation sont alors envisageable, la méthode par splines permet une reconstruction gloable de la solution~\cite{Cheng:1976,Sonnendrucker:2015} ; une approche plus locale à partir des données d'un \emph{stencil}, c'est-à-dire des données $u(x_{j^\star-d},t^n)$ jusqu'à $u(x_{j^\star+d},t^n)$, à l'aide d'un polynôme d'interpolation, comme un polynôme de Lagrange de degré $2d+1$, est aussi envisageable~\cite{Charles:2013}. Nous utiliserons cette approche locale avec $d=2$ par la suite.
+ce qui correspond à l'équation~\ref{eq:0:dtudxfu} avec le flux $f$ linéaire par rapport à l'inconnue $u$. On définit les caractérisitique le long desquelles $u$ est constante :
+$$
+  \begin{cases}
+    \dot{x}(s) = a \\
+    x(t) = x
+  \end{cases}
+$$
+dont la solution s'écrit $x(s) = a(s-t)+x$. Avec $u(s,x(s))=u(t,x(t))$ on a $u(s,a(s-t)+x) = u(t,x)$ et en prenant $s=t^n=n\Delta t$, et $t=t^{n+1}$, on a :
+$$
+  u(t^{n+1},x) = u(t^n,x-a\Delta t),\quad \forall x\in[0,L]
+$$
+Pour connaître $u(t^{n+1},x_j)$ de $u(t^n,\cdot)$, on pose $x=x_j$ : $u(t^{n+1},x_j) = u(t^n,x_j-a\Delta t)$, comme l'illustre la figure~\ref{fig:intro:semilag}. Dans le cadre d'un schéma numérique, $x_j-a\Delta t$ n'étant pas un point de la grille, il faut évaluer en $x_j-a\Delta t$ un polynôme par morceaux, construit à partir des données $u(t^n,x_k)$, $k\in\mathbb{N}$. Plusieurs méthodes d'interpolation sont alors envisageable, la méthode par splines permet une reconstruction gloable de la solution~\cite{Cheng:1976,Sonnendrucker:2015} ; une approche plus locale à partir des données d'un \emph{stencil}, c'est-à-dire des données $u(x_{j^\star-d},t^n)$ jusqu'à $u(x_{j^\star+d},t^n)$, à l'aide d'un polynôme d'interpolation, comme un polynôme de Lagrange de degré $2d+1$, est aussi envisageable~\cite{Charles:2013}. Nous utiliserons cette approche locale avec $d=2$ par la suite.
 
 \begin{figure}[h]
   \centering
@@ -208,19 +220,18 @@ On sait que la solution le long d'une caractéristique définie par $x-at$ la so
 \subsection{Méthode pseudo-spectrale}
 % --------------------------------------------------------------------
 
-Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles linéaires est la méthode pseudo-spectrale qui consiste dans notre cas à effectuer une transformée de Fourier discrète. Cette méthode permet de transformer une équation aux dérivées partielles en une équation différentielle ordinaire en transformant une dérivée dans l'espace réel en un produit dans l'espace de Fourier. Nous considèrerons ici la transformée de Fourier discrète, cela consiste à réécrire notre fonction $u$, $L$-périodique et de classe $C^1$, sous la forme :
+Une autre méthode souvent utilisée pour la résolution d'équations aux dérivées partielles est la méthode pseudo-spectrale qui consiste à approcher les opérateurs différentiels dans l'espace de Fourier à l'aide de transformées de Fourier. Cette méthode permet de transformer une équation aux dérivées partielles en un système d'équations différentielles ordinaires en transformant par exemple une dérivée dans l'espace réel en un produit dans l'espace de Fourier. Nous considèrerons ici la transformée de Fourier discrète, cela consiste à réécrire notre fonction $u$, $L$-périodique et de classe $C^1$, sous la forme :
 $$
   u(x) = \sum_{\kappa=-\infty}^{+\infty} \hat{u}_\kappa e^{i\frac{2\pi \kappa}{L}x},
 $$
 où les coefficients de Fourier $\hat{u}_\kappa$ sont définis par :
 $$
-  \hat{u}_\kappa - \frac{1}{L}\int_0^L u(x)e^{-i\frac{2\pi \kappa}{L}x}\dd{x}.
+  \hat{u}_\kappa = \frac{1}{L}\int_0^L u(x)e^{-i\frac{2\pi \kappa}{L}x}\dd{x}.
 $$
-On remarque alors que le mode fondamental $\kappa=0$ correspond à la moyenne en espace de la fonction $u$ ; il devient simple numériquement de forcer la moyenne nulle d'une fonction.
 
 En n'ayant la connaissance de la fonction $u$ qu'en des points $x_j = j\frac{L}{N}$, $j=0,\dots,N-1$ de la grille, il est possible d'approcher les coefficient de Fourier par une somme discrète :
 $$
-  \hat{u}_\kappa \approx \frac{1}{N}\sum_{j=0}^N u(x_j) e^{=i\frac{2\pi j}{N}\kappa}.
+  \hat{u}_\kappa \approx \frac{1}{N-1}\sum_{j=0}^N u(x_j) e^{=i\frac{2\pi j}{N}\kappa}.
 $$
 
 Transformer une dérivée en un produit nous sera utile au long de ce travail dans deux contextes, un premier linéaire :
@@ -233,4 +244,4 @@ $$
 $$
 devenant alors après une transformée de Fourier : $\partial_t\hat{u}_\kappa + i\kappa\widehat{\left(f(u)\right)}_\kappa = 0$. Ce terme n'ayant pas de solution explicite il sera résolu numériquement pas une méthode Runge-Kutta, correspondant au terme non-linéaire d'une méthode de Lawson.
 
-Nous utiliserons l'algorithme de transformée de Fourier rapide (\emph{fast Fourier transform} ou FFT) pour effectuer numériquement cette opération, dont une implémentation est proposée dans~\cite{Saramito:2013}. Cet algorithme possède une complexité en temps de $\order{n\log n}$, où $n$ est le nombre de points de discrétisation en espace.
+Nous utiliserons l'algorithme de transformée de Fourier rapide (\emph{fast Fourier transform} ou FFT) pour effectuer numériquement cette opération, dont une implémentation est proposée dans~\cite{Saramito:2013}. Cet algorithme possède une complexité en temps de $\order{N\log N}$, où $N$ est le nombre de points de discrétisation en espace.

@@ -305,7 +305,7 @@ On retrouve ainsi l'ordre $p$ de la méthode LRK($s$,$p$). Maintenant en effectu
 $$
   u^{n+1} = \mathfrak{exp}(\Delta tL)\sum_{j=0}^{p}\frac{\Delta t^jN^j}{j!}u^n
 $$
-où $\mathfrak{exp}$ est la fonction choisie d'approximation de l'exponentielle, c'est-à-dire $\mathfrak{exp}(L) = T_m(L)$ s'il s'agit de la troncature de la série de Taylor à l'ordre $m$, ou bien $\mathfrak{exp}(L) = P_{p,q}(L)$ s'il s'agit de l'approximant de Padé d'ordre $(p,q)$ ; dans les deux cas on a bien $\mathfrak{exp}(L) = e^{L} + \order{\Delta t^{r+1}}$ avec $r = m$ si $\mathfrak{exp}(L) = T_m(L)$ et $r = p+q$ si $\mathfrak{exp}(L) = P_{p,q}(L)$. Ainsi :
+où $\mathfrak{exp}$ est la fonction choisie d'approximation de l'exponentielle, c'est-à-dire $\mathfrak{exp}(\Delta tL) = T_m(\Delta tL)$ s'il s'agit de la troncature de la série de Taylor à l'ordre $m$, ou bien $\mathfrak{exp}(\Delta tL) = P_{p,q}(\Delta tL)$ s'il s'agit de l'approximant de Padé d'ordre $(p,q)$ ; dans les deux cas on a bien $\mathfrak{exp}(\Delta tL) = e^{\Delta tL} + \order{\Delta t^{r+1}}$ avec $r = m$ si $\mathfrak{exp}(\Delta tL) = T_m(\Delta tL)$ et $r = p+q$ si $\mathfrak{exp}(\Delta tL) = P_{p,q}(\Delta tL)$. Ainsi :
 $$
   \begin{aligned}
     \mathfrak{exp}(\Delta tL)\sum_{j=0}^{p}\frac{\Delta t^jN^j}{j!}u(t^n) &= \left(e^{\Delta t L} + \order{\Delta t^{r+1}}\right)e^{\Delta t N}u(t^n) + \order{\Delta t^{p+1}} \\
