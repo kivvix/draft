@@ -356,7 +356,7 @@ où $u(t,x,y)$ est une fonction à valeurs réelles, $(x,y)\in[-2,2]\times[-2,2]
 $$
   u_0(x,y) = \exp( -\frac{(x-0.2)^2}{0.25} - \frac{y^2}{0.05} ).
 $$
-Pour mettre en valeur les instabilités de la méthode de Lawson couplée à une série de Taylor, nous représentons la valeur absolue de la solution. On observe ainsi l'apparition d'instabilité uniquement avec $T_3$ (troncature de la série de Taylor de degré 3), dont l'amplitude est supérieur à 10 pour des hauts modes en $y$, c'est-à-dire les bords du domaine. Aucune instabilité n'est présente lorsque la méthode de Lawson est couplée à un approximant de Padé, ici $P_{1,1}$. Dès que le degré du numérateur est supérieur au dénominateur des instabilités apparaissent, comme nous le verrons par la suite dans la résolution du système de Vlasov-Maxwell.
+Pour mettre en valeur les instabilités de la méthode de Lawson couplée à une série de Taylor, nous représentons la valeur absolue de la solution. On observe ainsi l'apparition d'instabilités uniquement avec $T_3$ (troncature de la série de Taylor de degré 3), dont l'amplitude est supérieure à 10 pour des hauts modes en $y$, c'est-à-dire les bords du domaine. Aucune instabilité n'est présente lorsque la méthode de Lawson est couplée à un approximant de Padé, ici $P_{1,1}$. Dès que le degré du numérateur est supérieur au dénominateur des instabilités apparaissent, comme nous le verrons par la suite dans la résolution du système de Vlasov-Maxwell.
 
 \begin{figure}
   \centering
@@ -380,7 +380,7 @@ que nous synthétiserons à $u^{n+1}= \R u^n$. Ce schéma vérifie une erreur de
 $$
   u(t^{n+1}) - \R u(t^n) = \order{\Delta t^{p+1}}.
 $$
-Nous cherchons l'erreur de troncature faite par le schéma lorsque la fonction exponentielle est substituée par $\mathfrak{expr}$ ; notons $\tR$ le schéma couplé à la fonction d'approximation de l'exponentielle $\mathfrak{expr}$. On sait que :
+Nous cherchons l'erreur de troncature faite par le schéma lorsque la fonction exponentielle est substituée par $\mathfrak{exp}$ ; notons $\tR$ le schéma couplé à la fonction d'approximation de l'exponentielle $\mathfrak{exp}$. On sait que :
 $$
   e^{\Delta t L} - \mathfrak{exp}(\Delta tL) = \order{\Delta t^{r+1}},
 $$

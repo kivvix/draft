@@ -191,11 +191,11 @@ L'étude de la stabilité de la méthode WENO5 couplée avec différentes métho
 \subsection{Méthode semi-lagrangienne}
 % --------------------------------------------------------------------
 
-Une méthode très populaire pour la résolution numérique de l'équation de Vlasov est la méthode semi-lagrangienne. Celle-ci s'adapte très bien à notre problème car les termes de transports sont linéaires. Elle a l'avantage de ne pas introduire de contrainte de stabilité. La méthode semi-lagrangienne repose sur la remonté des caractéristique, prenons pour exemple l'équation :
+Une méthode très populaire pour la résolution numérique de l'équation de Vlasov est la méthode semi-lagrangienne. Celle-ci s'adapte très bien à notre problème car les termes de transports sont linéaires. Elle a l'avantage de ne pas introduire de contrainte de stabilité. La méthode semi-lagrangienne repose sur la remontée des caractéristiques, prenons pour exemple l'équation :
 $$
   \partial_t u + a\partial_xu = 0,\quad u(t=0,x)=u_0(x),
 $$
-ce qui correspond à l'équation~\ref{eq:0:dtudxfu} avec le flux $f$ linéaire par rapport à l'inconnue $u$. On définit les caractérisitique le long desquelles $u$ est constante :
+ce qui correspond à l'équation~\ref{eq:0:dtudxfu} avec le flux $f$ linéaire par rapport à l'inconnue $u$. On définit les caractérisitiques le long desquelles $u$ est constante :
 $$
   \begin{cases}
     \dot{x}(s) = a \\
@@ -206,7 +206,7 @@ dont la solution s'écrit $x(s) = a(s-t)+x$. Avec $u(s,x(s))=u(t,x(t))$ on a $u(
 $$
   u(t^{n+1},x) = u(t^n,x-a\Delta t),\quad \forall x\in[0,L]
 $$
-Pour connaître $u(t^{n+1},x_j)$ de $u(t^n,\cdot)$, on pose $x=x_j$ : $u(t^{n+1},x_j) = u(t^n,x_j-a\Delta t)$, comme l'illustre la figure~\ref{fig:intro:semilag}. Dans le cadre d'un schéma numérique, $x_j-a\Delta t$ n'étant pas un point de la grille, il faut évaluer en $x_j-a\Delta t$ un polynôme par morceaux, construit à partir des données $u(t^n,x_k)$, $k\in\mathbb{N}$. Plusieurs méthodes d'interpolation sont alors envisageable, la méthode par splines permet une reconstruction gloable de la solution~\cite{Cheng:1976,Sonnendrucker:2015} ; une approche plus locale à partir des données d'un \emph{stencil}, c'est-à-dire des données $u(x_{j^\star-d},t^n)$ jusqu'à $u(x_{j^\star+d},t^n)$, à l'aide d'un polynôme d'interpolation, comme un polynôme de Lagrange de degré $2d+1$, est aussi envisageable~\cite{Charles:2013}. Nous utiliserons cette approche locale avec $d=2$ par la suite.
+Pour connaître $u(t^{n+1},x_j)$ de $u(t^n,\cdot)$, on pose $x=x_j$ : $u(t^{n+1},x_j) = u(t^n,x_j-a\Delta t)$, comme l'illustre la figure~\ref{fig:intro:semilag}. Dans le cadre d'un schéma numérique, $x_j-a\Delta t$ n'étant pas un point de la grille, il faut évaluer en $x_j-a\Delta t$ un polynôme par morceaux, construit à partir des données $u(t^n,x_k)$, $k\in\mathbb{N}$. Plusieurs méthodes d'interpolation sont alors envisageables, la méthode par splines permet une reconstruction globale de la solution~\cite{Cheng:1976,Sonnendrucker:2015} ; une approche plus locale à partir des données d'un \emph{stencil}, c'est-à-dire des données $u(x_{j^\star-d},t^n)$ jusqu'à $u(x_{j^\star+d},t^n)$, à l'aide d'un polynôme d'interpolation, comme un polynôme de Lagrange de degré $2d+1$, est aussi envisageable~\cite{Charles:2013}. Nous utiliserons cette approche locale avec $d=2$ par la suite.
 
 \begin{figure}[h]
   \centering
@@ -229,7 +229,7 @@ $$
   \hat{u}_\kappa = \frac{1}{L}\int_0^L u(x)e^{-i\frac{2\pi \kappa}{L}x}\dd{x}.
 $$
 
-En n'ayant la connaissance de la fonction $u$ qu'en des points $x_j = j\frac{L}{N}$, $j=0,\dots,N-1$ de la grille, il est possible d'approcher les coefficient de Fourier par une somme discrète :
+En n'ayant la connaissance de la fonction $u$ qu'en des points $x_j = j\frac{L}{N}$, $j=0,\dots,N-1$ de la grille, il est possible d'approcher les coefficients de Fourier par une somme discrète :
 $$
   \hat{u}_\kappa \approx \frac{1}{N-1}\sum_{j=0}^N u(x_j) e^{=i\frac{2\pi j}{N}\kappa}.
 $$
