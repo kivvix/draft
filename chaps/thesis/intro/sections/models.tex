@@ -1,6 +1,6 @@
 % !TEX root = ../../main.tex
 
-\section{Hiéarchie des modèles du problème général}
+\section{Hiérarchie des modèles du problème général}
 \label{sec:0:model}
 
 Les modèles étudiés dans cette partie sont présentés dans un cadre général multi-dimensionnel en espace et en vitesse. Nous commençons par présenter les équations de Vlasov-Maxwell $3dx-3dv$ :
@@ -14,18 +14,18 @@ Les modèles étudiés dans cette partie sont présentés dans un cadre généra
   \label{eq:0:poisson}
     \nabla_{\vb{x}}\cdot\vb{E} &= \frac{1}{\varepsilon_0}\left( q_i\rho_i + q_e\int_{\mathbb{R}^3} f\dd{\vb{v}} \right)
 \end{align}
-où $f=f(t,\vb{x},\vb{v})$ représente la densité des électrons dans l'espace des phases $\left\{ (\vb{x},\vb{v}) \in \Omega\times\mathbb{R}^3 \right\}$ avec $\Omega\subset\mathbb{R}^3$, au temps $t\geq0$, la population d'ions est supposées à l'équilibre ou de densité constante, $\vb{E}=\vb{E}(t,\vb{x})\in\mathbb{R}^3$ représente le champ électrique, $\vb{B}=\vb{B}(t,\vb{x})\in\mathbb{R}^3$ représente le champ magnétique, et $\vb{B}_0 = \left(0,0,B_0\right)^\top$ est un champ magnétique extérieur supposé constant et d'intensité $B_0 > 0$. Les valeurs physiques $q_\star$, $m_\star$ et $\rho_\star$, $\star\in\{i,e\}$ représentent la charge, la masse et la densité des ions ($i$) ou des électrons ($e$). La constante physique $\mu_0$ représente la perméabilité magnétique du vide, la constante $c$ est la vitesse de la lumière, et $\varepsilon_0$ est la permittivité diélectrique du vide ; ces constantes physiques vérifient $c^2\mu_0\varepsilon_0=1$. Le système~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson} forme les équations de Vlasov-Maxwell, et modélise le transport non-linéaire d'une quantité $f(\vb{x},\vb{v})$ dans l'espace des phases $\Omega\times\mathbb{R}^3$ au cours du temps $t$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse et on munira ce système de conditions initiales $(\vb{B}^0(\vb{x}),\vb{E}^0(\vb{x}),f^0(\vb{x},\vb{v}))$.
+où $f=f(t,\vb{x},\vb{v})$ représente la densité des électrons dans l'espace des phases $\left\{ (\vb{x},\vb{v}) \in \Omega\times\mathbb{R}^3 \right\}$ avec $\Omega\subset\mathbb{R}^3$, au temps $t\geq0$ ; la population d'ions est supposée à l'équilibre ou de densité constante, $\vb{E}=\vb{E}(t,\vb{x})\in\mathbb{R}^3$ représente le champ électrique, $\vb{B}=\vb{B}(t,\vb{x})\in\mathbb{R}^3$ représente le champ magnétique, et $\vb{B}_0 = \left(0,0,B_0\right)^\top$ est un champ magnétique extérieur supposé constant et d'intensité $B_0 > 0$. Les valeurs physiques $q_\star$, $m_\star$ et $\rho_\star$, $\star\in\{i,e\}$ représentent la charge, la masse et la densité des ions ($i$) ou des électrons ($e$). La constante physique $\mu_0$ représente la perméabilité magnétique du vide, la constante $c$ est la vitesse de la lumière, et $\varepsilon_0$ est la permittivité diélectrique du vide ; ces constantes physiques vérifient $c^2\mu_0\varepsilon_0=1$. Le système~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson} forme les équations de Vlasov-Maxwell, et modélise le transport non-linéaire d'une quantité $f(\vb{x},\vb{v})$ dans l'espace des phases $\Omega\times\mathbb{R}^3$ au cours du temps $t$. On considérera des conditions périodiques en espace et nulles à l'infini en vitesse et on munira ce système de conditions initiales $(\vb{B}^0(\vb{x}),\vb{E}^0(\vb{x}),f^0(\vb{x},\vb{v}))$.
 
 \subsection{Dérivation du modèle de Vlasov-Maxwell hybride linéarisé}
 
-Le modélisation hybride vient de la volonté de réduire le temps de calcul en considérant la dynamique d'une population de particules comme fluide et non plus cinétique. En suivant cette stratégie, dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, on distingue la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible, et un second groupe de particules, dites chaudes, $f_h$ dont la vitesse thermique est grande. Ces deux populations sont supposées indépendantes et n'intéragissent ensemble que via les champs électromagnétiques $(\vb{E},\vb{B})$. Considérant cela, l'équation de Vlasov~\eqref{eq:0:vlasov} devient :
+Le modélisation hybride vient de la volonté de réduire le temps de calcul en considérant la dynamique d'une population de particules comme fluide et non plus cinétique. En suivant cette stratégie, dans le modèle de Vlasov-Maxwell~\eqref{eq:0:vlasov}-\eqref{eq:0:poisson}, on distingue la population de particules $f$ en deux : un premier groupe de particules froides $f_c$ dont la vitesse thermique est faible, et un second groupe de particules $f_h$, dites chaudes, dont la vitesse thermique est grande. Ces deux populations sont supposées indépendantes et n’interagissent entre elles que via les champs électromagnétiques $(\vb{E},\vb{B})$. Considérant cela, l'équation de Vlasov~\eqref{eq:0:vlasov} devient :
 $$
   \begin{aligned}
     \pdv{f_c}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_c + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_c = 0 \\
     \pdv{f_h}{t} &+ \vb{v}\cdot\nabla_{\vb{x}} f_h + \frac{q_e}{m_e}\left( \vb{E} + \vb{v}\times(\vb{B}+\vb{B}_0) \right)\cdot\nabla_{\vb{v}} f_h = 0
   \end{aligned}
 $$
-avec les conditions initiales $f_c(t=0,\vb{x},\vb{v})$ et $f_h(t=0,\vb{x},\vb{v})$ telles que $f_c(t=0,\vb{x},\vb{v})+f_h(t=0,\vb{x},\vb{v}) = f(t=0,\vb{x},\vb{v})$ avec des conditions périodiques en espace $\vb{x}$ et nulles à l'infini en vitesse $\vb{v}$. L'équation de Maxwell-Ampère~\eqref{eq:0:maxwellE}, de Maxwell-Gauss~\eqref{eq:0:poisson} et de Maxwell-Faraday deviennent :
+avec les conditions initiales $f_c(t=0,\vb{x},\vb{v})$ et $f_h(t=0,\vb{x},\vb{v})$ telles que $f_c(t=0,\vb{x},\vb{v})+f_h(t=0,\vb{x},\vb{v}) = f(t=0,\vb{x},\vb{v})$ avec des conditions périodiques en espace $\vb{x}$ et nulles à l'infini en vitesse $\vb{v}$. Les équations de Maxwell-Ampère~\eqref{eq:0:maxwellE}, de Maxwell-Gauss~\eqref{eq:0:poisson} et de Maxwell-Faraday deviennent :
 $$
   \begin{aligned}
     \frac{1}{c^2}\pdv{\vb{E}}{t} &= \nabla_{\vb{x}}\times \vb{B} - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f_c\dd{\vb{v}} - \mu_0 q_e\int_{\mathbb{R}^3} \vb{v} f_h\dd{\vb{v}} \\
@@ -46,7 +46,7 @@ $$
     \vb{v}
   \end{pmatrix} f_c\dd{\vb{v}},
 $$
-ainsi que définir également le courant des particules froides $\vb{j}_c = q_e\rho_c\vb{u}_c$.
+ainsi que de définir également le courant des particules froides $\vb{j}_c = q_e\rho_c\vb{u}_c$.
 
 \begin{pro}
   \label{pro:0:vmh}
@@ -70,7 +70,7 @@ ainsi que définir également le courant des particules froides $\vb{j}_c = q_e\
   Voir annexe \ref{ssec:0:vmh}.
 \end{proof}
 
-L'approximation de plasma froid, $\frac{T_c}{T_h}\to 0$ a été faite, donc il n'y a plus de contrainte sur le maillage en vitesse $\vb{v}$. La littérature physique propose de linéariser la partie fluide (voir~\cite{Holderied:2019}). La dynamique des particules chaudes est l'élément intéressant le plus les applications physiques de ce modèle, par conséquent l'équation cinétique portant sur les particules chaudes,~\eqref{eq:0:vmh:1}, sera entièrement conservée. Ainsi on considère maintenant la linéarisation du modèle~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6} satisfait par $(\rho_c,\vb{j}_c,\vb{E},\vb{B},f_h)$ autour de l'équilibre donné par $\left(\rho_c^{(0)}(\vb{x}),0,0,0,f_h^{(0)}(\vb{v})\right)$, avec $f_h^{(0)}(\vb{v})$ une fonction telle que $\int\vb{v}f_h^{(0)}\dd{\vb{v}} = 0$. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire, tout en conservant la non-linéarité dans l'équation cinétique permettant le couplage des différentes quantités. On écrit alors :
+L'approximation de plasma froid, $\frac{T_c}{T_h}\to 0$, a été faite, il n'y a plus de contrainte sur le maillage en vitesse $\vb{v}$. La littérature physique propose de linéariser la partie fluide (voir~\cite{Holderied:2019}). La dynamique des particules chaudes est l'élément intéressant le plus les applications physiques de ce modèle ; par conséquent l'équation cinétique portant sur les particules chaudes,~\eqref{eq:0:vmh:1}, sera entièrement conservée. Ainsi on considère maintenant la linéarisation du modèle~\eqref{eq:0:vmh:1}-\eqref{eq:0:vmh:6}, satisfait par les variables $(\rho_c,\vb{j}_c,\vb{E},\vb{B},f_h)$. La linéarisation s'effectue autour de l'équilibre donné par $\left(\rho_c^{(0)}(\vb{x}),0,0,0,f_h^{(0)}(\vb{v})\right)$, avec $f_h^{(0)}(\vb{v})$ une fonction telle que $\int\vb{v}f_h^{(0)}\dd{\vb{v}} = 0$. L'objectif est d'obtenir un modèle dans lequel la partie fluide est linéaire, tout en conservant la non-linéarité dans l'équation cinétique permettant le couplage des différentes quantités. On écrit alors :
 \begin{equation}
   \begin{aligned}
     \rho_c. (t,\vb{x}) &= \rho_c^{(0)}(\vb{x}) & + & \varepsilon\rho_c^{(1)}(t,\vb{x}) \\
@@ -110,4 +110,4 @@ Le système~\eqref{eq:0:vmhl:1}-\eqref{eq:0:vmhl:4} possède des invariants (mas
 \end{equation}
 On verra plus tard que, comme le modèle de Vlasov-Maxwell, le modèle hybride linéarisé possède une structure géométrique qui sera utile pour la construction de méthodes numériques.
 
-Dans la suite de ces travaux nous utiliserons des quantités adimensionnées, la dérivation celles-ci est donnée dans l'annexe~\ref{sec:0:adim}.
+Dans la suite de ces travaux, nous utiliserons des quantités adimensionnées ; la dérivation de celles-ci est donnée dans l'annexe~\ref{sec:0:adim}.
