@@ -69,6 +69,8 @@
 \frenchspacing
 \FrenchFootnotes
 
+\RequirePackage{ragged2e}
+
 % Define commands to set fonts throughout the document
 \newcommand*{\selectfontfrontcover}{\fontfamily{phv}\selectfont}  % Font style used in front cover 
 \newcommand*{\selectfontbackcover}{\fontfamily{phv}\selectfont}   % Font style used in back cover 
@@ -125,7 +127,7 @@
 \setcounter{secnumdepth}{3}
 %\setcounter{tocdepth}{3}
 
-% in french, table us "tableau"
+% in french, table is "tableau"
 \addto\captionsfrench{\def\tablename{Tableau}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -421,7 +423,10 @@
 \par}
 \hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{0.5cm}
 
-{\LargeTwelve \textbf{\@title}} \vspace{0.5cm}
+\begin{flushright}
+{\LargeTwelve \textbf{\@title}}
+\end{flushright}
+\vspace{0.25cm}
 	
 {\largeTwelve \@lesoustitre} \vspace{0.5cm}
 \begin{spacing}{1}
