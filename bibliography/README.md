@@ -156,6 +156,9 @@
 - [[Degond:2005](pdf/2005-Degond.pdf)] **A smooth transition model between kinetic and hydrodynamic equations** (*2005*)
 	P. Degond, S. Jin, L. Mieussens
 	*Journal of Computational Physics*
+- [[Hochbruck:2006]()] **Explicit integrators of Rosenbrock-type** (*2006*)
+	M. Hochbruck, A. Ostermann
+	*Oberwolfach Reports*
 - [[Grandgirard:2006](https://www.sciencedirect.com/science/article/pii/S0021999106000155)] **A drift-kinetic Semi-Lagrangian 4D code for ion turbulence simulation** (*2006*)
 	V. Grandgirard, M. Brunetti, P. Bertrand, N. Besse, X. Garbet, P. Ghendrih, G. Manfredi, Y. Sarazin, O. Sauter, E. Sonnendrücker, J. Vaclavik, L. Villard
 	*Journal of Computational Physics*
@@ -201,6 +204,9 @@
 - [[Qiu:2008](pdf/2008-Qiu.pdf)] **A WENO algorithm for the growth of ionized regions at the reionization epoch** (*2008*)
 	J. Qiu, C. Shu, J. Liu, L. Fang
 	*New Astronomy*
+- [[Hochbruck:2009](https://doi.org/10.1137/080717717)] **Exponential Rosenbrock-Type Methods** (*2009*)
+	M. Hochbruck, A. Ostermann, J. Schweitzer
+	*SIAM Journal on Numerical Analysis*
 - [[Crouseilles:2009](https://www.sciencedirect.com/science/article/pii/S0021999108005652)] **A parallel Vlasov solver based on local cubic spline interpolation on patches** (*2009*)
 	N. Crouseilles, G. Latu, E. Sonnendrücker
 	*Journal of Computational Physics*
@@ -237,6 +243,9 @@
 - [[Banks:2010](pdf/2010-Banks.pdf)] **A New Class of Non-Linear, Finite-Volume Methods for Vlasov Simulation** (*2010*)
 	J. W. Banks, J. A. F. Hittinger
 	*IEEE Transactions on Plasma Science*
+- [[Li:2011](https://doi.org/10.4236/am.2011.22028)] **Matrix Padé-Type Method for Computing the Matrix Exponential** (*2011*)
+	C. Li, X. Zhu, C. Gu
+	*Applied Mathematics*
 - [[Al-Mohy:2011](https://doi.org/10.1137/100788860)] **Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators** (*2011*)
 	A. H. Al-Mohy, N. J. Higham
 	*SIAM Journal on Scientific Computing*
@@ -363,6 +372,9 @@
 - [[Sonnendrucker:2015](pdf/2015-Sonnendrucker.pdf)] **Numerical Methods for the Vlasov-Maxwell equations** (*2015*)
 	E. Sonnendrücker
 	 
+- [[Luan:2016](https://www.sciencedirect.com/science/article/pii/S0898122116300165)] **Parallel exponential Rosenbrock methods** (*2016*)
+	V. Thai Luan, A. Ostermann
+	*Computers \& Mathematics with Applications*
 - [[Caliari:2016](https://doi.org/10.1137/15M1027620)] **The Leja Method Revisited: Backward Error Analysis for the Matrix Exponential** (*2016*)
 	M. Caliari, P. Kandolf, A. Ostermann, S. Rainer
 	*SIAM Journal on Scientific Computing*
@@ -435,6 +447,9 @@
 - [[Crestetto:2018](pdf/2018-Crestetto.pdf)] **A particle micro-macro decomposition based numercial scheme for collisional kinetic equations in the diffusion scaling** (*2018*)
 	A. Crestetto, N. Crouseilles, M. Lemou
 	*Communications in Mathematical Sciences*
+- [[Boscarino:2019a]()] **High order conservative Semi-Lagrangian scheme for the BGK model of the Boltzmann equation** (*2019*)
+	S. Boscarino, S. Cho, G. Russo, S. Yun
+	 
 - [[Boscarino:2019](pdf/2019-Boscarino.pdf)] **A high order semi-implicit IMEX WENO scheme for the all-Mach isentropic Euler system** (*2019*)
 	S. Boscarino, J. Qiu, G. Russo, T. Xiong
 	*Journal of Computational Physics*
@@ -455,6 +470,12 @@
 	 
 - [[Banks:2019](pdf/2019-Banks(1).pdf)] **High order accurate conservative finite difference methods for Vlasov equations in 2D+2V** (*2019*)
 	J. W. Banks, A. Gianesini. Odu, R. Berger, T. Chapman, W. Arrighi, S. Brunner
+	*SIAM Journal on Scientific Computing*
+- [[Boscarino:2020]()] **Convergence estimates of a semi-Lagrangian scheme for the ellipsoidal BGK model for polyatomic molecules** (*2020*)
+	S. Boscarino, S. Cho, G. Russo, S. Yun
+	 
+- [[Bernier:2020](https://doi.org/10.1137/19M1273918)] **Splitting Methods for Rotations: Application to Vlasov Equations** (*2020*)
+	J. Bernier, F. Casas, N. Crouseilles
 	*SIAM Journal on Scientific Computing*
 - [[Einkemmer:2020](https://www.sciencedirect.com/science/article/pii/S0010465520301508)] **Semi-Lagrangian Vlasov simulation on GPUs** (*2020*)
 	L. Einkemmer
@@ -477,6 +498,9 @@
 - [[Crouseilles:2020](pdf/2020-Crouseilles.pdf)] **Poisson bracket for one electron hybrid model** (*2020*)
 	N. Crouseilles
 	 
+- [[Mei:2021](https://www.sciencedirect.com/science/article/pii/S0021999121003247)] **Energy-preserving exponential integrators of arbitrarily high order for conservative or dissipative systems with highly oscillatory solutions** (*2021*)
+	L. Mei, L. Huang, X. Wu
+	*Journal of Computational Physics*
 - [[Einkemmer:2021](pdf/2021-Einkemmer.pdf)] **An exponential integrator/WENO discretization for sonic-boom simulation on modern computer hardware** (*2021*)
 	L. Einkemmer, A. Ostermann, M. Residori
 	*arXiv e-prints*
