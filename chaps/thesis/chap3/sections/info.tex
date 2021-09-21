@@ -18,7 +18,7 @@ Pour chaque étage de la méthode LRK, il est ainsi possible d'obtenir une expre
 
 \subsection{Performances}
 
-Nous souhaitons dans cette section présenter les choix techniques effectués pour garantir la performance de l'implémentation des schémas détaillés dans la section~\ref{sec:3:scheme}. Nous essayerons aussi de quantifier cette performance avec ou sans parallélisation.
+Nous souhaitons dans cette section présenter les choix techniques effectués pour garantir la performance de l'implémentation des schémas détaillés dans la section~\ref{sec:3:scheme}. Nous essayerons aussi de quantifier cette performance sur le code séquentiel. Une parallélisation à l'aide d'OpenMP a été envosagée mais non mise en place à cause de la bibliothèque de calcul des FFT utilisée, nécessitant une prise en charge particulière de celles-ci.
 
 \subsubsection{Structure de données}
 
@@ -71,6 +71,6 @@ Pour comparer également la qualité des résultats, en plus de leur vitesse d'o
   \label{fig:3:H_time}
 \end{figure}
 
-\subsubsection{Performance parallélisée}
+%\subsubsection{Performance parallélisée}
 
 
