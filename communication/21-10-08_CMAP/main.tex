@@ -1,0 +1,959 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+
+\usepackage{color}
+\usepackage{xcolor}
+\definecolor{PLB}{rgb}{0.06,0.42,0.60}
+\definecolor{PLBfonce}{rgb}{0.06,0.42,0.60}
+\definecolor{PLBmoyen}{RGB}{176, 216, 232}
+\definecolor{PLBpale}{rgb}{0.94,0.965,0.965}
+
+%\usetheme{PaloAlto}
+\usetheme{Madrid}
+\setbeamercolor{frametitle}{bg=PLB}     %controls the color of the headline
+\setbeamercolor{sidebar}{bg=PLB}        %controls the color of the sidebar
+\setbeamercolor{logo}{bg=PLB!70!black}
+\setbeamercolor{structure}{fg=PLB, bg=PLB!40}
+%\setbeamertemplate{footline}[default]
+\setbeamertemplate{enumerate items}[square]
+\setbeamertemplate{itemize items}[circle]
+
+\setbeamerfont{section number projected}{size=\large}
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{subsection in toc}[square]
+
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{bigints}
+\usepackage{mathrsfs}
+\usepackage{physics}
+
+\definecolor{mblue}{rgb}{0.18,0.21,0.67}
+\definecolor{mgree}{rgb}{0.,0.6,0.}
+\definecolor{dgreen}{rgb}{0.,0.6,0.}
+\definecolor{violet}{RGB}{142, 68, 173}
+\definecolor{bleu}{RGB}{41, 128, 185}
+\definecolor{gris}{rgb}{0.5,0.5,0.5}
+\newcommand{\cmark}{{\color{dgreen}\ding{52}}}
+\newcommand{\xmark}{{\color{red}\ding{55}}}
+\newcommand{\bmark}{{\color{orange}$\sim$}}
+\newcommand{\arrow}{{\color{PLB}\ding{220}}}
+\newcommand{\mbold}[1]{{\textbf{\color{PLB}#1}}}
+
+\usepackage{soul}
+\usepackage{multicol}
+\usepackage{multirow}
+
+\usepackage{ifthen}
+
+\usepackage{amsmath}
+\usepackage{cancel}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator\erfi{erfi}
+
+\usepackage[backend=bibtex, style=authoryear-comp]{biblatex}
+\usepackage{filecontents}
+\renewbibmacro*{cite}{%
+  \iffieldundef{shorthand}
+    {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
+       {\usebibmacro{cite:label}%
+        \setunit{\printdelim{nonameyeardelim}}}
+       {\printnames{labelname}%
+        \setunit{\printdelim{nameyeardelim}}}%
+     \usebibmacro{cite:labeldate+extradate}%
+     \setunit{\addcomma\space}%
+     \usebibmacro{journal}}
+    {\usebibmacro{cite:shorthand}}}
+%\newcommand{\customcite}[1]{\citeauthor{#1} (\citeyear{#1})}
+\newcommand{\customcite}[1]{\cite{#1}}
+
+\bibliography{biblio}
+
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{bm}
+\newcommand{\Mvb}[1]{\boldsymbol{#1}}
+
+%for backup slides
+\newcommand{\backupbegin}{
+  \newcounter{finalframe}
+  \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+  \setcounter{framenumber}{\value{finalframe}}
+}
+
+
+\AtBeginSection[
+  {\frame<beamer>{\frametitle{Outline}   
+    \tableofcontents[currentsection,currentsection]}}%
+]%
+{
+  \frame<beamer>{ 
+    \frametitle{Outline}   
+    \tableofcontents[currentsection,currentsection]}
+}
+
+\newenvironment{bframe}[1]% frame of backup (to get bakcup in title) 
+{% begin code
+  \begin{frame}{{\small\texttt{backup}\ } #1}
+}%
+{% end code
+  \end{frame}
+}
+
+
+%\title[Workshop Bordeaux]{Hybrid model of Vlasov-Maxwell equations\\ and\\ comparison of Hamiltonian method and Lawson method}
+\title[CMAP]{Comparison of high-order Eulerian methods for electron hybrid model}
+\author[Josselin Massot]{A. Crestetto \inst{1} \and N. Crouseilles \inst{2,3} \and Y. Li \inst{4} \and \underline{J. Massot} \inst{3,2}}
+\institute[IRMAR]{
+       \inst{1} LMJL, Université de Nantes
+  \and \inst{2} Inria Rennes -- Bretagne Atlantique
+  \and \inst{3} IRMAR, Université de Rennes
+  \and \inst{4} Max Planck Institute for Plasma Physics, Garching, Germany
+}
+\date{October 8, 2021}
+
+
+\AtBeginDocument{\colorlet{defaultcolor}{.}}
+
+\begin{document}
+% -------------------------------------------------------------------
+% --- BEGIN DOCUMENT ------------------------------------------------
+% -------------------------------------------------------------------
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- INTRODUCTION --------------------------------------------------
+% -------------------------------------------------------------------
+\section{Introduction}
+\begin{frame}{Vlasov-Maxwell $1dz-3dv$ model}
+  Transport of electron density distribution $f=f(t,z,\Mvb{v})$, $\Mvb{B}(t,z),\Mvb{E}(t,z)\in\mathbb{R}^2$, $z\in[0,2\pi]$, $\Mvb{B}_0 = (0,0,B_0)^\top$, $\Mvb{v}\in\mathbb{R}^3$, $v_\perp=(v_x,v_y)^\top\in\mathbb{R}^2$:
+  $$
+    \begin{cases}
+      \partial_t f + v_z\partial_z f - (\Mvb{E}+\Mvb{v}\times(\Mvb{B}+\Mvb{B}_0))\cdot\nabla_{\Mvb{v}} f = 0 \\
+      \partial_t \Mvb{B} = -\partial_z\Mvb{E}\\
+      \partial_t \Mvb{E} = \partial_z\Mvb{B} + \int_{\mathbb{R}^3} v_\perp f\dd{\Mvb{v}} \\
+    \end{cases}
+  $$
+\mbold{Motivation:}
+\begin{itemize}
+  \item We consider an initial condition of the form $f = f_c+f_h$ with: $f_c(t=0,z,\Mvb{v})=\rho_c(t,z)\delta_{\Mvb{v}=\Mvb{u}_c(t,z)}(\Mvb{v})$
+  \item We want high order methods in $(z,\Mvb{v})$ \begin{itemize}\item FFT in $z$ + WENO in $\Mvb{v}$\end{itemize}
+  \item We want high order methods in time $t$ \begin{itemize}\item splitting method vs exponential integrator\end{itemize}
+\end{itemize}
+\end{frame}
+\begin{frame}{The idea}
+  \begin{itemize}
+    \item Grid methods can't have an initial condition like: $f_0(z,\Mvb{v}) = \rho_{c,0}(z)\textcolor{red}{\delta_{\Mvb{v}-\Mvb{u}_c}(\Mvb{v})} + f_{h,0}(z,\Mvb{v})$
+    \item Idea is to derive an hybrid model:
+        \begin{itemize}
+          \item \emph{Cold plasma approximation}: $\frac{T_c}{T_h}\ll 1$\arrow $\cancel{f_c(t,z,\Mvb{v})}$ \arrow $\Mvb{j}_c(t,z)$
+              \begin{itemize}
+                \item Fluid dynamic for cold particles (no velocity grid)
+              \end{itemize}
+          \item Hypothesis on hot particles: $\int_{\mathbb{R}^3} f_h(t,z,\Mvb{v})\dd{\Mvb{v}} \ll \rho_c(t,z)$
+              \begin{itemize}
+                \item Kinetic dynamic for hot particles 
+              \end{itemize}
+        \end{itemize}
+  \end{itemize}
+
+  \vfill
+ 
+  \arrow{} Split $f=f_c+f_h$ \mbold{+} Compute momentum of $f_c$ with \emph{cold plasma approximation} \mbold{+} Linearize the model
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{a} \customcite{Holderied:2020}
+  \end{thebibliography}
+\end{frame}
+
+\begin{frame}{Linearized hybrid Vlasov-Maxwell $1dz-3dv$ model}
+  The new model: a nonlinear transport in $(z,v_x,v_y,v_z)\in\Omega\times\mathbb{R}^3$ of a cold (fluid) electron density distribution (reconstruction from current variable $\Mvb{j}_c$) and a hot (kinetic) electron density distribution $f_h$:
+  $$
+    \begin{cases}
+      \partial_t\Mvb{j}_c = \Omega_{pe}^2\Mvb{E} - J\Mvb{j}_c B_0 \\
+      \partial_t\Mvb{B}   = J\partial_z\Mvb{E} \\
+      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \Mvb{j}_c + \int_{\mathbb{R}^3} v_\perp f_h\dd{\Mvb{v}} \\
+      \partial_t f_h  + v_z\partial_z f_h - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} f_h = 0
+    \end{cases}
+  $$
+  with:
+  $$
+    J = \begin{pmatrix}
+       0 & 1 \\
+      -1 & 0
+    \end{pmatrix}
+  $$
+  %we define the Hamiltonian as :
+  %$$
+  %  \begin{aligned}
+  %    \mathcal{H} &=
+  %      \underbrace{\frac{1}{2}\int \|\Mvb{E}\|^2 \dd{z}}_{\mathcal{H}_E}
+  %    + \underbrace{\frac{1}{2}\int \|\Mvb{B}\|^2 \dd{z}}_{\mathcal{H}_B}
+  %    + \underbrace{\frac{1}{2}\int \frac{1}{\Omega_{pe}^2}\|\Mvb{j}_c\|^2 \dd{z}}_{\mathcal{H}_{j_c}}\\
+  %    &\qquad+ \underbrace{\frac{1}{2}\int\int \|\Mvb{v}\|^2f_h \dd{\Mvb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
+  %  \end{aligned}
+  %$$
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- NUMERICAL METHODS ---------------------------------------------
+% -------------------------------------------------------------------
+\section{Numerical methods}
+\begin{frame}
+  Two time integrators to compute a numerical solution of:
+  $$
+    \dot{u} = L(t,u) + N(t,u),\quad u(0) = u_0
+  $$
+  $u\in\mathbb{R}^d$, $L$ and $N$ functions $(t,u)\in\mathbb{R}_+\times\mathbb{R}^d\mapsto\mathbb{R}^d$, $d\in\mathbb{N}$.
+  \vfill
+  \begin{itemize}
+    \item Splitting method (Lie, Strang, Suzuki)
+    \item Lawson method (LRK(4,4), LDP4(3))
+  \end{itemize}
+  \vfill
+  
+  In space $z$: we use a Fourier transform (FFT).
+
+  In velocity $\Mvb{v}$: we use WENO5 of Lagrange 5.
+\end{frame}
+\begin{frame}{Splitting method}
+  Successive resolution of:
+  $$
+    \begin{aligned}
+      \dot{u} &= L(t,u) \qquad & \rightarrow \tilde{u}_t = \varphi^{[L]}_t(u_0) \\
+      \dot{u} &= N(t,u)        & \rightarrow \tilde{u}_t = \varphi^{[N]}_t(u_0)
+    \end{aligned}
+  $$
+  Solution at time $t$:
+  \begin{description}
+    \item[\mbold{Lie:}] order 1 method composition of sub-steps:
+        $\varphi_t(u_0) \approx \varphi_t^{[L]} \circ \varphi_t^{[N]}(u_0)$
+    \item[\mbold{Strang:}] order 2 method:
+        $\varphi_t(u_0) \approx \mathcal{S}_t(u_0) = \varphi_{t/2}^{[L]} \circ \varphi_t^{[N]} \circ \varphi_{t/2}^{[L]} (u_0)$
+        \vspace{-0.25cm}
+        \begin{thebibliography}{9}
+          \setbeamertemplate{bibliography item}[article]
+          \bibitem{b} \customcite{Strang:1968}
+        \end{thebibliography}
+    \item[\mbold{Suzuki:}] order 4 method, composition of 5 Strang methods:
+        $$\varphi_t(u_0) \approx \mathcal{S}_{\alpha_1t}\circ\mathcal{S}_{\alpha_2t}\circ\mathcal{S}_{\alpha_3t}\circ\mathcal{S}_{\alpha_2t}\circ\mathcal{S}_{\alpha_1t}(u_0)$$
+        with:
+        $\alpha_1 = \alpha_2 = \frac{1}{4-\sqrt[3]{4}}$ and $\alpha_3 = \frac{1}{1-4^{\frac{2}{3}}}$
+        \vspace{-0.25cm}
+        \begin{thebibliography}{9}
+          \setbeamertemplate{bibliography item}[article]
+          \bibitem{c} \customcite{Suzuki:1990}
+        \end{thebibliography}
+  \end{description}
+
+  \vspace{-0.25cm}
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{d} \customcite{Casas:2020} \textcolor{defaultcolor}{(for some higher order methods)}
+  \end{thebibliography}
+\end{frame}
+%-------%
+\begin{frame}{Splitting method}
+  {Pros \& Cons}
+  \begin{description}
+    \item[\cmark] Good behavior in long time
+    \item[\cmark] Error in time only depends on splitting method
+    \item[\cmark] Split a difficult problem into small easier sub-problems
+    \item[\xmark] Numerical cost for high order method
+    \item[\bmark] Needs to find a way to solve exactly \mbold{in time} each step
+  \end{description}
+  
+\end{frame}
+
+%-------%
+\begin{frame}{Lawson method}
+  $$
+    \partial_t u = Lu + N(t,u)
+  $$
+  Change of variable: \mbold{$v = e^{-tL}u$}, we obtain a \mbold{Duhamel formula}:
+  $$
+    \begin{aligned}
+      \dot{v}(t) &= -Le^{-tL}u(t) + e^{-tL}\underbrace{\left(Lu(t) + N(t,u)\right)}_{\dot{u}(t)} \\
+                 &= e^{-tL}N(t,e^{tL}v)
+    \end{aligned}
+  $$
+  which can be solve with a \mbold{Runge-Kutta method} in $v$, that can be rewritten in $u$, for example with Euler method:
+  $$
+    v(t^n+\Delta t) \approx v^{n+1} = v^n + \Delta t e^{-t^nL}N(t^n,e^{t^nL}v^n)
+  $$
+  or as an expression of $u$ :
+  $$
+    u^{n+1} = e^{\Delta t L}u^n + \Delta te^{\Delta t L}N(t^n,u^n)
+  $$
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{e} \customcite{Lawson:1967a}
+    \bibitem{f} \customcite{Hochbruck:2020}
+  \end{thebibliography}
+\end{frame}
+%-------%
+\begin{frame}{Lawson method}
+  {Pros \& Cons}
+  \begin{description}
+    \item[\cmark] Numerically efficient (order increases linearly-ish with the number of stages)
+    \item[\cmark] Literature on Runge-Kutta method (embedded-RK, IMEX methods, low storage methods, \dots)
+    \item[\cmark] Linear part is solved exactly
+    \item[\xmark] Stability constraint (not from the linear part \cmark)
+    \item[\xmark] Behavior in long time
+    \item[\bmark] Needs to compute (efficiently) $e^{\tau L}$ for any $\tau=c_j\Delta t$ and $L$
+  \end{description}
+\end{frame}
+
+%-------%
+\begin{frame}{Main idea of adaptive time step methods (error estimate)}
+  for a generic ODE $\dot{u} = f(t,u)$, adaptive time step method need 2 numerical estimations of solution $u(t^{n+1})$ of different order, $p$ and $p+1$:
+  $$
+    u^{n+1}_{[p]} = u(t^{n+1}) + \order{\Delta t^{p+1}},\qquad u^{n+1}_{[p+1]} = u(t^{n+1}) + \order{\Delta t^{p+2}}
+  $$
+  Estimate of local error:
+  \vspace{-0.5cm}
+  $$
+    L_{[p]}^{n+1} = \left| u^{n+1}_{[p+1]} - u^{n+1}_{[p]} \right|
+  $$
+  \mbold{If $L^{n+1}_{[p]}>tol$:} we reject the step and start again from time $t^n$. \mbold{Else} we accept the step. \mbold{In both cases}, the optimal new time step is:
+  $$
+    \Delta t_\text{opt} = \sqrt[p]{\frac{tol}{L^{n+1}_{[p]}}}\Delta t^n
+  $$
+  In practice $u^{n+1}_{[p]}$ is computed from sub-steps of $u^{n+1}_{[p+1]}$.
+
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{g} \customcite{Dormand:1978} \textcolor{defaultcolor}{(for RK method)}
+    \bibitem{h} \customcite{Blanes:2019} \textcolor{defaultcolor}{(for splitting method)}
+  \end{thebibliography}
+  %In practice we don't want volatile time step:
+  %$
+  %  \Delta t^{n+1} = \max\left( 0.5\Delta t^n , \min\left( 2\Delta t^n , \Delta t_\text{opt} \right) \right)
+  %$
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- APPLICATION FOR HYBRID VLASOV-MAXWELL MODEL -------------------
+% -------------------------------------------------------------------
+\section{Application for hybrid Vlasov-Maxwell model}
+\begin{frame}{Linearized hybrid Vlasov-Maxwell model}
+  $U = \left(\Mvb{j}_c , \Mvb{B} , \Mvb{E} , f_h \right)^\top$, $\Mvb{j}_c(t,z),\Mvb{B}(t,z),\Mvb{E}(t,z)\in\mathbb{R}^2$
+  $$
+    \begin{cases}
+      \partial_t\Mvb{j}_c = \Omega_{pe}^2\Mvb{E} - J\Mvb{j}_c B_0 \\
+      \partial_t\Mvb{B}   = J\partial_z\Mvb{E} \\
+      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \Mvb{j}_c + \int v_\perp f_h\dd{v_\perp} \\
+      \partial_t f_h  + v_z\partial_z f_h - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} f_h = 0
+    \end{cases}
+  $$
+  we define the Hamiltonian as :
+  $$
+    \begin{aligned}
+      \mathcal{H} &=
+        \underbrace{\frac{1}{2}\int \|\Mvb{E}\|^2 \dd{z}}_{\mathcal{H}_E}
+      + \underbrace{\frac{1}{2}\int \|\Mvb{B}\|^2 \dd{z}}_{\mathcal{H}_B}
+      + \underbrace{\frac{1}{2}\int \frac{1}{\Omega_{pe}^2}\|\Mvb{j}_c\|^2 \dd{z}}_{\mathcal{H}_{j_c}}\\
+      &\qquad+ \underbrace{\frac{1}{2}\int\int \|\Mvb{v}\|^2f_h \dd{\Mvb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
+    \end{aligned}
+  $$
+  Following the Hamiltonian we built a Hamiltonian splitting.
+\end{frame}
+%-------%
+\subsection{With splitting method}
+\begin{frame}{Splitting method}
+  5 subsystems $\varphi^{[E]}$, $\varphi^{[B]}$, $\varphi^{[j_c]}$, $\varphi^{[f_h]}$
+
+
+  \begin{itemize}
+    \item Solution with Lie splitting method:
+      $$
+        U^{n+1} = \varphi_{\Delta t}^{[E]}
+            \circ \varphi_{\Delta t}^{[B]}
+            \circ \varphi_{\Delta t}^{[j_c]}
+            \circ \varphi_{\Delta t}^{[f_h]} (U^n)
+      $$
+    \item or Strang method:
+      $$
+        U^{n+1} = \varphi_{\Delta t/2}^{[E]}
+            \circ \varphi_{\Delta t/2}^{[B]}
+            \circ \varphi_{\Delta t/2}^{[j_c]}
+            \circ \varphi_{\Delta t}^{[f_h]}
+            \circ \varphi_{\Delta t/2}^{[j_c]}
+            \circ \varphi_{\Delta t/2}^{[B]}
+            \circ \varphi_{\Delta t/2}^{[E]} (U^n)
+      $$
+  \end{itemize}
+\end{frame}
+%-------%
+\begin{frame}{Splitting method}{Example with: $\varphi^{[E]}$}
+  One of sub-steps of Hamiltonian splitting:
+  $$
+    \varphi^{[E]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = \Omega_{pe}^2\Mvb{E} \\
+      \partial_t \Mvb{B} = J\partial_z\Mvb{E} \\
+      \partial_t \Mvb{E} = 0 \\
+      \partial_t f_h = \Mvb{E}\cdot\nabla_{\Mvb{v}}f_h
+    \end{cases}
+    \rightarrow
+    \varphi_{t}^{[E]}(U^0) = \begin{pmatrix}
+      \Mvb{j}_c(0) + t\Omega_{pe}^2\Mvb{E}(0) \\
+      \Mvb{B}(0) + tJ\partial_z\Mvb{E}(0) \\
+      \Mvb{E}(0) \\
+      f_h(0,z,\Mvb{v}+t\Mvb{E}(0),v_z)
+    \end{pmatrix}
+  $$
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item 2D interpolation with 2 Lagrange 5 interpolations to approximate $f_h(0,z,\Mvb{v}+t\Mvb{E}(0),v_z)$
+  \end{itemize}
+\end{frame}
+
+%-------%
+
+\subsection{With Lawson method}
+\begin{frame}{Lawson method}
+  $$\partial_tU = LU + N(t,U)$$
+  with:
+  $$
+    \only<2>{\hspace{-2cm}}
+    L = \begin{pmatrix}
+      0   & -B_0 & 0          &  0          &  \Omega_{pe}^2 & 0             & 0 \\ 
+      B_0 &  0   & 0          &  0          &  0             & \Omega_{pe}^2 & 0 \\
+      0   &  0   & 0          &  0          &  0             & \partial_z    & 0 \\ 
+      0   &  0   & 0          &  0          & -\partial_z    & 0             & 0 \\ 
+      -1  &  0   & 0          & -\partial_z &  0             & 0             & 0 \\ 
+      0   & -1   & \partial_z &  0          &  0             & 0             & 0 \\ 
+      0   &  0   & 0          &  0          &  0             & 0             & -v_z\partial_z \\ 
+    \end{pmatrix}
+    ,\ 
+    N:t,U\mapsto\begin{pmatrix}
+      0 \\
+      0 \\
+      0 \\
+      0 \\
+      \int v_xf_h\dd{\Mvb{v}} \\
+      \int v_yf_h\dd{\Mvb{v}} \\
+      (\Mvb{E}+\Mvb{v}\times\Mvb{B})\cdot\nabla_{\Mvb{v}}f_h
+    \end{pmatrix}
+  $$
+  But $e^{\tau L}$ can't be computed with symbolic computation software.
+\end{frame}
+
+
+\begin{frame}{How to compute $e^{\tau L}$?}
+  2 solutions are proposed:
+  \begin{enumerate}
+    \item Remove some terms of the linear part $L$ and put them in nonlinear part $N$.
+      \begin{description}
+        \item[\cmark] symbolic computation to write efficient code
+        \item[\xmark] add CFL stability condition
+      \end{description}
+    \item Approximate $e^{\tau L}$ with Taylor series or Pade approximant.
+      \begin{description}
+        \item[\cmark] no CFL stability from all (local) linear terms
+        \item[\xmark] add error of approximation
+      \end{description}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Remove terms}
+  Remove Maxwell equations from linear part $L$, and add them in nonlinear term $N$:
+  $$
+    L = \begin{pmatrix}
+      0   & \hspace{-0.25cm}-B_0 & 0 & 0 & \hspace{-0.125cm}\Omega_{pe}^2\hspace{-0.125cm} &                  0                              & 0 \\ 
+      B_0 &                  0   & 0 & 0 &                  0                              & \hspace{-0.125cm}\Omega_{pe}^2\hspace{-0.125cm} & 0 \\
+      0   &                  0   & 0 & 0 &                  0                              &                  \textcolor{violet}{0}                              & 0 \\ 
+      0   &                  0   & 0 & 0 &                  \textcolor{violet}{0}                              &                  0                              & 0 \\ 
+      -1  &                  0   & 0 & \textcolor{violet}{0} &                  0                              &                  0                              & 0 \\ 
+      0   & \hspace{-0.25cm}-1   & \textcolor{violet}{0} & 0 &                  0                              &                  0                              & 0 \\ 
+      0   &                  0   & 0 & 0 &                  0                              &                  0                              & \hspace{-0.25cm}-v_z\partial_z \\ 
+    \end{pmatrix}
+    ,\ 
+    N(t,U) = \begin{pmatrix}
+      0 \\
+      0 \\
+      \textcolor{violet}{ \partial_zE_y} \\
+      \textcolor{violet}{-\partial_zE_x} \\
+      \textcolor{violet}{-\partial_zB_y} + \int v_xf_h\dd{\Mvb{v}} \\
+      \textcolor{violet}{ \partial_zB_x} + \int v_yf_h\dd{\Mvb{v}} \\
+      (\Mvb{E}-\Mvb{v}\times\Mvb{B})\cdot\nabla_{\Mvb{v}}f_h
+    \end{pmatrix}
+  $$
+  \begin{description}
+    \item[\cmark] $e^{\tau L}$ is exactly computed with symbolic computation
+    \item[\xmark] Add a CFL stability condition in $z$ (coming from explicit resolution of \textcolor{violet}{Maxwell equations}) which can be estimated.
+  \end{description}
+\end{frame}
+
+%\begin{frame}{How to estimate CFL condition}
+%  \textcolor{red}{Ajouter une slide ou deux sur l'estimation de la CFL induite par Maxwell, mais en même temps ça me semble déjà long}
+%\end{frame}
+
+\begin{frame}{Approximation of $e^{\tau L}$}
+  Complete linear part $L$, after Fourier transform in $z$: $\partial_z\mapsto i\kappa$
+  $$
+    L = \begin{pmatrix}
+      0   & -B_0 & 0       &  0       &  \Omega_{pe}^2 & 0             & 0 \\ 
+      B_0 &  0   & 0       &  0       &  0             & \Omega_{pe}^2 & 0 \\
+      0   &  0   & 0       &  0       &  0             & i\kappa       & 0 \\ 
+      0   &  0   & 0       &  0       & -i\kappa       & 0             & 0 \\ 
+      -1  &  0   & 0       & -i\kappa &  0             & 0             & 0 \\ 
+      0   & -1   & i\kappa &  0       &  0             & 0             & 0 \\ 
+      0   &  0   & 0       &  0       &  0             & 0             & -i\kappa v_z \\ 
+    \end{pmatrix}
+  $$
+  We have:
+  $$
+    \forall \kappa, \sigma({L(\kappa)})\subset \dot{\imath}\,\mathbb{R}
+  $$
+\end{frame}
+
+\begin{frame}{Taylor series}
+  Simplest approximation:
+  $$
+    T_n(\tau L) = \sum_{k=0}^n \frac{\tau^k}{k!}L^k = e^{\tau L} + \order{\tau^{n+1}}
+  $$
+
+  \begin{description}
+    \item[\xmark] Bad behavior of eigenvalues
+    \item[\xmark] Numerical instability in scheme
+  \end{description}
+  \arrow Don't keep Taylor series
+\end{frame}
+\begin{frame}{Eigenvalues of Taylor series}
+   \begin{figure}\centering \includegraphics[height=0.7\textheight]{img/evT5} \caption{Eigenvalues of $T_5$ depend on Fourier mode $\kappa$ in $z$}\end{figure}
+\end{frame}
+
+\begin{frame}{Padé approximant}
+  Best rational approximation of exponential function. Defined (for order $(p,q)$) as:
+  $$
+    \begin{aligned}
+      h_{p,q}(M) & = \sum_{i=0}^p        \frac{\frac{p!}{(p-i)!}}{\frac{(p+q)!}{(p+q-i)!}} \frac{M^i}{i!} \\
+      k_{p,q}(M) & = \sum_{j=0}^q (-1)^j \frac{\frac{q!}{(q-j)!}}{\frac{(p+q)!}{(p+q-j)!}} \frac{M^j}{j!}
+    \end{aligned}
+  $$
+
+  Finally Padé approximant is:
+  $$
+    P_{p,q}(\tau L) = h_{p,q}(\tau L)\left( k_{p,q}(\tau L) \right)^{-1} = e^{\tau L} + \order{\tau^{p+q+1}}
+  $$
+
+  \begin{description}
+    \item[\xmark] Needs matrix inversion, or some tricks:
+    \begin{thebibliography}{9}
+      \setbeamertemplate{bibliography item}[article]
+    \bibitem{i} \customcite{Li:2011}
+  \end{thebibliography}
+    \item[\cmark] Best approximation for this numerical cost
+    \item[\cmark] Preserve eigenvalues
+  \end{description}
+\end{frame}
+\begin{frame}{Eigenvalues of Padé approximants}
+    \only<1>{\begin{figure}\centering \includegraphics[height=0.7\textheight]{img/ev_P22} \caption{Eigenvalues of $P_{2,2}$ depend on Fourier mode $\kappa$ in $z$}\end{figure}}
+    \only<2>{
+      \begin{columns}
+        \begin{column}{0.5\textwidth}
+          \begin{figure}\centering \includegraphics[width=\textwidth]{img/ev_P21} \caption{Eigenvalues of $P_{2,1}$ depend on Fourier mode $\kappa$ in $z$}\end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+          \begin{figure}\centering \includegraphics[width=\textwidth]{img/ev_P12} \caption{Eigenvalues of $P_{1,2}$ depend on Fourier mode $\kappa$ in $z$}\end{figure}
+        \end{column}
+      \end{columns}
+    }
+    \only<3>{
+      \vfill
+        \cmark\ If $p=q$, no problem !
+      \vfill
+      \arrow Good choice !
+    }
+\end{frame}
+
+\begin{frame}{Test 1}
+  Simulation of $\partial_t u + a\partial_x u + b\partial_y u = 0$ (2D translation test case) and measure order.
+  \only<1>{
+    \begin{figure}
+      \centering
+      \includegraphics[height=0.6\textheight]{img/order_lrk33ref}
+      \caption{Order of Lawson RK(3,3) method, and Lawson RK(3,3), $P(2,2)$ approximant method and Lawson RK(3,3) $T(4)$ series method.}
+    \end{figure}
+  }\only<2>{
+    \begin{columns}
+      \begin{column}{0.5\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[height=0.6\textheight]{img/order_lrk33taylor}
+          \caption{Order of Lawson RK(3,3) $T(n)$ series method, $n=1,\dots,4$.}
+        \end{figure}
+      \end{column}
+      \begin{column}{0.5\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[height=0.6\textheight]{img/order_lrk33pade}
+          \caption{Order of Lawson RK(3,3) $P(p,q)$ approximant, $p=1,2$, $q=1,2$}
+        \end{figure}
+      \end{column}
+    \end{columns}
+  }
+\end{frame}
+\begin{frame}{Test 2}
+  Simulation of $\partial_t u - y\partial_x u + x\partial_y u = 0$ (2D rotation) and test instability
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/uf_t3p11}
+    \caption{Initial condition (left), solution with Lawson RK(3,3) $T(3)$ series (middle) and Lawson RK(3,3) $P(1,1)$ approximant (right)}
+  \end{figure}
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- NUMERICAL RESULTS ---------------------------------------------
+% -------------------------------------------------------------------
+\section{Numerical results}
+\begin{frame}{Numerical results}
+  We compare:
+  \begin{itemize}
+    \item Splitting method:\begin{itemize}
+      \item Strang (order 2)
+      \item Suzuki (order 4)
+    \end{itemize}
+    \item Lawson method:\begin{itemize}
+      \item LRK(4,4) (order 4)
+      \item LDP4(3) (adaptive time step method)
+    \end{itemize}
+    \item Lawson method with approximation of linear part:\begin{itemize}
+      \item LRK(4,4) with Padé $(2,2)$ (order 4 + approximation of order $2+2=4$)
+      \item LDP4(3) with Padé $(2,2)$ (adaptive time step method)
+    \end{itemize}
+  \end{itemize}
+
+  \mbold{But:} Padé approximant implies a huge rational function (with invert of matrix), high order Lawson methods have a lot of coefficients, with 7 variables problem\dots \ \arrow \ bug source !!!
+\end{frame}
+\begin{frame}{Code generator}
+  The main idea of code generator:
+  \begin{enumerate}
+    \item Write with SymPy the Lawson method with a vector $U\in\mathbb{C}^7$, an abstract matrix $L\in\mathcal{M}_7(\mathbb{C})$ and an abstract nonlinear part $N:t,U\mapsto N(t,U)\in\mathbb{C}^7$
+    \item Compute $e^{\tau L}$ with our $L$ matrix, and given approximation of $\exp$
+    \item Loop for each stage of Lawson method into a code template (Jinja2)
+    \item Save the file, compile and run with a given configuration file
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Numerical results}
+  {$N_z\times N_{v_x} \times N_{v_y} \times N_{v_z} = 27 \times 32 \times 32 \times 41$}
+  \only<1>{
+    \begin{figure}
+      \includegraphics[height=0.75\textheight]{img/energy_a_vmhl}
+      \caption{Energies evolution, $\Delta t = 0.05$}
+    \end{figure}
+  }
+  \only<2>{
+    \begin{figure}
+      \includegraphics[width=\textwidth]{img/H_a_vmhl}
+      \caption{Relative error on total energy, $\Delta t = 0.05$}
+    \end{figure}
+  }
+  \only<3>{
+    \begin{figure}
+      \includegraphics[height=0.75\textheight]{img/energy_max}
+      \caption{Energies evolution, Lawson with Taylor or Padé approximation, $\Delta t = 0.12$}
+    \end{figure}
+  }
+  \only<4>{
+    \begin{figure}
+      \includegraphics[height=0.72\textheight]{img/energy_dtn}
+      \caption{Energies evolution, Lawson with Taylor or Padé approximation, $\Delta t^n$}
+    \end{figure}
+  }
+  \only<5>{
+    \begin{figure}
+      \includegraphics[height=0.6\textheight]{img/iterations_dtn}
+      \caption{Time step evolution and estimate of local error, Lawson with Taylor or Padé approximation, $\Delta t^n$}
+    \end{figure}
+  }
+\end{frame}
+  \begin{frame}{Simulation time}
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{l|r}
+      time integrator & simulation time \\
+      \hline
+      Lie splitting        &                $13\,\text{h}\ 25\,\text{min}\ 10\,\text{s}$ \\
+      Strang splitting     &                $17\,\text{h}\ 09\,\text{min}\ 54\,\text{s}$ \\
+      Suzuki splitting     &   $3\,\text{j}\ 03\,\text{h}\ 05\,\text{min}\ 24\,\text{s}$ \\
+      \hline
+      LRK(3,3)             &                $11\,\text{h}\ 29\,\text{min}\ 09\,\text{s}$ \\
+      LRK(3,3) - $T_4$     &                $10\,\text{h}\ 53\,\text{min}\ 40\,\text{s}$ \\
+      LRK(3,3) - $P_{1,1}$ &                $10\,\text{h}\ 54\,\text{min}\ 11\,\text{s}$ \\
+      LRK(3,3) - $P_{2,2}$ &                $10\,\text{h}\ 55\,\text{min}\ 26\,\text{s}$ \\
+      \hline
+      LRK(4,4)             &                $14\,\text{h}\ 06\,\text{min}\ 15\,\text{s}$ \\
+      LRK(4,4) - $T_5$     &                $14\,\text{h}\ 00\,\text{min}\ 03\,\text{s}$ \\
+      LRK(4,4) - $P_{2,2}$ &                $13\,\text{h}\ 59\,\text{min}\ 59\,\text{s}$ \\
+      \hline
+      LDP4(3)              &                $11\,\text{h}\ 44\,\text{min}\ 04\,\text{s}$ \\
+      LDP4(3) - $P_{2,2}$  &                $04\,\text{h}\ 09\,\text{min}\ 44\,\text{s}$ \\
+    \end{tabular}
+    \caption{Simulation time for some simulation, on mesh $N_z \times N_{v_x} \times N_{v_y} \times N_{v_z}=27\times32\times32\times41$ and time step $\Delta t = 0.05$ (initial time step for adaptive time step strategy).}
+  \end{table}
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- CONCLUSION ----------------------------------------------------
+% -------------------------------------------------------------------
+\section{Conclusion}
+\begin{frame}{Conclusion}
+  \begin{enumerate}
+    \item[\cmark] First simulations of this system using Hamiltonian splitting
+    \item[\xmark] Numerical cost of splitting methods (not bad in $1dz-1dv$ but very bad in $1dz-3dv$, must be very very very bad in $3dx-3dv$)
+     \item[\cmark] Numerical cost of Lawson methods
+     \item[\bmark] Behavior of total energy of Lawson method (but we can use high order method easily)
+     \item[\cmark] Error of approximation with Padé approximant can be lower than time integrator
+  \end{enumerate}
+\end{frame}
+\begin{frame}{Future works}
+  \begin{itemize}
+    \item Compare Lawson method with Padé approximant with a PIC simulation
+    \item Add $\int \Mvb{v}f_h\dd{\Mvb{v}}$ in linear part (for $1dx-1dv$ model)
+  \end{itemize}
+\end{frame}
+
+% -------------------------------------------------------------------
+% --- THANKS --------------------------------------------------------
+% -------------------------------------------------------------------
+\begin{frame}[t]
+  \vfill
+  {\usebeamerfont{title} Thank you for your attention}
+  \vfill
+\end{frame}
+
+\appendix
+\backupbegin
+
+% -------------------------------------------------------------------
+% --- BACKUP --------------------------------------------------------
+% -------------------------------------------------------------------
+\begin{frame}[plain]
+  \vspace{0.65\textwidth}
+  \hfill\footnotesize{Backup}
+\end{frame}
+% -------------------------------------------------------------------
+\begin{bframe}{Adaptive time step method for splitting method}
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{backup:a} \customcite{Blanes:2019} \textcolor{defaultcolor}{for Suzuki splitting method}
+  \end{thebibliography}
+  $$
+    u^{n+1}_{[4]} = \mathcal{S}_{\Delta t}(u^n)
+      = S_{\alpha_1\Delta t}
+        \circ \underbrace{ S_{\alpha_2\Delta t}
+        \circ \underbrace{ S_{\alpha_3\Delta t}
+        \circ \underbrace{ S_{\alpha_2\Delta t}
+        \circ \underbrace{ S_{\alpha_1\Delta t} (u^n). }_{u^{(1)}}
+                                                       }_{u^{(2)}}
+                                                       }_{u^{(3)}}
+                                                       }_{u^{(4)}}
+  $$
+  We compute an order 3 approximation from $U^n$ and $U^{(s)}$, $s=1,2,3,4$ :
+  $$
+    u^{n+1}_{[3]} = -u^n + w_1(u^{(1)}+u^{(4)}) + w_2(u^{(2)}+u^{(3)})
+  $$
+  with:
+  $$
+    w_1 = \frac{g_2(1-g_2)}{g_1(g_1-1)-g_2(g_2-1)},\quad w_2 = 1-w_1, \quad \begin{aligned}g_1 &= \alpha_1\\ g_2&=\alpha_1+\alpha_2\end{aligned}
+  $$
+  and $L^{n}_{[3]} = \left\| u^{n+1}_{[4]} - u^{n+1}_{[3]} \right\|_2$
+\end{bframe}
+%-------%
+\begin{bframe}{Adaptive time step method for Lawson method}
+  Lawson methods are built on Runge-Kutta method, embedded Lawson method are written with an underlying embedded Runge-Kutta method.
+
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{backup:b} \customcite{Dormand:1978}
+  \end{thebibliography}
+  With DP4(3) (Dormand-Prince method of order 4, with embedded 3 method):
+    $$
+    \begin{array}{c|cccccc}
+      0           &             &             &             &             &                & \multirow{5}{*}{$\left.\phantom{\begin{matrix}0\\1\\2\\3\\4\end{matrix}}\right\}$Classical RK(4,4)} \\
+      \frac{1}{2} & \frac{1}{2} &             &             &             &                & \\
+      \frac{1}{2} & 0           & \frac{1}{2} &             &             &                & \\
+      1           & 0           & 0           & 1           &             &                & \\
+    \cline{1-6}
+      1           & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{1}{6} &                &\\
+    \cline{1-6}
+                  & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & \frac{2}{30} & \frac{1}{10}  & 
+    \end{array}
+  $$
+  We compute a 3\textsuperscript{rd} order approximation from $u^n$, $u^{(s)}$, $s=1,2,3,4$ done by the last line of Butcher tableau.
+
+  And $L^{n}_{[3]} = \left\| u^{n+1}_{[4]} - u^{n+1}_{[3]} \right\|_2$
+\end{bframe}
+% -------------------------------------------------------------------
+\begin{bframe}{Poisson bracket}
+  For two given functionals  $\mathcal{F}$, $\mathcal{G}$ of $\Mvb{j}_c$, $\Mvb{B}$, $\Mvb{E}$, $f_h$, the Poisson bracket is given by 
+  $$
+    \begin{aligned}
+      \{ {\cal F}, {\cal G} \}[\Mvb{j}_c, \Mvb{B}, \Mvb{E}, f_h] &=
+          \frac{1}{m_e} \int_\Omega \int_{\mathbb{R}^3} f_h \Big[ \frac{\delta \mathcal{F}}{\delta f_h}, \frac{\delta \mathcal{G}}{\delta f_h} \Big]_{\Mvb{x}\Mvb{v}} \dd{\Mvb{v}}\dd{\Mvb{x}} \\
+      & + \frac{q_e}{m_e\varepsilon_0} \int_\Omega \int_{\mathbb{R}^3} f_h \left( \nabla_{\Mvb{v}}\frac{\delta \mathcal{F}}{\delta f_h} \cdot \frac{\delta \mathcal{G}}{\delta\Mvb{E}} -  \nabla_{\Mvb{v}}\frac{\delta \mathcal{G}}{\delta f_h} \cdot \frac{\delta \mathcal{F}}{\delta\Mvb{E}} \right) \dd{\Mvb{v}}\dd{\Mvb{x}} \\
+      & + \frac{q_e}{m^2_e} \int_\Omega \int_{\mathbb{R}^3} f_h (\Mvb{B} + \Mvb{B}_0) \cdot \left( \nabla_{\Mvb{v}}\frac{\delta \mathcal{F}}{\delta f_h} \times \nabla_{\Mvb{v}}\frac{\delta \mathcal{G}}{\delta f_h} \right) \dd{\Mvb{v}}\dd{\Mvb{x}} \\
+      & + \frac{1}{\varepsilon_0} \int_\Omega  \left( \nabla \times \frac{\delta \mathcal{F}}{\delta \Mvb{E}} \cdot  \frac{\delta \mathcal{G}}{\delta \Mvb{B}} - \nabla \times \frac{\delta \mathcal{G}}{\delta \Mvb{E}} \cdot  \frac{\delta \mathcal{F}}{\delta \Mvb{B}} \right) \dd{\Mvb{x}} \\
+      & +  \int_\Omega \Omega_{pe}^2 \left( \frac{\delta \mathcal{F}}{\delta \Mvb{j}_c} \cdot \frac{\delta \mathcal{G}}{\delta \Mvb{E}} -  \frac{\delta \mathcal{G}}{\delta \Mvb{j}_c} \cdot \frac{\delta \mathcal{F}}{\delta \Mvb{E}} \right)  \dd{\Mvb{x}} \\
+      & + \frac{q_e \varepsilon_0}{m_e}  \int_\Omega   \Omega_{pe}^2 \Mvb{B}_0 \cdot \left( \frac{\delta \mathcal{F}}{\delta \Mvb{j}_c} \times \frac{\delta \mathcal{G}}{\delta \Mvb{j}_c} \right) \dd{\Mvb{x}}.
+    \end{aligned}
+  $$
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[j_c]}$}
+  $$
+    \varphi^{[j_c]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = -J\Mvb{j}B_0 \\
+      \partial_t \Mvb{B} = 0 \\
+      \partial_t \Mvb{E} = -\Mvb{j}_c \\
+      \partial_t f_h = 0
+    \end{cases}
+    \rightarrow
+    \varphi_{t}^{[j_c]}(U^0) = \begin{pmatrix}
+      e^{-tJ}\Mvb{j}_c(0)B_0 \\
+      \Mvb{B}(0) \\
+      \Mvb{E}(0) - J(e^{-tJ}-I)\Mvb{j}_c(0) \\
+      f_h(0)
+    \end{pmatrix}
+  $$
+  Obtain because: $\int_0^t \exp(-sJ)\Mvb{j}_c(0)\dd{s} = J(\exp(-tJ)-I)\Mvb{j}_c(0)$, with:
+  $$
+    \exp(-tJ) = \begin{pmatrix}\cos(t) & -\sin(t) \\ \sin(t) & \cos(t) \end{pmatrix}
+  $$
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[B]}$}
+  $$
+    \varphi^{[B]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = 0 \\
+      \partial_t \Mvb{B} = 0 \\
+      \partial_t \Mvb{E} = -J\partial_z\Mvb{B} \\
+      \partial_t f_h = 0
+    \end{cases}
+    \rightarrow
+    \varphi_{t}^{[B]}(U^0) = \begin{pmatrix}
+      \Mvb{j}_c(0) \\
+      \Mvb{B}(0) \\
+      \Mvb{E}(0) - tJ\partial_z\Mvb{B}(0) \\
+      f_h(0)
+    \end{pmatrix}
+  $$
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item Solve in Fourier space
+  \end{itemize}
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[E]}$}
+  $$
+    \varphi^{[E]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = \Omega_{pe}^2\Mvb{E} \\
+      \partial_t \Mvb{B} = J\partial_z\Mvb{E} \\
+      \partial_t \Mvb{E} = 0 \\
+      \partial_t f_h = \Mvb{E}\cdot\nabla_{\Mvb{v}}f_h
+    \end{cases}
+    \rightarrow
+    \varphi_{t}^{[E]}(U^0) = \begin{pmatrix}
+      \Mvb{j}_c(0) + t\Omega_{pe}^2\Mvb{E}(0) \\
+      \Mvb{B}(0) + tJ\partial_z\Mvb{E}(0) \\
+      \Mvb{E}(0) \\
+      f_h(0,z,\Mvb{v}+t\Mvb{E}(0),v_z)
+    \end{pmatrix}
+  $$
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item 2D interpolation with 2 Lagrange 5 interpolations to approximate $f_h(0,z,\Mvb{v}+t\Mvb{E}(0),v_z)$
+  \end{itemize}
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[f_h]}$}
+  $$
+    \varphi^{[f_h]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = 0 \\
+      \partial_t \Mvb{B} = 0 \\
+      \partial_t \Mvb{E} = \int\Mvb{v}f_h\dd{\Mvb{v}} \\
+      \partial_t f_h = -v_z\partial_zf_h + (\Mvb{v}\times(\Mvb{B}+\Mvb{B}_0))\cdot\nabla_{\Mvb{v}}f_h
+    \end{cases}
+  $$
+  This step is split again onto 3 parts.
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[f_h]}$, $f_{h,\star}$, $\star\in\{x,y\}$}
+  $$
+    \!\!\varphi^{[f_{h,x}]}(U)\!=\!\!
+    \begin{cases}
+      \partial_t \Mvb{j}_c = 0 \\
+      \partial_t \Mvb{B} = 0 \\
+      \partial_t E_x = \int\!v_x f_h\dd{\Mvb{v}} \\
+      \partial_t E_y = 0 \\
+      \partial_t f_h = -v_x B_0\partial_{v_y} f_h + v_x B_y\partial_{v_z}f_h 
+    \end{cases}
+    \hspace{-2.625cm}
+    \rightarrow
+    \varphi_t^{[f_{h,x}]}(U^0)\!=\!\!\begin{pmatrix}
+      \Mvb{j}_c(0) \\
+      \Mvb{B}(0) \\
+      E_x(0) + t\int\!v_xf_h(0)\dd{\Mvb{v}} \\
+      E_y(0) \\
+      \!f_h(\!0,\!z,\!\!v_x,\!\!v_y\!\!-\!\!tv_x\!B_0,\!v_z\!\!+\!\!tB_y\!v_x\!)\!
+    \end{pmatrix}
+  $$
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item 2D interpolation with Lagrange 5 interpolation to approximate $f_h(0,z,v_x,v_y-tv_xB_0,v_z+tB_yv_x)$
+  \end{itemize}
+  Same thing for $\varphi^{[f_{h,y}]}$ in $v_y$ direction.
+\end{bframe}
+\begin{bframe}{Splitting method $\varphi^{[f_h]}$, $f_{h,z}$}
+  $$
+    \varphi^{[f_{h,z}]}(U) =
+    \begin{cases}
+      \partial_t \Mvb{j}_c = 0 \\
+      \partial_t \Mvb{B} = 0 \\
+      \partial_t \Mvb{E} = 0 \\
+      \partial_t f_h = -v_z\partial_zf_h + (-v_zB_y\partial_{v_x}f_h + v_zB_x\partial_{v_y}f_h) 
+    \end{cases}
+  $$
+  \mbold{Numerical tools:}
+  \begin{itemize}
+    \item Split \mbold{again} onto 3 parts, with change of variable $g(t,z,\Mvb{v}):=f(t,z+tv_z,\Mvb{v})$
+    \item 2D interpolation with Lagrange 5 interpolation to approximate $g(0,z,v_x-\sum_k\hat{B}_{y}(0,k)\frac{1}{ik}e^{ikz}(e^{iktv_z}-1), v_y+\sum_k\hat{B}_x(0,k)\frac{1}{ik}e^{ikz}(e^{iktv_z}-1),v_z)$
+     \item Revert change of variable with Fourier transform
+  \end{itemize}
+\end{bframe}
+\begin{bframe}{Splitting method}
+  For Lie method:
+
+  $U^{n+1} = \varphi_{\Delta t}^{[j_c]}
+        \circ\varphi_{\Delta t}^{[B]}
+        \circ\varphi_{\Delta t}^{[E_{v_x}]}
+        \circ\varphi_{\Delta t}^{[E_{v_y}]}
+        \circ\varphi_{\Delta t}^{[f_{h,x,v_x}]}
+        \circ\varphi_{\Delta t}^{[f_{h,x,v_z}]}
+        \circ\varphi_{\Delta t}^{[f_{h,y,v_y}]}
+        \circ\varphi_{\Delta t}^{[f_{h,y,v_z}]}
+        \circ\varphi_{\Delta t}^{[f_{h,z,1}]}
+        \circ\varphi_{\Delta t}^{[f_{h,z,2}]}
+        \circ\varphi_{\Delta t}^{[f_{h,z,3}]}
+        (U^n)
+   $
+\end{bframe}
+
+
+%-------%
+\backupend
+
+\end{document}
+
