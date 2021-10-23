@@ -106,7 +106,7 @@
 
 
 %\title[Workshop Bordeaux]{Hybrid model of Vlasov-Maxwell equations\\ and\\ comparison of Hamiltonian method and Lawson method}
-\title[IMB]{ (Approximate) Exponential methods for solving hyperbolic problems for electron hybrid model}
+\title[]{ (Approximate) Exponential methods for solving hyperbolic problems for electron hybrid model}
 \author[Josselin Massot]{A. Crestetto \inst{1} \and N. Crouseilles \inst{2,3} \and Y. Li \inst{4} \and \underline{J. Massot} \inst{3,2}}
 \institute[IRMAR]{
        \inst{1} LMJL, Université de Nantes
@@ -173,7 +173,7 @@
   $$
     \partial_t u = Lu + N(t,u)
   $$
-  Change of variable: \mbold{$v = e^{-tL}u$}, we obtain a \mbold{Duhamel formula}:
+  Change of variable: \mbold{$v = e^{-tL}u$}, we obtain:
   $$
     \begin{aligned}
       \dot{v}(t) &= -Le^{-tL}u(t) + e^{-tL}\underbrace{\left(Lu(t) + N(t,u)\right)}_{\dot{u}(t)} \\
@@ -312,22 +312,14 @@
 \end{frame}
 
 \begin{frame}{Eigenvalues of assymetric Padé approximants}
-    \only<1>{
-      \begin{columns}
-        \begin{column}{0.5\textwidth}
-          \begin{figure}\centering \includegraphics[width=\textwidth]{img/P21_ev} \caption{$P_{2,1}(\I x)$ $x\in[-5,5]$}\end{figure}
-        \end{column}
-        \begin{column}{0.5\textwidth}
-          \begin{figure}\centering \includegraphics[width=\textwidth]{img/P12_ev} \caption{$P_{1,2}(\I x)$ $x\in[-5,5]$}\end{figure}
-        \end{column}
-      \end{columns}
-    }
-    \only<2>{
-      \vfill
-        \cmark\ If $p=q$, no problem !
-      \vfill
-      \arrow Good choice !
-    }
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}\centering \includegraphics[width=\textwidth]{img/P21_ev} \caption{$P_{2,1}(\I x)$ $x\in[-5,5]$}\end{figure}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}\centering \includegraphics[width=\textwidth]{img/P12_ev} \caption{$P_{1,2}(\I x)$ $x\in[-5,5]$}\end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Error on approximate Lawson method}
@@ -438,6 +430,9 @@
 % -------------------------------------------------------------------
 % --- NUMERICAL RESULTS ---------------------------------------------
 % -------------------------------------------------------------------
+
+\newcommand{\gz}{\textcolor{gris!80}{0}}
+
 \section{Numerical results}
 \begin{frame}{4D hybrid fluid-kinetic plasma model}
   Vlasov-Maxwell $1dz-3dv$ hybrid model
@@ -452,20 +447,20 @@
   with $U = (j_{c,x},j_{c,y},B_x,B_y,E_x,E_y,f_h)^\top$ and
   $$
     L \!=\!\begin{pmatrix}
-      0        & \!-\!B_0\! & 0              &  0                &  \!\Omega_{pe}^2\! & 0                 & 0 \\ 
-      \!B_0\!  &  0         & 0              &  0                &  0                 & \!\Omega_{pe}^2\! & 0 \\
-      0        &  0         & 0              &  0                &  0                 & \partial_z        & 0 \\ 
-      0        &  0         & 0              &  0                & \!-\!\partial_z\!  & 0                 & 0 \\ 
-      \!-\!1\! &  0         & 0              & \!-\!\partial_z\! &  0                 & 0                 & 0 \\ 
-      0        & \!-\!1\!   & \!\partial_z\! &  0                &  0                 & 0                 & 0 \\ 
-      0        &  0         & 0              &  0                &  0                 & 0                 & \!\!\!\!\!-\!v_z\partial_z\! \\ 
+      \gz      & \!-\!B_0\! & \gz            &  \gz              &  \!\Omega_{pe}^2\! & \gz               & \gz \\ 
+      \!B_0\!  &  \gz       & \gz            &  \gz              &  \gz               & \!\Omega_{pe}^2\! & \gz \\
+      \gz      &  \gz       & \gz            &  \gz              &  \gz               & \partial_z        & \gz \\ 
+      \gz      &  \gz       & \gz            &  \gz              & \!-\!\partial_z\!  & \gz               & \gz \\ 
+      \!-\!1\! &  \gz       & \gz            & \!-\!\partial_z\! &  \gz               & \gz               & \gz \\ 
+      \gz      & \!-\!1\!   & \!\partial_z\! &  \gz              &  \gz               & \gz               & \gz \\ 
+      \gz      &  \gz       & \gz            &  \gz              &  \gz               & \gz               & \!\!\!\!\!-\!v_z\partial_z\! \\ 
     \end{pmatrix}
     ,\ 
     N\!:\!t,U\mapsto\!\begin{pmatrix}
-      0 \\
-      0 \\
-      0 \\
-      0 \\
+      \gz \\
+      \gz \\
+      \gz \\
+      \gz \\
       \int v_xf_h\dd{\Mvb{v}} \\
       \int v_yf_h\dd{\Mvb{v}} \\
       (\Mvb{E}\!+\!\Mvb{v}\times\Mvb{B})\!\cdot\!\nabla_{\!\Mvb{v}}f_h
@@ -589,22 +584,6 @@
   {\usebeamerfont{title} Thank you for your attention}
   \vfill
 \end{frame}
-
-\appendix
-\backupbegin
-
-% -------------------------------------------------------------------
-% --- BACKUP --------------------------------------------------------
-% -------------------------------------------------------------------
-\begin{frame}[plain]
-  \vspace{0.65\textwidth}
-  \hfill\footnotesize{Backup}
-\end{frame}
-% -------------------------------------------------------------------
-
-
-%-------%
-\backupend
 
 \end{document}
 
