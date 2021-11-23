@@ -123,6 +123,9 @@
 - [[Spiteri:2002](pdf/2002-Spiteri.pdf)] **A New Class of Optimal High-Order Strong-Stability-Preserving Time Discretization Methods** (*2002*)
 	R. J. Spiteri, S. J. Ruuth
 	*Journal on Numerical Analysis*
+- [[Moler:2003](https://doi.org/10.1137/S00361445024180)] **Nineteen Dubious Ways to Compute the Exponential of a Matrix, Twenty-Five Years Later** (*2003*)
+	C. Moler, C. Van Loan
+	*SIAM Review*
 - [[Filbet:2003](https://www.sciencedirect.com/science/article/pii/S001046550200694X)] **Comparison of Eulerian Vlasov solvers** (*2003*)
 	F. Filbet, E. Sonnendrücker
 	*Computer Physics Communications*
