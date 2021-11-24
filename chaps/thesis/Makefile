@@ -30,10 +30,10 @@ one : $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
 	pdflatex -jobname=$(TARGET) $(SOURCE_FILES)
 
 $(TARGET).pdf: $(SOURCE_FILES) $(BIB_FILES) $(FIGURES) these-dbl.cls
-	pdflatex -jobname=$(TARGET) $<
+	pdflatex $<
 	biber $(TARGET)
-	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $<
-	pdflatex -interaction=nonstopmode -jobname=$(TARGET) $<
+	pdflatex $<
+	pdflatex $<
 
 clean:
 	rm -f $(TARGET).{ps,pdf,min.pdf,bcf,run.xml}
