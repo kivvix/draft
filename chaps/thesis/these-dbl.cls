@@ -401,7 +401,7 @@
 
 {\HugeTwelve \textsc{Th\`{e}se de doctorat de} \\}
 
-% \vspace{5mm}
+\vspace{-1cm}
 {\normalTwelve \if\@nomecoleB\empty ~\\ \else \fi} % To compensate the 2 lines of MathSTIC
 {\setlength{\baselineskip}{0.9\baselineskip}
 {\largeTwelve \if\vnometablissementA\empty ~ \else \vnometablissementA \fi} \\
@@ -418,7 +418,7 @@
 {\normalTwelve Sp\'{e}cialit\'{e} : \textit{\@spec}}
 
 %\fontsize{12}{10}\selectfont
-\vspace{0.5cm}
+\vspace{0.0cm}
 \hspace{0.6cm}{\normalTwelve Par \vspace{0.15cm}}
 \par}
 \hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{0.5cm}
@@ -426,7 +426,7 @@
 \begin{flushright}
 {\LargeTwelve \textbf{\@title}}
 \end{flushright}
-\vspace{0.25cm}
+\vspace{-0.4125cm}
 	
 {\largeTwelve \@lesoustitre} \vspace{0.5cm}
 \begin{spacing}{1}
