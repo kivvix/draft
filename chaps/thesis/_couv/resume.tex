@@ -14,19 +14,25 @@
 
 \keywordsFR{de 3 \`{a} 6 mots clefs}
 
-\abstractFR{Eius populus ab incunabulis primis ad usque pueritiae tempus extremum, quod annis circumcluditur fere trecentis, circummurana pertulit bella, deinde aetatem ingressus adultam post multiplices bellorum aerumnas Alpes transcendit et fretum, in iuvenem erectus et virum ex omni plaga quam orbis ambit inmensus, reportavit laureas et triumphos, iamque vergens in senium et nomine solo aliquotiens vincens ad tranquilliora vitae discessit.
-Hoc inmaturo interitu ipse quoque sui pertaesus excessit e vita aetatis nono anno atque vicensimo cum quadriennio imperasset. natus apud Tuscos in Massa Veternensi, patre Constantio Constantini fratre imperatoris, matreque Galla.
-Thalassius vero ea tempestate praefectus praetorio praesens ipse quoque adrogantis ingenii, considerans incitationem eius ad multorum augeri discrimina, non maturitate vel consiliis mitigabat, ut aliquotiens celsae potestates iras principum molliverunt, sed adversando iurgandoque cum parum congrueret, eum ad rabiem potius evibrabat, Augustum actus eius exaggerando creberrime
-docens, idque, incertum qua mente, ne lateret adfectans. quibus mox Caesar acrius efferatus, velut contumaciae quoddam vexillum altius erigens, sine respectu salutis alienae vel suae ad vertenda opposita instar rapidi fluminis irrevocabili impetu ferebatur.}
+\abstractFR{
+  Cette thèse s'intéresse aux méthodes numérique pour la résolution de modèles de plasmas électroniques, et plus particulièrement ceux où les électrons peuvent être distingués en deux populations, une froide qui sera modélisé par une équation fluide linéarisée, et une chaude nécessitant une description cinétique. Cette modélisation mène au modèle de Vlasov-Maxwell hybride fluide/cinétique linéarisé. Deux classes d'intégrateurs en temps seront particulièrement étudiés, les méthodes dites de \emph{splitting} qui sont les méthodes privilégiées dans la littérature sur les équations cinétiques, et les intégrateurs exponentiels plus particulièrement les méthodes de Lawson induites par une méthode de type Runge-Kutta.
+
+  Ainsi un premier chapitre s'intéresse à la stabilité des intégrateurs exponentiels, et les deux chapitres suivants s'intéressent à la mise en application de ces méthodes de résolution sur un modèle hybride de plasma ainsi qu'à la viabilité de ce modèle. Différentes comparaisons sont proposées ainsi que des alternatives aux méthodes en effectuant une approximation de la méthode de Lawson à l'aide d'approximant de Padé.
+}
+
+%Ainsi un premier chapitre s'intéresse à la stabilité des intégrateurs exponentiels sur un problème hyperbolique et plus particulièrement une équation de transport cinétique, proposant une méthode automatique d'estimation de condition de stabilité entre une méthode Runge-Kutta et un intégrateur spatial comme la méthode WENO d'ordre 5.
+%Les deux chapitres suivant s'intéressent plus particulièrement au modèle de Vlasov-Maxwell hybride fluide/cinétique et à la comparaison des deux classes d'intégrateurs. Le chapitre 2 s'intéresse à la restriction de ce modèle en une dimension d'espace et une en vitesse et propose une analyse de la convergence entre le modèle cinétique complet et le modèle hybride lorsque la température des particules froides tend vers zéro, ainsi que de nombreux tests numériques. Le troisième chapitre s'intéresse aux difficultés qu'il est possible de rencontrer lors de l'augmentation du nombre de dimensions en s'attardant sur la restriction de ce modèle à une dimension en espace et trois en vitesse. Dans ce contexte les méthodes de Lawson sont bien plus compétitives que les méthodes de \emph{splitting}, et peuvent gagner en performance en temps de calcul en les couplant avec un approximant de Padé par exemple.
 
 \titleEN{\thetitleEN{}}
 
 \keywordsEN{de 3 \`{a} 6 mots clefs}
 
-\abstractEN{Eius populus ab incunabulis primis ad usque pueritiae tempus extremum, quod annis circumcluditur fere trecentis, circummurana pertulit bella, deinde aetatem ingressus adultam post multiplices bellorum aerumnas Alpes transcendit et fretum, in iuvenem erectus et virum ex omni plaga quam orbis ambit inmensus, reportavit laureas et triumphos, iamque vergens in senium et nomine solo aliquotiens vincens ad tranquilliora vitae discessit.
-Hoc inmaturo interitu ipse quoque sui pertaesus excessit e vita aetatis nono anno atque vicensimo cum quadriennio imperasset. natus apud Tuscos in Massa Veternensi, patre Constantio Constantini fratre imperatoris, matreque Galla.
-Thalassius vero ea tempestate praefectus praetorio praesens ipse quoque adrogantis ingenii, considerans incitationem eius ad multorum augeri discrimina, non maturitate vel consiliis mitigabat, ut aliquotiens celsae potestates iras principum molliverunt, sed adversando iurgandoque cum parum congrueret, eum ad rabiem potius evibrabat, Augustum actus eius exaggerando creberrime
-docens, idque, incertum qua mente, ne lateret adfectans. quibus mox Caesar acrius efferatus, velut contumaciae quoddam vexillum altius erigens, sine respectu salutis alienae vel suae ad vertenda opposita instar rapidi fluminis irrevocabili impetu ferebatur.}
+\abstractEN{
+  This thesis describe numerical methods to solve plasma models for electrons, especially a plasma composed of two populations of electrons, the first one is the cold population of electrons describe by a fluid model whereas a kinetic equation is used for energetic (or hot) electrons. This modeling leads to the Vlasov-Maxwell hybrid fluid/kinetic linearized model. We consider two numerical methods in time, splitting methods which are the more classical method to solve kinetic problems, and exponential integrators especially Lawson methods induced by a Runge-Kutta method.
+
+  In the first chapter we study stability of exponential integrators, and the next two chapters focus on implementation of this numerical methods to an hybrid plasma model and its viability. Many comparisons are proposed as well as alternatives to the methods by performing an approximation of the Lawson method using the Padé approximant.
+}
+
 }
 
 % Rétablit les marges d'origines
