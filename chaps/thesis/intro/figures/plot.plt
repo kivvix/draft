@@ -5,7 +5,8 @@
 set term epslatex color font ",5" header \
    "\\newcommand{\\ft}[0]{\\footnotesize}"
 set size 1.125,0.45
-set output "distrib.tex"
+dir = system("dirname ".ARG0)
+set output dir."/distrib.tex"
 
 Theads = 'heads size 0.2,90 front ls 201'
 
@@ -33,4 +34,5 @@ set ytics 0.25
 plot fc(x)+fh(x) w l lw 3 lc rgb "#535c68" notitle
 
 set output # Closes the temporary output files.
-!gsed -i 's/distrib/\\localPath\/figures\/distrib/g' distrib.tex
+#system("gsed -i 's/distrib/\\localPath\/figures\/distrib/g' ".dir."/distrib.tex")
+
