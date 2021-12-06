@@ -8,8 +8,8 @@
 %\definecolor{PLBmoyen}{RGB}{176, 216, 232}
 %\definecolor{PLBpale}{rgb}{0.94,0.965,0.965}
 
-\definecolor{PLB}{HTML}{424242}
-%\definecolor{PLB}{HTML}{1289A7}
+%\definecolor{PLB}{HTML}{424242}
+\definecolor{PLB}{HTML}{1289A7}
 \definecolor{PLBfonce}{rgb}{0.06,0.42,0.60}
 \definecolor{PLBmoyen}{RGB}{176, 216, 232}
 \definecolor{PLBpale}{rgb}{0.94,0.965,0.965}
@@ -21,6 +21,7 @@
 \setbeamercolor{logo}{bg=PLB!70!black}
 \setbeamercolor{structure}{fg=PLB, bg=PLB!40}
 %\setbeamertemplate{footline}[default]
+\setbeamertemplate{footline}[frame number]{}
 \setbeamertemplate{enumerate items}[square]
 \setbeamertemplate{itemize items}[circle]
 
@@ -42,6 +43,8 @@
 \definecolor{violet}{HTML}{9980FA}
 \definecolor{bleu}{RGB}{41, 128, 185}
 \definecolor{gris}{rgb}{0.5,0.5,0.5}
+\definecolor{fluid}{HTML}{6ab04c}
+\definecolor{kinetic}{HTML}{f0932b}
 \newcommand{\cmark}{{\color{dgreen}\ding{52}}}
 \newcommand{\xmark}{{\color{mred}\ding{55}}}
 \newcommand{\bmark}{{\color{morange}$\sim$}}
@@ -51,6 +54,8 @@
 \usepackage{soul}
 \usepackage{multicol}
 \usepackage{multirow}
+
+\usepackage{rotating}
 
 \usepackage{ifthen}
 
@@ -63,6 +68,7 @@
 \usepackage[backend=bibtex, style=authoryear-comp]{biblatex}
 \usepackage{filecontents}
 \renewbibmacro*{cite}{%
+  \begin{footnotesize}
   \iffieldundef{shorthand}
     {\ifthenelse{\ifnameundef{labelname}\OR\iffieldundef{labelyear}}
        {\usebibmacro{cite:label}%
@@ -72,7 +78,7 @@
      \usebibmacro{cite:labeldate+extradate}%
      \setunit{\addcomma\space}%
      \usebibmacro{journal}}
-    {\usebibmacro{cite:shorthand}}}
+    {\usebibmacro{cite:shorthand}}\end{footnotesize}}
 %\newcommand{\customcite}[1]{\citeauthor{#1} (\citeyear{#1})}
 \newcommand{\customcite}[1]{\cite{#1}}
 
@@ -128,23 +134,16 @@
   %\endgroup
 }
 
-\definecolor{sec1}{HTML}{F79F1F}
-\definecolor{sec2}{HTML}{A3CB38}
+\definecolor{sec1}{HTML}{1289A7} %{F79F1F}
+\definecolor{sec2}{HTML}{1289A7} %{A3CB38}
 \definecolor{sec3}{HTML}{1289A7}
-\definecolor{sec4}{HTML}{D980FA}
-\definecolor{sec5}{HTML}{B53471}
+\definecolor{sec4}{HTML}{1289A7} %{D980FA}
+\definecolor{sec5}{HTML}{1289A7} %{B53471}
 
 %\title[Workshop Bordeaux]{Hybrid model of Vlasov-Maxwell equations\\ and\\ comparison of Hamiltonian method and Lawson method}
-\title[LMJL]{Comparison of high-order Eulerian methods for electron hybrid model}
-\author[Josselin Massot]{A. Crestetto \inst{1} \and N. Crouseilles \inst{2,3} \and Y. Li \inst{4} \and \underline{J. Massot} \inst{3,2}}
-\institute[IRMAR]{
-       \inst{1} LMJL, Université de Nantes
-  \and \inst{2} Inria Rennes -- Bretagne Atlantique
-  \and \inst{3} IRMAR, Université de Rennes
-  \and \inst{4} Max Planck Institute for Plasma Physics, Garching, Germany
-}
-\date{November 9, 2021}
-
+\title[]{Méthodes numériques pour des modèles hybrides fluide-cinétique de plasmas}
+\author[]{Josselin Massot}
+\date[]{16 décembre 2021}
 
 \AtBeginDocument{\colorlet{defaultcolor}{.}}
 
@@ -155,6 +154,10 @@
 
 \begin{frame}[plain]
   \titlepage
+  \begin{tabular}{lrl}
+    Directeur de thèse :     & Nicolas & Crouseilles \\
+    Co-Directrice de thèse : & Anaïs   & Crestetto \\
+  \end{tabular}
 \end{frame}
 \begin{frame}{Outline}
   \tableofcontents
@@ -169,6 +172,7 @@
   Transport of electron density distribution $f=f(t,z,\Mvb{v})$,\\
   $\Mvb{B}(t,z)=(B_x,B_y,0)(t,z),\Mvb{E}(t,z)=(E_x,E_y,0)(t,z)\in\mathbb{R}^2$,\\
   $z\in[0,2\pi]$, $\Mvb{B}_0 = (0,0,B_0)^\top$, $\Mvb{v}\in\mathbb{R}^3$, $v_\perp=(v_x,v_y)^\top\in\mathbb{R}^2$:
+
   $$
     \begin{cases}
       \partial_t f + v_z\partial_z f - (\Mvb{E}+\Mvb{v}\times(\Mvb{B}+\Mvb{B}_0))\cdot\nabla_{\Mvb{v}} f = 0 \\
@@ -176,34 +180,51 @@
       \partial_t \Mvb{E} = \partial_z\Mvb{B} + \int_{\mathbb{R}^3} v_\perp f\dd{\Mvb{v}} \\
     \end{cases}
   $$
-\mbold{Motivation:}
+  \begin{figure}
+    \centering
+    \vspace{-1cm}
+    \hspace{5cm}\includegraphics[height=0.5\textheight]{img/helix}
+  \end{figure}
+\end{frame}
+\begin{frame}{Vlasov-Maxwell $1dz-3dv$ model}{Motivation:}
 \begin{itemize}
-  \item We consider an initial condition of the form $f = f_c+f_h$ with: $f_c(t=0,z,\Mvb{v})=\rho_c(t,z)\delta_{\Mvb{v}=\Mvb{u}_c(t,z)}(\Mvb{v})$
   \item We want high order methods in $(z,\Mvb{v})$ \begin{itemize}\item FFT in $z$ + WENO in $\Mvb{v}$\end{itemize}
   \item We want high order methods in time $t$ \begin{itemize}\item splitting method vs exponential integrator\end{itemize}
 \end{itemize}
+\begin{figure}
+  \centering
+  \input{img/distrib.tex}
+\end{figure}
+\begin{itemize}
+  \item We consider an initial condition of the form $f = \textcolor{fluid}{f_c}+\textcolor{kinetic}{f_h}$ with: $\textcolor{fluid}{f_c(t=0,z,\Mvb{v})}=\textcolor{fluid}{\rho_c(t,z)}\delta_{\Mvb{v}=\textcolor{fluid}{\Mvb{u}_c(t,z)}}(\Mvb{v})$
+\end{itemize}
 \end{frame}
 \begin{frame}{The idea}
-  \begin{itemize}
-    \item Grid methods can't have an initial condition like: $f_0(z,\Mvb{v}) = \rho_{c,0}(z)\textcolor{mred}{\delta_{\Mvb{v}-\Mvb{u}_c}(\Mvb{v})} + f_{h,0}(z,\Mvb{v})$
-    \item Idea is to derive an hybrid model:
+  Grid methods can't have an initial condition like:
+  $$
+    f_0(z,\Mvb{v}) = \underbrace{\rho_{c,0}(z)\textcolor{mred}{\delta_{\Mvb{v}-\Mvb{u}_c}(\Mvb{v})}}_{\textcolor{fluid}{f_{c,0}}} + \textcolor{kinetic}{f_{h,0}(z,\Mvb{v})}
+  $$
+  The main idea is to derive an \mbold{linearized hybrid \textcolor{fluid}{fluid}/\textcolor{kinetic}{kinetic} model}:
+    \begin{itemize}
+      \item Split $f=\textcolor{fluid}{f_c}+\textcolor{kinetic}{f_h}$ (2 Vlasov equations)
+      \item Compute momentum of $\textcolor{fluid}{f_c}$
         \begin{itemize}
-          \item \emph{Cold plasma approximation}: $\frac{T_c}{T_h}\ll 1$\arrow $\cancel{f_c(t,z,\Mvb{v})}$ \arrow $\Mvb{j}_c(t,z)$
-              \begin{itemize}
-                \item Fluid dynamic for cold particles (no velocity grid)
-              \end{itemize}
-          \item Hypothesis on hot particles: $\int_{\mathbb{R}^3} f_h(t,z,\Mvb{v})\dd{\Mvb{v}} \ll \rho_c(t,z)$
-              \begin{itemize}
-                \item Kinetic dynamic for hot particles 
-              \end{itemize}
+          \item \emph{Cold plasma approximation}: $\frac{T_c}{T_h}\ll 1$\arrow $\cancel{\textcolor{fluid}{f_c(t,z,\Mvb{v})}}$ \arrow $\textcolor{fluid}{\Mvb{j}_c(t,z)}$
+          \item Fluid dynamic for cold particles (no velocity grid) \cmark{}
+          \item Linearized fluid equations
         \end{itemize}
-  \end{itemize}
+      \item Hypothesis on hot particles: $\int_{\mathbb{R}^3} \textcolor{kinetic}{f_h(t,z,\Mvb{v})}\dd{\Mvb{v}} \ll \textcolor{fluid}{\rho_c(t,z)}$
+        \begin{itemize}
+          \item Kinetic dynamic for hot particles
+        \end{itemize}
+    \end{itemize}
 
   \vfill
  
-  \arrow{} Split $f=f_c+f_h$ \mbold{+} Compute momentum of $f_c$ with \emph{cold plasma approximation} \mbold{+} Linearize the model
   \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
+    \bibitem{b} \customcite{Tronci:2014}
+    \vspace{-0.25cm}
     \bibitem{a} \customcite{Holderied:2020}
   \end{thebibliography}
 \end{frame}
@@ -211,15 +232,16 @@
 \begin{frame}{Linearized hybrid Vlasov-Maxwell $1dz-3dv$ model}
   The new model: a nonlinear transport in $(z,v_x,v_y,v_z)\in\Omega\times\mathbb{R}^3$ of:
   \begin{itemize}
-    \item a cold (\mbold{fluid}) electron density distribution, reconstruction from current variable $\Mvb{j}_c(t,z) = q_e\rho_c(t,z)\Mvb{u}_c(t,z)=(j_{c,x},j_{c,y},0)(t,z)$
-    \item a hot (\mbold{kinetic}) electron density distribution $f_h(t,z,\Mvb{v})$
+    \item a cold (\textcolor{fluid}{fluid}) electron density distribution, reconstruction from current variable $\textcolor{fluid}{\Mvb{j}_c(t,z)} = q_e\textcolor{fluid}{\rho_c(t,z)}\textcolor{fluid}{\Mvb{u}_c(t,z)}
+    =(\textcolor{fluid}{j_{c,x}},\textcolor{fluid}{j_{c,y}},0)(t,z)$
+    \item a hot (\textcolor{kinetic}{kinetic}) electron density distribution $\textcolor{kinetic}{f_h(t,z,\Mvb{v})}$
   \end{itemize}
   $$
     \begin{cases}
-      \partial_t\Mvb{j}_c = \Omega_{pe}^2\Mvb{E} - J\Mvb{j}_c B_0 \\
+      \textcolor{fluid}{\partial_t\Mvb{j}_c = \Omega_{pe}^2\Mvb{E} - J\Mvb{j}_c B_0} \\
       \partial_t\Mvb{B}   = J\partial_z\Mvb{E} \\
-      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \Mvb{j}_c + \int_{\mathbb{R}^3} v_\perp f_h\dd{\Mvb{v}} \\
-      \partial_t f_h  + v_z\partial_z f_h - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} f_h = 0
+      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \textcolor{fluid}{\Mvb{j}_c} + \int_{\mathbb{R}^3} v_\perp \textcolor{kinetic}{f_h}\dd{\Mvb{v}} \\
+      \textcolor{kinetic}{\partial_t f_h  + v_z\partial_z f_h - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} f_h = 0}
     \end{cases}
   $$
   with:
@@ -241,13 +263,13 @@
   %$$
 \end{frame}
 
-\begin{frame}{Convergence when $T_c\to 0$}
+\begin{frame}{Convergence when $T_c\to 0$ for 1dx-1dv model}
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{img/vp_t1}
     \caption{Simulation of initial condition (left) with kinetic model with $T_c=0.05$ (middle) and hybrid model (right) to the time $T_f=200$}
   \end{figure}
-  \cmark{} Good agreement between kinetic ($f$) model and hybrid model ($f_h$ \mbold{+} $u_c$)
+  \cmark{} Good agreement between kinetic ($f$) model and hybrid model ($\textcolor{kinetic}{f_h}$ \mbold{+} $\textcolor{fluid}{u_c}$)
 \end{frame}
 
 
@@ -257,7 +279,7 @@
 \changecolor{sec2}
 \section{Numerical methods}
 \begin{frame}{Numerical methods}
-  Two time integrators to compute a numerical solution of:
+  Two time integrators to compute a numerical solution of abstract model:
   $$
     \dot{u} = L(t,u) + N(t,u),\quad u(0) = u_0
   $$
@@ -277,7 +299,7 @@
   Successive resolution of:
   $$
     \begin{aligned}
-      \dot{u} &= L(t,u) \qquad & \rightarrow \tilde{u}_t = \varphi^{[L]}_t(u_0) \\
+      \dot{u} &= Lu     \qquad & \rightarrow \tilde{u}_t = \varphi^{[L]}_t(u_0) \\
       \dot{u} &= N(t,u)        & \rightarrow \tilde{u}_t = \varphi^{[N]}_t(u_0)
     \end{aligned}
   $$
@@ -302,22 +324,15 @@
           \bibitem{c} \customcite{Suzuki:1990}
         \end{thebibliography}
   \end{description}
-
-  \vspace{-0.25cm}
-  \begin{thebibliography}{9}
-    \setbeamertemplate{bibliography item}[article]
-    \bibitem{d} \customcite{Casas:2020} \textcolor{defaultcolor}{(for some higher order methods)}
-  \end{thebibliography}
 \end{frame}
 %-------%
 \begin{frame}{Splitting method}
   {Pros \& Cons}
   \begin{description}
-    \item[\cmark] Good behavior in long time
+    \item[\cmark] Good splitting leads to good long time behavior
     \item[\cmark] Error in time only depends on splitting method
     \item[\cmark] Split a difficult problem into small easier sub-problems
     \item[\xmark] Numerical cost for high order method
-    \item[\bmark] Needs to find a way to solve exactly \mbold{in time} each step
   \end{description}
   
 \end{frame}
@@ -344,8 +359,9 @@
   $$
   \begin{thebibliography}{9}
     \setbeamertemplate{bibliography item}[article]
-    \bibitem{e} \customcite{Lawson:1967a}
-    \bibitem{f} \customcite{Hochbruck:2020}
+    \bibitem{e} \customcite{Lawson:1967a} \vspace{-0.25cm}
+    \bibitem{f} \customcite{Hochbruck:2010} \vspace{-0.25cm}
+    \bibitem{g} \customcite{Hochbruck:2020}
   \end{thebibliography}
 \end{frame}
 %-------%
@@ -353,7 +369,7 @@
   {Pros \& Cons}
   \begin{description}
     \item[\cmark] Numerically efficient (order increases linearly-ish with the number of stages)
-    \item[\cmark] Literature on Runge-Kutta method (embedded-RK, IMEX methods, low storage methods, \dots)
+    \item[\cmark] Literature on Runge-Kutta method (embedded-RK, low storage methods, IMEX methods, DIRK methods\dots)
     \item[\cmark] Linear part is solved exactly
     \item[\xmark] Stability constraint (not from the linear part \cmark)
     \item[\xmark] Behavior in long time
@@ -395,13 +411,13 @@
 \changecolor{sec3}
 \section{Application for hybrid Vlasov-Maxwell model}
 \begin{frame}{Linearized hybrid Vlasov-Maxwell model}
-  $U = \left(\Mvb{j}_c , \Mvb{B} , \Mvb{E} , f_h \right)^\top$, $\Mvb{j}_c(t,z),\Mvb{B}(t,z),\Mvb{E}(t,z)\in\mathbb{R}^2$
+  $U = \left(\textcolor{fluid}{\Mvb{j}_c} , \Mvb{B} , \Mvb{E} , \textcolor{kinetic}{f_h} \right)^\top$, $\textcolor{fluid}{\Mvb{j}_c}(t,z)$,$\Mvb{B}(t,z)$,$\Mvb{E}(t,z)\in\mathbb{R}^2$,$\textcolor{kinetic}{f_h}(t,z,\Mvb{v})\in\mathbb{R}$
   $$
     \begin{cases}
-      \partial_t\Mvb{j}_c = \Omega_{pe}^2\Mvb{E} - J\Mvb{j}_c B_0 \\
+      \partial_t\textcolor{fluid}{\Mvb{j}_c} = \Omega_{pe}^2\Mvb{E} - J\textcolor{fluid}{\Mvb{j}_c} B_0 \\
       \partial_t\Mvb{B}   = J\partial_z\Mvb{E} \\
-      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \Mvb{j}_c + \int v_\perp f_h\dd{v_\perp} \\
-      \partial_t f_h  + v_z\partial_z f_h - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} f_h = 0
+      \partial_t\Mvb{E}   = -J\partial_z\Mvb{B} - \textcolor{fluid}{\Mvb{j}_c} + \int v_\perp \textcolor{kinetic}{f_h}\dd{v_\perp} \\
+      \partial_t \textcolor{kinetic}{f_h}  + v_z\partial_z \textcolor{kinetic}{f_h} - \left( \Mvb{E} + \Mvb{v}\times(\Mvb{B}+\Mvb{B}_0) \right)\cdot\nabla_{\Mvb{v}} \textcolor{kinetic}{f_h} = 0
     \end{cases}
   $$
   we define the Hamiltonian as :
@@ -410,8 +426,8 @@
       \mathcal{H} &=
         \underbrace{\frac{1}{2}\int \|\Mvb{E}\|^2 \dd{z}}_{\mathcal{H}_E}
       + \underbrace{\frac{1}{2}\int \|\Mvb{B}\|^2 \dd{z}}_{\mathcal{H}_B}
-      + \underbrace{\frac{1}{2}\int \frac{1}{\Omega_{pe}^2}\|\Mvb{j}_c\|^2 \dd{z}}_{\mathcal{H}_{j_c}}\\
-      &\qquad+ \underbrace{\frac{1}{2}\int\int \|\Mvb{v}\|^2f_h \dd{\Mvb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
+      + \underbrace{\frac{1}{2}\int \frac{1}{\Omega_{pe}^2}\|\textcolor{fluid}{\Mvb{j}_c}\|^2 \dd{z}}_{\mathcal{H}_{j_c}}\\
+      &\qquad+ \underbrace{\frac{1}{2}\int\int \|\Mvb{v}\|^2\textcolor{kinetic}{f_h} \dd{\Mvb{v}}\dd{z}}_{\mathcal{H}_{f_h}}
     \end{aligned}
   $$
   Following the Hamiltonian we built a Hamiltonian splitting.
@@ -440,6 +456,13 @@
             \circ \varphi_{\Delta t/2}^{[B]}
             \circ \varphi_{\Delta t/2}^{[E]} (U^n)
       $$
+  \end{itemize}
+
+  \mbold{Numerical cost:}
+  \begin{itemize}
+    \item $\varphi^{[B]}$ and $\varphi^{[j_c]}$: almost free ($\mathcal{O}(N_z)$)
+    \item $\varphi^{[E]}$: moderately expensive ($\mathcal{O}(N_z)$ \mbold{+} loop on phase space)
+    \item $\varphi^{[f_h]}$: extremely expensive (multiple loops on phase space)
   \end{itemize}
 \end{frame}
 %-------%
@@ -496,7 +519,7 @@
       (\Mvb{E}\!+\!\Mvb{v}\times\Mvb{B})\!\cdot\!\nabla_{\!\Mvb{v}}f_h
     \end{pmatrix}
   $$
-  But $e^{\tau L}$ can't be computed with symbolic computation software.
+  But $e^{\tau L}$ can't be computed even with symbolic computation software.
 \end{frame}
 
 
@@ -564,8 +587,9 @@
   $$
   We have:
   $$
-    \forall \kappa, \sigma({L(\kappa)})\subset \dot{\imath}\,\mathbb{R}
+    \forall \kappa, \sigma({L(\kappa)})\subset \I\,\mathbb{R}
   $$
+  So that : $\sigma(e^{\tau L(\kappa)})\subset \mathcal{C}(0,1)$ \textcolor{mred}{IMPORTANT for numerical stability !}
 \end{frame}
 
 \begin{frame}{Taylor series}
@@ -574,9 +598,9 @@
     T_p(\tau L) = \sum_{k=0}^p \frac{\tau^k}{k!}L^k = e^{\tau L} + \order{\tau^{p+1}}
   $$
 
-  \begin{theorem}
+  \begin{block}{Proposition}
     $\text{sp}(L)\subset\I\mathbb{R}\smallsetminus\I[-1,1]$ implies eigenvalues diverge
-  \end{theorem}
+  \end{block}
   \emph{Proof:} compute Taylor series outside of its convergence radius
 
   \mbold{Conclusion:}
@@ -584,13 +608,6 @@
     \item[\xmark] Bad behavior of eigenvalues
     \item[\xmark] Numerical instability in scheme
   \end{description}
-\end{frame}
-\begin{frame}{Eigenvalues of Taylor series}
-   \begin{figure}\centering
-    \includegraphics[height=0.35\textheight]{img/T5_reim}
-    \includegraphics[height=0.35\textheight]{img/T5_ev}
-    \caption{$T_5(\I x)$, $x\in[\![0,9]\!]$}
-  \end{figure}
 \end{frame}
 
 \begin{frame}{Padé approximant}
@@ -622,7 +639,7 @@
   \end{description}
 \end{frame}
 \begin{frame}{\emph{Proof}}
-  $L$ diagonalizable \arrow{} study only on diagonal terms
+  $L$ diagonalizable \arrow{} study only on diagonal terms ($\I y$, $y\in\mathbb{R}$)
   $$
     P_{p,p}(\I y) = \left( \textcolor{violet}{\sum_{k=0}^p \frac{1}{k!}(\I y)^k} \right)\cdot\left(\textcolor{dgreen}{\sum_{\ell=0}^p (-1)^\ell\frac{1}{\ell!}(\I y)^\ell}\right)^{-1}
   $$
@@ -656,68 +673,86 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Error on approximate Lawson method}
-  We note $\mathfrak{exp}(L) = P_{p.q}(L)$ or $T_p(L)$, generic approximation.
-  $$\mathfrak{exp}(L) = e^L + \mathcal{O}(L^{r+1})$$
+\begin{frame}{Splitting method}
+  \vspace{-2cm}\hfill\begin{turn}{-30}{\mbold{\textcolor{mred}{Breaking news!}}}\end{turn}
 
-  Lawson RK(3,3) method:
+  We can also approximate $e^{\tau L}$ with troncature of BCH formula or splitting method:
+  $$
+    L = \underbrace{\begin{pmatrix}
+      \gz & \hspace{-0.25cm}-B_0 & \gz                   & \gz                   & \hspace{-0.125cm}\Omega_{pe}^2\hspace{-0.125cm} &                  \gz                            & \gz \\ 
+      B_0 &                  \gz & \gz                   & \gz                   &                  \gz                            & \hspace{-0.125cm}\Omega_{pe}^2\hspace{-0.125cm} & \gz \\
+      \gz &                  \gz & \gz                   & \gz                   &                  \gz                            &                  \textcolor{violet}{0}          & \gz \\ 
+      \gz &                  \gz & \gz                   & \gz                   &                  \textcolor{violet}{0}          &                  \gz                            & \gz \\ 
+      -1  &                  \gz & \gz                   & \textcolor{violet}{0} &                  \gz                            &                  \gz                            & \gz \\ 
+      \gz & \hspace{-0.25cm}-1   & \textcolor{violet}{0} & \gz                   &                  \gz                            &                  \gz                            & \gz \\ 
+      \gz &                  \gz & \gz                   & \gz                   &                  \gz                            &                  \gz                            & \hspace{-0.25cm}-\I v_z\kappa \\ 
+    \end{pmatrix}}_{L_1}
+    +
+    \underbrace{\begin{pmatrix}
+      \gz & \textcolor{violet}{0} & \gz                      &  \gz                      &  \textcolor{violet}{0}            & \gz                      & \gz \\ 
+      \textcolor{violet}{0} &  \gz & \gz                      &  \gz                      &  \gz                      & \textcolor{violet}{0}            & \gz \\
+      \gz &  \gz & \gz                      &  \gz                      &  \gz                      & \hspace{-0.125cm}{\I\kappa}\hspace{-0.125cm} & \gz \\ 
+      \gz &  \gz & \gz                      &  \gz                      & \hspace{-0.125cm}{-\I\kappa}\hspace{-0.125cm} & \gz                      & \gz \\ 
+      \textcolor{violet}{0}  &  \gz & \gz                      & \hspace{-0.125cm}{-\I\kappa}\hspace{-0.125cm} &  \gz                      & \gz                      & \gz \\ 
+      \gz & \textcolor{violet}{0}   & \hspace{-0.125cm}{\I\kappa}\hspace{-0.125cm} &  \gz                      &  \gz                      & \gz                      & \gz \\ 
+      \gz &  \gz & \gz                      &  \gz                      &  \gz                      & \gz                      & \textcolor{violet}{0} \\ 
+    \end{pmatrix}}_{L_2}
+  $$
+  $$
+    e^{\tau L} \approx e^{\frac{\tau}{2}L_1}e^{\tau L_2}e^{\frac{\tau}{2}L_1} = S_{\tau}(L)
+  $$
+\end{frame}
+
+%\newcommand{\pexp}[1]{\textcolor{violet}{P_{\!\!p,q}\!\left(#1\right)}}
+\newcommand{\pexp}[1]{\textcolor{violet}{ \epsilon^{#1} }}
+\begin{frame}{Error on approximate Lawson method}
+  We note $P_{p,q}(z) = \pexp{z}$.
+  We recall: $$\pexp{\tau L} = e^{\tau L} + \mathcal{O}(\tau^{r+1}),\quad\text{with}\ r=p+q$$
+
+  Lawson RK(3,3) method becomes:
   $$
     \begin{aligned}
-      u^{(1)} &= e^{\Delta t L}u^n + \Delta te^{\Delta t L}N(t^n,u^n) \\
-      u^{(2)} &= \frac{3}{4}e^{\frac{\Delta t}{2} L}u^n + \frac{1}{4}e^{-\frac{\Delta t}{2} L}u^{(1)} + \frac{\Delta t}{4}e^{-\frac{\Delta t}{2} L} N(t^n+\Delta t,u^{(1)}) \\
-      u^{n+1} &= \frac{1}{3}e^{\Delta t L}u^n + \frac{2}{3}e^{\frac{\Delta t}{2} L}u^{(2)} + \frac{2}{3}\Delta t e^{\frac{\Delta t}{2} L} N(t^n+\frac{\Delta t}{2},u^{(2)})
+      \!\!\!\!u^{(1)} &= \pexp{\Delta t L}u^n + \Delta t\pexp{\Delta t L}N(t^n,u^n) \\
+      \!\!\!\!u^{(2)} &= \frac{3}{4}\pexp{\!\frac{\Delta t}{2} L\!}u^n + \frac{1}{4}\pexp{\!\!-\frac{\Delta t}{2} L\!}u^{(1)} + \frac{\Delta t}{4}\pexp{\!\!-\frac{\Delta t}{2} L\!} N(t^n+\Delta t,u^{(1)}) \\
+      \!\!\!\!u^{n+1} &= \frac{1}{3}\pexp{\Delta t L}u^n + \frac{2}{3}\pexp{\!\frac{\Delta t}{2} L\!}u^{(2)} + \frac{2}{3}\Delta t \pexp{\!\frac{\Delta t}{2} L\!} N(t^n+\frac{\Delta t}{2},u^{(2)})
     \end{aligned}
   $$
-  \mbold{If} $L$ and $N$ commute: $u^{n+1} = e^{\Delta tL}\left(I + N + \frac{N^2}{2} + \frac{N^3}{6} \right)u^n$, stability is same as RK(3,3). \mbold{Else}\dots
+  \mbold{If} $L$ and $N$ commute: $u^{n+1} = \pexp{\Delta tL}\left(I + N + \frac{N^2}{2} + \frac{N^3}{6} \right)u^n$, stability is same as RK(3,3).
+  \begin{thebibliography}{9}
+    \setbeamertemplate{bibliography item}[article]
+    \bibitem{k} \customcite{Crouseilles:2019b} \textcolor{defaultcolor}{study of Lawson stability in scalar case}
+  \end{thebibliography}
+   \mbold{Else}\dots
+
 \end{frame}
 \begin{frame}{Error on approximate Lawson method}
   \mbold{If} $L$ and $N$ don't commute:
   $$
     \begin{aligned}
-      u^{n+1} = \Big[ e^{\Delta tL}
-        &+\Delta t\left(\frac{2}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}+\frac{1}{6}e^{\Delta tL}N + \frac{1}{6}Ne^{\Delta tL}\right)
-          \textcolor{gris}{\rightsquigarrow e^{\Delta L}\Delta t N} \\
-        & + \frac{\Delta t^2}{2}\left(\frac{1}{3}Ne^{\Delta tL}N + \frac{1}{3}e^{\frac{\Delta t}{2}L}Ne^{\frac{\Delta t}{2}L}N + \frac{1}{3} e^{\frac{\Delta t}{2}L}Ne^{-\frac{\Delta t}{2}L}Ne^{\Delta tL} \right) \\
-          &\hspace{2cm} \textcolor{gris}{\rightsquigarrow e^{\Delta L}\frac{\left(\Delta t N\right)^2}{2}} \\
-      & + \frac{\Delta t^3}{6}e^{\frac{\Delta t}{2}L}Ne^{-\frac{\Delta t}{2}L}Ne^{\Delta tL}N \Big]u^n \textcolor{gris}{\rightsquigarrow e^{\Delta L}\frac{\left(\Delta t N\right)^3}{6}}
+      u^{n+1} = \Big[ \pexp{\Delta tL}
+        &+\Delta t\left(\frac{2}{3}\pexp{\frac{\Delta t}{2}L}N\pexp{\frac{\Delta t}{2}L}+\frac{1}{6}\pexp{\Delta tL}N + \frac{1}{6}N\pexp{\Delta tL}\right)
+          \textcolor{gris}{\rightsquigarrow \pexp{\Delta L}\Delta t N} \\
+        & + \frac{\Delta t^2}{2}\left(\frac{1}{3}N\pexp{\Delta tL}N + \frac{1}{3}\pexp{\frac{\Delta t}{2}L}N\pexp{\frac{\Delta t}{2}L}N + \frac{1}{3} \pexp{\frac{\Delta t}{2}L}N\pexp{-\frac{\Delta t}{2}L}N\pexp{\Delta tL} \right) \\
+          &\hspace{2cm} \textcolor{gris}{\rightsquigarrow \pexp{\Delta L}\frac{\left(\Delta t N\right)^2}{2}} \\
+      & + \frac{\Delta t^3}{6}\pexp{\frac{\Delta t}{2}L}N\pexp{-\frac{\Delta t}{2}L}N\pexp{\Delta tL}N \Big]u^n \textcolor{gris}{\rightsquigarrow \pexp{\Delta L}\frac{\left(\Delta t N\right)^3}{6}}
     \end{aligned}
   $$
-  Same results if $e^{\Delta t L}\mapsto \mathfrak{exp}(\Delta t L) = e^{\Delta t L} + \mathcal{O}(\Delta t^{r+1})$
 
   \begin{lemma}
-    Error for Lawson RK($s$,$m$) is always in $\mathcal{O}(\Delta t^{m+1})+\mathcal{O}(\Delta t^{r+1})$
+    Trucature error of modified Lawson RK($s$,$m$) is in $\mathcal{O}(\Delta t^{\min(r,m)})$
   \end{lemma}
 \end{frame}
 
-\begin{frame}{Test 1}
-  Simulation of $\partial_t u + a\partial_x u + b\partial_y u = 0$ (2D translation test case) and measure order.
-  \only<1>{
-    \begin{figure}
-      \centering
-      \includegraphics[height=0.6\textheight]{img/order_lrk33ref}
-      \caption{Order of Lawson RK(3,3) method, and Lawson RK(3,3), $P(2,2)$ approximant method and Lawson RK(3,3) $T(4)$ series method.}
-    \end{figure}
-  }\only<2>{
-    \begin{columns}
-      \begin{column}{0.5\textwidth}
-        \begin{figure}
-          \centering
-          \includegraphics[height=0.6\textheight]{img/order_lrk33taylor}
-          \caption{Order of Lawson RK(3,3) $T(n)$ series method, $n=1,\dots,4$.}
-        \end{figure}
-      \end{column}
-      \begin{column}{0.5\textwidth}
-        \begin{figure}
-          \centering
-          \includegraphics[height=0.6\textheight]{img/order_lrk33pade}
-          \caption{Order of Lawson RK(3,3) $P(p,q)$ approximant, $p=1,2$, $q=1,2$}
-        \end{figure}
-      \end{column}
-    \end{columns}
-  }
+\begin{frame}{Test 1: measure of order}
+  Simulation of $\partial_t u + a\partial_x u + b\partial_y u = 0$ (2D translation test case).
+  \begin{figure}
+    \centering
+    \includegraphics[height=0.6\textheight]{img/order_lrk33pade}
+    \caption{Order of Lawson RK(3,3) $P(p,q)$ approximant, $p=1,2$, $q=1,2$}
+  \end{figure}
 \end{frame}
-\begin{frame}{Test 2}
-  Simulation of $\partial_t u - y\partial_x u + x\partial_y u = 0$ (2D rotation) and test instability
+\begin{frame}{Test 2: illustration of instability or stability}
+  Simulation of $\partial_t u - y\partial_x u + x\partial_y u = 0$ (2D rotation)
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{img/uf_t3p11}
@@ -750,16 +785,43 @@
   \mbold{But:} Padé approximant implies a huge rational function (with invert of matrix), high order Lawson methods have a lot of coefficients, with 7 variables problem\dots \ \arrow \ bug source !!!
 \end{frame}
 \begin{frame}{Code generator}
-  The main idea of code generator:
-  \begin{enumerate}
-    \item Write with SymPy the Lawson method with a vector $U\in\mathbb{C}^7$, an abstract matrix $L\in\mathcal{M}_7(\mathbb{C})$ and an abstract nonlinear part $N:t,U\mapsto N(t,U)\in\mathbb{C}^7$
-    \item Compute $e^{\tau L}$ with our $L$ matrix, and given approximation of $\exp$
-    \item Loop for each stage of Lawson method into a code template (Jinja2)
-    \item Save the file, compile and run with a given configuration file
-  \end{enumerate}
+  % The main idea of code generator:
+  % \begin{enumerate}
+  %   \item Write with SymPy the Lawson method with a vector $U\in\mathbb{C}^7$, an abstract matrix $L\in\mathcal{M}_7(\mathbb{C})$ and an abstract nonlinear part $N:t,U\mapsto N(t,U)\in\mathbb{C}^7$
+  %   \item Compute $e^{\tau L}$ with our $L$ matrix, and given approximation of $\exp$
+  %   \item Loop for each stage of Lawson method into a code template (Jinja2)
+  %   \item Save the file, compile and run with a given configuration file
+  % \end{enumerate}
+  
+  \begin{figure}
+    \includegraphics[width=\textwidth]{img/codegen}
+  \end{figure}
 \end{frame}
 
-\begin{frame}{Numerical results}
+\begin{frame}{Numerical test}
+  Weibel instability:
+  $$
+    \begin{cases}
+      \Mvb{j}_c(t=0,z) = 0 \\
+      \Mvb{B}(t=0,z) = \left( \epsilon \sin(Kz) , 0 \right) \\
+      \Mvb{E}(t=0,z) = 0 \\
+      f_h(t=0,z,\Mvb{v}) = \dfrac{\rho_h}{ (2\pi)^{3/2} \bar{v}_\perp^2 \bar{v}_\parallel }\exp( -\dfrac{v_z^2}{2\bar{v}_\parallel^2} - \dfrac{(v_x^2 + v_y^2)}{2\bar{v}_\perp^2}  )
+    \end{cases}
+  $$
+  with $z\in[0,\frac{2\pi}{K}]$, $\Mvb{v}\in[-3.6,3.6]\times[-3.6,3.6]\times[-2.4,2.4]$, $K=2$, $\bar{v}_\parallel=0.2$, $\bar{v}_\perp = 0.6$, $\rho_h=0.2$ and $\epsilon=10^{-5}$.
+
+  \mbold{Compare energies:}
+  $$
+    \mathcal{H}_E(t) = \frac{1}{2}\int {\| \Mvb{E}(t,z) \|_2}^2\dd{z}
+    \qquad
+    \mathcal{H}_B(t) = \frac{1}{2}\int {\| \Mvb{B}(t,z) \|_2}^2\dd{z}
+  $$
+  $$
+    \mathcal{H}_c(t) = \frac{1}{2\Omega_{pe}^2}\int {\| \Mvb{j}_c(t,z) \|_2}^2\dd{z}
+  $$
+\end{frame}
+
+\begin{frame}{Numerical results: splitting vs Lawson}
   {$N_z\times N_{v_x} \times N_{v_y} \times N_{v_z} = 27 \times 32 \times 32 \times 41$}
   \only<1>{
     \begin{figure}
@@ -775,20 +837,40 @@
     \end{figure}
   }
   \only<3>{
-    \begin{figure}
-      \includegraphics[height=0.75\textheight]{img/energy_lrkpt_m}
-      \vspace{-0.25cm}
-      \caption{Energies evolution, Lawson with Taylor or Padé approximation, $\Delta t = 0.12$}
-    \end{figure}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{l|r}
+        time integrator & simulation time \\
+        \hline
+        Lie splitting        &                $13\,\text{h}\ 25\,\text{min}\ 10\,\text{s}$ \\
+        Strang splitting     &                $17\,\text{h}\ 09\,\text{min}\ 54\,\text{s}$ \\
+        Suzuki splitting     &   $3\,\text{j}\ 03\,\text{h}\ 05\,\text{min}\ 24\,\text{s}$ \\
+        \hline
+        LRK(3,3)             &                $11\,\text{h}\ 29\,\text{min}\ 09\,\text{s}$ \\
+        \hline
+        LRK(4,4)             &                $14\,\text{h}\ 06\,\text{min}\ 15\,\text{s}$ \\
+      \end{tabular}
+      \caption{Simulation time for some simulation, on mesh $N_z \times N_{v_x} \times N_{v_y} \times N_{v_z}=27\times32\times32\times41$ and time step $\Delta t = 0.05$.}
+    \end{table}
   }
-  \only<4>{
+\end{frame}
+
+\begin{frame}{Numerical results: Padé-Lawson}
+  \begin{figure}
+    \includegraphics[height=0.75\textheight]{img/energy_lrkpt_m}
+    \vspace{-0.25cm}
+    \caption{Energies evolution, Lawson with Taylor or Padé approximation, $\Delta t = 0.12$}
+  \end{figure}
+\end{frame}
+\begin{frame}{Numerical results: Padé-Lawson adaptive time step}
+  \only<1>{
     \begin{figure}
       \includegraphics[height=0.72\textheight]{img/energy_ldppt}
       \vspace{-0.25cm}
       \caption{Energies evolution, Lawson with Taylor or Padé approximation, $\Delta t^n$}
     \end{figure}
   }
-  \only<5>{
+  \only<2>{
     \begin{figure}
       \includegraphics[width=\textwidth]{img/dt_ldppt}
       \caption{Time step evolution and estimate of local error, Lawson with Taylor or Padé approximation, $\Delta t^n$}
@@ -801,17 +883,11 @@
     \begin{tabular}{l|r}
       time integrator & simulation time \\
       \hline
-      Lie splitting        &                $13\,\text{h}\ 25\,\text{min}\ 10\,\text{s}$ \\
-      Strang splitting     &                $17\,\text{h}\ 09\,\text{min}\ 54\,\text{s}$ \\
-      Suzuki splitting     &   $3\,\text{j}\ 03\,\text{h}\ 05\,\text{min}\ 24\,\text{s}$ \\
-      \hline
       LRK(3,3)             &                $11\,\text{h}\ 29\,\text{min}\ 09\,\text{s}$ \\
-      LRK(3,3) - $T_4$     &                $10\,\text{h}\ 53\,\text{min}\ 40\,\text{s}$ \\
       LRK(3,3) - $P_{1,1}$ &                $10\,\text{h}\ 54\,\text{min}\ 11\,\text{s}$ \\
       LRK(3,3) - $P_{2,2}$ &                $10\,\text{h}\ 55\,\text{min}\ 26\,\text{s}$ \\
       \hline
       LRK(4,4)             &                $14\,\text{h}\ 06\,\text{min}\ 15\,\text{s}$ \\
-      LRK(4,4) - $T_5$     &                $14\,\text{h}\ 00\,\text{min}\ 03\,\text{s}$ \\
       LRK(4,4) - $P_{2,2}$ &                $13\,\text{h}\ 59\,\text{min}\ 59\,\text{s}$ \\
       \hline
       LDP4(3)              &                $11\,\text{h}\ 44\,\text{min}\ 04\,\text{s}$ \\
@@ -830,9 +906,9 @@
   \begin{enumerate}
     \item[\cmark] First simulations of this system using Hamiltonian splitting
     \item[\xmark] Numerical cost of splitting methods (not bad in $1dz-1dv$ but very bad in $1dz-3dv$, must be very very very bad in $3dx-3dv$)
-     \item[\cmark] Numerical cost of Lawson methods
-     \item[\bmark] Behavior of total energy of Lawson method (but we can use high order method easily)
-     \item[\cmark] Error of approximation with Padé approximant can be lower than time integrator
+    \item[\cmark] Numerical cost of Lawson methods
+    \item[\bmark] Behavior of total energy of Lawson method (but we can use high order method easily)
+    \item[\cmark] Error of approximation with Padé approximant can be lower than time integrator
   \end{enumerate}
 \end{frame}
 \begin{frame}{Future works}
@@ -1068,6 +1144,27 @@
    $
 \end{bframe}
 
+\begin{bframe}{Suzuki vs Lawson (adaptive time step)}
+  \only<1>{
+    \begin{figure}
+      \includegraphics[height=0.8\textheight]{img/dt_size_t3}
+      \caption{Time step size in 1dx-1dv}
+    \end{figure}
+  } \only<2>{
+    \begin{figure}
+      \includegraphics[width=0.48\textwidth]{img/Ll_t3}
+      \includegraphics[width=0.48\textwidth]{img/Ls_t3}
+      \caption{Local error estimate Lawson (left) and Suzuki (right)}
+    \end{figure}
+  }
+\end{bframe}
+
+\begin{bframe}{Time comparaison}
+  \begin{figure}
+    \includegraphics[width=\textwidth]{img/timer_boxplot_t4}
+    \caption{Simulation time of each step}
+  \end{figure}
+\end{bframe}
 
 %-------%
 \backupend
