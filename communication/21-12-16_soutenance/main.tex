@@ -673,10 +673,10 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Splitting method}
-  \vspace{-2cm}\hfill\begin{turn}{-30}{\mbold{\textcolor{mred}{Breaking news!}}}\end{turn}
+\begin{frame}{{\small\texttt{WIP}\ }Splitting method}
+  \vspace{-2cm}\hfill\begin{turn}{-30}{\large\mbold{\textcolor{mred}{Breaking news!}}}\end{turn}
 
-  We can also approximate $e^{\tau L}$ with troncature of BCH formula or splitting method:
+  We can also approximate $e^{\tau L}$ with truncation of BCH formula or splitting method:
   $$
     L = \underbrace{\begin{pmatrix}
       \gz & \hspace{-0.25cm}-B_0 & \gz                   & \gz                   & \hspace{-0.125cm}\Omega_{pe}^2\hspace{-0.125cm} &                  \gz                            & \gz \\ 
@@ -699,7 +699,7 @@
     \end{pmatrix}}_{L_2}
   $$
   $$
-    e^{\tau L} \approx e^{\frac{\tau}{2}L_1}e^{\tau L_2}e^{\frac{\tau}{2}L_1} = S_{\tau}(L)
+    S_\tau(L) = e^{\frac{\tau}{2}L_1}e^{\tau L_2}e^{\frac{\tau}{2}L_1} = e^{\tau L} + \mathcal{O}(\tau^3)
   $$
 \end{frame}
 
@@ -799,7 +799,7 @@
 \end{frame}
 
 \begin{frame}{Numerical test}
-  Weibel instability:
+  Anisotropic equilibrium, Weibel instability:
   $$
     \begin{cases}
       \Mvb{j}_c(t=0,z) = 0 \\
@@ -873,8 +873,19 @@
   \only<2>{
     \begin{figure}
       \includegraphics[width=\textwidth]{img/dt_ldppt}
-      \caption{Time step evolution and estimate of local error, Lawson with Taylor or Padé approximation, $\Delta t^n$}
+      \caption{Time step evolution, classic Lawson (Maxwell outside) and approximate Lawson with Padé or Strang approximation, $\Delta t^n$}
     \end{figure}
+    \begin{table}[h]
+      \centering
+      \begin{tabular}{l|c|c|c}
+        method                    & \# of iterations & \# of succeeded  & ratio \\
+        \hline
+        LDP4(3) (Maxwell outside) & 2794            & 1970              & 0.705 \\
+        LDP4(3)-P$_{2,2}$         &  919            &  464              & 0.504 \\
+        LDP4(3)-Strang            & 1131            &  583              & 0.515 \\ 
+      \end{tabular}
+      
+    \end{table}
   }
 \end{frame}
   \begin{frame}{Simulation time}
@@ -892,6 +903,7 @@
       \hline
       LDP4(3)              &                $11\,\text{h}\ 44\,\text{min}\ 04\,\text{s}$ \\
       LDP4(3) - $P_{2,2}$  &                $04\,\text{h}\ 09\,\text{min}\ 44\,\text{s}$ \\
+      LDP4(3) - Strang     &                $04\,\text{h}\ 42\,\text{min}\ 25\,\text{s}$ \\
     \end{tabular}
     \caption{Simulation time for some simulation, on mesh $N_z \times N_{v_x} \times N_{v_y} \times N_{v_z}=27\times32\times32\times41$ and time step $\Delta t = 0.05$ (initial time step for adaptive time step strategy).}
   \end{table}
@@ -904,17 +916,20 @@
 \section{Conclusion}
 \begin{frame}{Conclusion}
   \begin{enumerate}
-    \item[\cmark] First simulations of this system using Hamiltonian splitting
+    \item[\cmark] Numerical estimation of CFL with Python package
+    \item[\cmark] Comparison between kinetic model and hybrid model thanks dispersion relation and simulations
     \item[\xmark] Numerical cost of splitting methods (not bad in $1dz-1dv$ but very bad in $1dz-3dv$, must be very very very bad in $3dx-3dv$)
     \item[\cmark] Numerical cost of Lawson methods
     \item[\bmark] Behavior of total energy of Lawson method (but we can use high order method easily)
     \item[\cmark] Error of approximation with Padé approximant can be lower than time integrator
+    \item[\cmark] Adaptive time step method with any linear part thanks to approximation of exponential function
   \end{enumerate}
 \end{frame}
 \begin{frame}{Future works}
   \begin{itemize}
-    \item Compare Lawson method with Padé approximant with a PIC simulation
-    \item Add $\int \Mvb{v}f_h\dd{\Mvb{v}}$ in linear part (for $1dx-1dv$ model)
+    \item Add $\int \Mvb{v}f_h\dd{\Mvb{v}}$ in linear part (for $1dx-1dv$ model) \mbold{WIP}
+    \item Parallelized with OpenMP or OpenACC (GPU)
+    \item Improve code generator (easy to use for other problem) \mbold{WIP}
   \end{itemize}
 \end{frame}
 
